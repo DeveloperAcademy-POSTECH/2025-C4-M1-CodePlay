@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		D8CEA65D2E20A7C2000E4703 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = D8CEA65C2E20A7C2000E4703 /* CombineMoya */; };
+		D8CEA65F2E20A7C2000E4703 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = D8CEA65E2E20A7C2000E4703 /* Moya */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		D8391C3E2E1CC9C000A44C3F /* CodePlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodePlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8CEA65F2E20A7C2000E4703 /* Moya in Frameworks */,
+				D8CEA65D2E20A7C2000E4703 /* CombineMoya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -55,6 +62,7 @@
 				D8391C3A2E1CC9C000A44C3F /* Sources */,
 				D8391C3B2E1CC9C000A44C3F /* Frameworks */,
 				D8391C3C2E1CC9C000A44C3F /* Resources */,
+				D8CEA66A2E20AE45000E4703 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -65,6 +73,8 @@
 			);
 			name = CodePlay;
 			packageProductDependencies = (
+				D8CEA65C2E20A7C2000E4703 /* CombineMoya */,
+				D8CEA65E2E20A7C2000E4703 /* Moya */,
 			);
 			productName = CodePlay;
 			productReference = D8391C3E2E1CC9C000A44C3F /* CodePlay.app */;
@@ -94,6 +104,9 @@
 			);
 			mainGroup = D8391C352E1CC9C000A44C3F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				D8CEA65B2E20A7C2000E4703 /* XCRemoteSwiftPackageReference "Moya" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D8391C3F2E1CC9C000A44C3F /* Products */;
 			projectDirPath = "";
@@ -113,6 +126,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D8CEA66A2E20AE45000E4703 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd ${SRCROOT} swiftgen config run\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D8391C3A2E1CC9C000A44C3F /* Sources */ = {
@@ -163,7 +196,7 @@
 				DEVELOPMENT_TEAM = W5Z68U98HJ;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -227,7 +260,7 @@
 				DEVELOPMENT_TEAM = W5Z68U98HJ;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -257,6 +290,7 @@
 				DEVELOPMENT_TEAM = R9WPZ5669L;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = R9WPZ5669L;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -297,6 +331,7 @@
 				DEVELOPMENT_TEAM = R9WPZ5669L;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = R9WPZ5669L;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -348,6 +383,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D8CEA65B2E20A7C2000E4703 /* XCRemoteSwiftPackageReference "Moya" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Moya/Moya.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 15.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D8CEA65C2E20A7C2000E4703 /* CombineMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D8CEA65B2E20A7C2000E4703 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = CombineMoya;
+		};
+		D8CEA65E2E20A7C2000E4703 /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D8CEA65B2E20A7C2000E4703 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D8391C362E1CC9C000A44C3F /* Project object */;
 }
