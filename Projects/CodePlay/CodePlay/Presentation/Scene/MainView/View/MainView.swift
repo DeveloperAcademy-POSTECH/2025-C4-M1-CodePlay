@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+internal import Combine
 
 struct MainView: View {
     @State private var isActive: Bool = false // sheet의 상태를 다루는 변수
@@ -26,16 +27,19 @@ struct MainView: View {
     }
 }
 
-///// 'DefaultMainViewModel'의
-//final class MainViewModelWrapper: ObservableObject {
-//    
-//    var viewModel: any MainViewModel
-//    
-//    init(viewModel: any MainViewModel) {
-//        self.viewModel = viewModel
-//    }
-//    
-//}
+/// 'DefaultMainViewModel'의
+final class MainViewModelWrapper: ObservableObject {
+    var objectWillChange: ObservableObjectPublisher
+    
+    @Published var rawText: RawText?
+    
+    var viewModel: any MainViewModel
+    
+    init(viewModel: any MainViewModel) {
+        self.viewModel = viewModel
+    }
+    
+}
 #Preview {
     MainView()
 }

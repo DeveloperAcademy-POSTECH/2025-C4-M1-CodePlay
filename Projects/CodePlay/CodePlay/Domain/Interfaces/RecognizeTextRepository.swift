@@ -1,14 +1,20 @@
 //
-//  DefaultRecognizeTextUseCase.swift
+//  RecognizeTextRepository.swift
 //  CodePlay
 //
-//  Created by 아우신얀 on 7/11/25.
+//  Created by 아우신얀 on 7/12/25.
 //
 
-import Vision
 import UIKit
+import Vision
 
-final class DefaultRecognizeTextUseCase: RecognizeTextUseCase {
+// MARK: TextRecognitionRepository
+protocol RecognizeTextRepository {
+    func execute(with images: [UIImage]) async throws -> RawText
+}
+
+// MARK: DefaultRecognizeTextRepository
+final class DefaultRecognizeTextRepository: RecognizeTextRepository {
     func execute(with images: [UIImage]) async throws -> RawText {
         var fullText = ""
         

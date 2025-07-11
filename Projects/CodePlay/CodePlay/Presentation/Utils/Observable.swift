@@ -16,7 +16,10 @@ final class Observable<Value> {
     private var observers = [Observer<Value>]()
 
     var value: Value {
-        didSet { notifyObservers() } // value의 값이 변경된 직후에 호출
+        didSet {
+            notifyObservers()
+            cleanupObservers()
+        } // value의 값이 변경된 직후에 호출
     }
 
     init(_ value: Value) {
@@ -36,5 +39,9 @@ final class Observable<Value> {
         for observer in observers {
             observer.block(value)
         }
+    }
+    
+    private func cleanupObservers() {
+        observers = observers.filter { $0.observer != nil }
     }
 }

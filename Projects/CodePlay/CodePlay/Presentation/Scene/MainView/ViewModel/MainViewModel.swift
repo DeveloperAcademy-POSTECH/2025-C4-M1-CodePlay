@@ -19,22 +19,18 @@ protocol MainViewModelInput {
 
 // MARK: MainViewModelOutput
 protocol MainViewModelOutput {
-    var rawText: RawText? { get }
+    var rawText: Observable<RawText?> { get }
 }
 
 // MARK: MainViewModel
-protocol MainViewModel: MainViewModelInput, MainViewModelOutput { }
+protocol MainViewModel: MainViewModelInput, MainViewModelOutput, ObservableObject { }
 
 // MARK: DefaultMainViewModel
-final class DefaultMainViewModel: MainViewModel, ObservableObject {
-    
-    @Published var text = ""
-    var rawText: RawText?
+final class DefaultMainViewModel: MainViewModel {
+    var rawText: Observable<RawText?> = Observable(nil)
     private let recognizeTextUseCase: RecognizeTextUseCase
     
-    init(text: String = "", rawText: RawText? = nil, recognizeTextUseCase: RecognizeTextUseCase) {
-        self.text = text
-        self.rawText = rawText
+    init(recognizeTextUseCase: RecognizeTextUseCase) {
         self.recognizeTextUseCase = recognizeTextUseCase
     }
     
@@ -42,13 +38,13 @@ final class DefaultMainViewModel: MainViewModel, ObservableObject {
         Task {
             let result = try await recognizeTextUseCase.execute(with: images)
             await MainActor.run {
-                self.rawText = result
+                self.rawText.value = result
             }
         }
     }
     
     func clearText() {
-        rawText = nil
+        rawText.value = nil
     }
 }
 
