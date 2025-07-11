@@ -27,7 +27,6 @@ struct MainView: View {
     }
 }
 
-/// 'DefaultMainViewModel'의
 final class MainViewModelWrapper: ObservableObject {
     var objectWillChange: ObservableObjectPublisher?
     
@@ -38,8 +37,8 @@ final class MainViewModelWrapper: ObservableObject {
     init(viewModel: any MainViewModel) {
         self.viewModel = viewModel
     }
-    
 }
+
 #Preview {
     MainView()
 }
