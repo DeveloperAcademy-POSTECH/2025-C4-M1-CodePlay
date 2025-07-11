@@ -1,7 +1,7 @@
 name: 🧪 테스트 시나리오
-description: 기능 구현 후 검증을 위해 테스트를 요청할 때 사용합니다.
+description: 테스트 코드, 리펙토링 테스트 코드를 추가합니다.
 title: "🧪 Test: "
-labels: ["QA", "Test"]
+labels: ["Test"]
 body:
   - type: textarea
     id: what-to-test
