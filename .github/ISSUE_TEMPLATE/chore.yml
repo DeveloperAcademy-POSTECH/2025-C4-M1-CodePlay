@@ -1,6 +1,6 @@
 name: 🍀 기타 작업
-description: 분류되지 않는 기타 작업을 관리할 때 사용합니다.
-title: "🍀 ETC: "
+description: Feat 이외에 코드 수정, 내부 파일 수정, 애매한 것들이나 잡일을 합니다.
+title: "🍀 Chore: "
 labels: ["Chore"]
 body:
   - type: textarea
