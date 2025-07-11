@@ -29,7 +29,7 @@ struct MainView: View {
 
 /// 'DefaultMainViewModel'의
 final class MainViewModelWrapper: ObservableObject {
-    var objectWillChange: ObservableObjectPublisher
+    var objectWillChange: ObservableObjectPublisher?
     
     @Published var rawText: RawText?
     

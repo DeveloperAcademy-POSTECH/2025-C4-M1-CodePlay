@@ -10,7 +10,7 @@ import SwiftUI
 final class MainSceneDIContainer {
     // MARK: UseCases
     private func makeRecognizeTextUseCase() -> RecognizeTextUseCase {
-        RecognizeTextUseCase(repository: makeTextRecognitionRepository())
+        DefaultRecognizeTextUseCase(repository: makeTextRecognitionRepository())
     }
     
     // MARK: Repository

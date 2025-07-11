@@ -5,4 +5,8 @@
 //  Created by 아우신얀 on 7/11/25.
 //
 
-import Foundation
+import SwiftUI
+
+struct MainFactoryDependencies {
+    
+}
