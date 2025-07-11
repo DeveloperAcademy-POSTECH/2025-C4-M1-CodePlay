@@ -10,7 +10,6 @@
 		0918E5B02E1DF93B007E2D1E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 0918E5AF2E1DF931007E2D1E /* .swiftlint.yml */; };
 		D8CEA65D2E20A7C2000E4703 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = D8CEA65C2E20A7C2000E4703 /* CombineMoya */; };
 		D8CEA65F2E20A7C2000E4703 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = D8CEA65E2E20A7C2000E4703 /* Moya */; };
-
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -291,8 +290,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = R9WPZ5669L;
@@ -334,8 +331,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
