@@ -45,3 +45,7 @@ struct CustomList: View {
         }
     }
 }
+
+#Preview {
+    CustomList(imageUrl: "ddd", title: "360", artist: "???")
+}
