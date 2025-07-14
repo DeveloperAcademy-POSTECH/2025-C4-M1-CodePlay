@@ -14,37 +14,45 @@ struct ArtistCard: View {
     let subTitle: String
     
     @Environment(\.colorScheme) private var colorScheme
-
+    
     private var fontColor: Color {
         colorScheme == .dark ? .white : .black
     }
     
     var body: some View {
         ZStack {
-            Rectangle()
-                .padding(.horizontal, 24)
-                .foregroundStyle(.clear)
-                .background(Color(red: 0.87, green: 0.87, blue: 0.87).opacity(0.1))
-                .cornerRadius(20)
-                .blur(radius: 100)
-                .frame(maxWidth: .infinity, maxHeight: 420)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Image("ArtistImg")
-                    .frame(maxWidth: 256, maxHeight: 256)
-                
-                Spacer().frame(height: 24)
-                
-                Text(date)
-                    .foregroundStyle(fontColor)
-                
-                Text(title)
-                    .foregroundStyle(fontColor)
+            VStack(alignment: .leading) {
+                Rectangle()
+                  .foregroundColor(.clear)
+                  .frame(width: 296, height: 296)
+                  .background(
+                    Image("ArtistImg")
+                      .resizable()
+                      .aspectRatio(contentMode: .fill)
+                      .frame(width: 296, height: 296)
+                      .clipped()
+                  )
+                  .cornerRadius(16)
+                  .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
 
-                Text(subTitle)
-                    .foregroundStyle(fontColor)
+                Spacer().frame(height: 16)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(date)
+                        .foregroundStyle(fontColor)
+                    
+                    Text(title)
+                        .foregroundStyle(fontColor)
+                    
+                    Text(subTitle)
+                        .foregroundStyle(fontColor)
+                }
+                .padding(.leading, 12)
+                .padding(.bottom, 18)
             }
         }
+        .liquidGlass()
+        .frame(maxWidth: 320, maxHeight: 420)
     }
 }
 
