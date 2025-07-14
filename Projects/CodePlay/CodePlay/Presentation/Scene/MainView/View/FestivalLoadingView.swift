@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct FestivalLoadingView: View {
+    var rawText: RawText
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text("This is Loading 1")
+            .onAppear {
+                print(rawText.text)
+            }
     }
-}
-
-#Preview {
-    FestivalLoadingView()
 }

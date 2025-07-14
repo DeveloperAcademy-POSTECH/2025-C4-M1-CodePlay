@@ -21,12 +21,7 @@ final class MainViewFactory {
     }
 
     func makeScannerView(router: MainRouter) -> some View {
-        ScannerView { result in
-            router.navigate(to: .loading1(result))
-            //            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            //                router.navigate(to: .playlistResult(result))
-            //            }
-        }
+        ScannerViewWrapper(router: router)
     }
 
     func makeFestivalLoadingView(router: MainRouter, rawText: RawText)

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RawText: Identifiable {
+struct RawText: Identifiable, Hashable {
     let id: UUID
     let text: String
     let createdAt: Date

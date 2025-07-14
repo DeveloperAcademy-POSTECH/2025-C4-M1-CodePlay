@@ -25,9 +25,9 @@ final class MainSceneDIContainer {
     }
 
     // MARK: ViewModelWrapper
-    func makeMainViewModelWrapper() -> MainViewModelWrapper {
-        MainViewModelWrapper(viewModel: makeMainViewModel())
-    }
+//    func makeMainViewModelWrapper() -> MainViewModelWrapper {
+//        MainViewModelWrapper(viewModel: makeMainViewModel())
+//    }
 
     // MARK: Router
     func makeMainRouter() -> MainRouter {

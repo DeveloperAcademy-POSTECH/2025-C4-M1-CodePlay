@@ -13,6 +13,8 @@ struct ScannerView: UIViewControllerRepresentable {
     @Environment(\.presentationMode) var presentationMode
     @Binding var recognizedText: String
     
+    var onComplete: ((RawText) -> Void)? = nil
+    
     func makeCoordinator() -> Coordinator {
         return Coordinator(self)
     }
@@ -27,17 +29,24 @@ struct ScannerView: UIViewControllerRepresentable {
     
     class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
         var parent: ScannerView
+        var fullText: String = ""
         
         init(_ parent: ScannerView) {
             self.parent = parent
         }
         
         func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
+            let dispatchGroup = DispatchGroup()
+            
             for pageIndex in 0..<scan.pageCount {
                 let image = scan.imageOfPage(at: pageIndex)
                 recognizeText(in: image)
             }
-            controller.dismiss(animated: true)
+            
+            dispatchGroup.notify(queue: .main) {
+                            controller.dismiss(animated: true)
+                            self.parent.onComplete?(RawText(text: self.fullText))
+            }
         }
         
         func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
@@ -74,5 +83,19 @@ struct ScannerView: UIViewControllerRepresentable {
                 print("\(error).")
             }
         }
+    }
+}
+
+struct ScannerViewWrapper: View {
+    @State private var recognizedText = ""
+    let router: MainRouter
+
+    var body: some View {
+        ScannerView(
+            recognizedText: $recognizedText,
+            onComplete: { result in
+                router.navigate(to: .loading1(result))
+            }
+        )
     }
 }
