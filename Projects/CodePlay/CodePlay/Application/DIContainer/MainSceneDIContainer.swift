@@ -20,9 +20,9 @@ final class MainSceneDIContainer {
     }
 
     // MARK: ViewModel
-    private func makeMainViewModel() -> any MainViewModel {
-        DefaultMainViewModel(recognizeTextUseCase: makeRecognizeTextUseCase())
-    }
+//    private func makeMainViewModel() -> any MainViewModel {
+//        DefaultMainViewModel(recognizeTextUseCase: makeRecognizeTextUseCase())
+//    }
 
     // MARK: ViewModelWrapper
 //    func makeMainViewModelWrapper() -> MainViewModelWrapper {

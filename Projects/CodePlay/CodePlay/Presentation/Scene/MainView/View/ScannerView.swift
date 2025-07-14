@@ -10,7 +10,8 @@ import Vision
 import VisionKit
 
 struct ScannerView: UIViewControllerRepresentable {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.presentationMode)
+    var presentationMode
     @Binding var recognizedText: String
 
     var onComplete: ((RawText) -> Void)? = nil

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 //internal import Combine
 
 struct MainView: View {
@@ -24,7 +25,7 @@ struct MainView: View {
 //struct MainView: View {
 //    @State private var isActive: Bool = false // sheet의 상태를 다루는 변수
 //    @State private var reconizedText = ""
-//    
+//
 //    var body: some View {
 //        VStack {
 //            Button(action: {
@@ -42,11 +43,11 @@ struct MainView: View {
 //
 //final class MainViewModelWrapper: ObservableObject {
 //    var objectWillChange: ObservableObjectPublisher?
-//    
+//
 //    @Published var rawText: RawText?
-//    
+//
 //    var viewModel: any MainViewModel
-//    
+//
 //    init(viewModel: any MainViewModel) {
 //        self.viewModel = viewModel
 //    }

@@ -37,8 +37,6 @@ function_parameter_count:
   error: 6
   ignores_default_parameters: true
 
-trailing_whitespace: warning
-trailing_newline: warning
 
 force_unwrapping:
   severity: error

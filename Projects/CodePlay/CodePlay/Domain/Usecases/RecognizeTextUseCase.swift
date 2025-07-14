@@ -16,11 +16,9 @@ protocol RecognizeTextUseCase {
 // MARK: DefaultRecognizeTextUseCase
 final class DefaultRecognizeTextUseCase: RecognizeTextUseCase {
     private let repository: RecognizeTextRepository
-    
     init(repository: RecognizeTextRepository) {
         self.repository = repository
     }
-    
     func execute(with images: [UIImage]) async throws -> RawText {
         return try await repository.execute(with: images)
     }
