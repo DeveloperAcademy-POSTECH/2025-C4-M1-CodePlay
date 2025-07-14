@@ -4,32 +4,34 @@
 //
 //  Created by 성현 on 7/14/25.
 //
+import SwiftUI
 
-import Foundation
+struct MainNavigator: View {
+    @ObservedObject var router: MainRouter
+    let factory: MainViewFactory
 
-final class MainFlowCoordinatorDIContainer {
-    // Repository
-    private func makeTextRecognitionRepository() -> RecognizeTextRepository {
-        DefaultRecognizeTextRepository()
-    }
-
-    // UseCase
-    private func makeRecognizeTextUseCase() -> RecognizeTextUseCase {
-        DefaultRecognizeTextUseCase(repository: makeTextRecognitionRepository())
-    }
-
-    // ViewModel
-    func makeMainViewModel() -> any MainViewModel {
-        DefaultMainViewModel(recognizeTextUseCase: makeRecognizeTextUseCase())
-    }
-
-    // Router
-    func makeMainRouter() -> MainRouter {
-        MainRouter()
-    }
-
-    // Factory
-    func makeViewFactory() -> MainViewFactory {
-        MainViewFactory(diContainer: self)
+    var body: some View {
+        NavigationStack(path: $router.path) {
+            factory.makeMainView(router: router)
+                .navigationDestination(for: MainRoute.self) { route in
+                    switch route {
+                    case .musicPermission:
+                        MusicPermissionView()
+//                        MusicPermissionView {
+//                            router.replace(with: .main)
+//                        }
+                    case .main:
+                        factory.makeMainView(router: router)
+                    case .scanner:
+                        factory.makeScannerView(router: router)
+                    case .loading1(let rawText):
+                        factory.makeFestivalLoadingView(router: router, rawText: rawText)
+                    case .playlistResult:
+                        PlaylistResultView()
+                    case .loading2:
+                        MusicSendingView()
+                    }
+                }
+        }
     }
 }

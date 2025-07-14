@@ -5,19 +5,25 @@
 //  Created by 아우신얀 on 7/8/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @main
 struct CodePlayApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Item.self
         ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        let modelConfiguration = ModelConfiguration(
+            schema: schema,
+            isStoredInMemoryOnly: false
+        )
 
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            return try ModelContainer(
+                for: schema,
+                configurations: [modelConfiguration]
+            )
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
@@ -25,7 +31,7 @@ struct CodePlayApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainView()
+            AppDIContainer().makeMainCoordinatorView()
         }
         .modelContainer(sharedModelContainer)
     }
