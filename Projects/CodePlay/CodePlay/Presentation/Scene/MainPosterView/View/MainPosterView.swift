@@ -22,19 +22,20 @@ struct MainPosterView: View {
                 }
                 
                 NavigationLink(destination:
-                    ScanPosterView(recognizedText: $recognizedText)
-                        .onChange(of: recognizedText) {
-                            wrapper.scanPosterViewModel.updateRecognizedText(recognizedText)
-                            isNavigateToScanPoster = false
-                        },
+                                ScanPosterView(recognizedText: $recognizedText)
+                    .environmentObject(wrapper),
+//                        .onChange(of: recognizedText) {
+//                            wrapper.viewModel.updateRecognizedText(recognizedText)
+//                            isNavigateToScanPoster = false
+//                        },
                     isActive: $isNavigateToScanPoster
                 ) {
                     EmptyView()
                 }
 
                 NavigationLink(
-                    destination: MakePlaylistView(rawText: wrapper.scannedText),
-                    isActive: $wrapper.shouldNavigateToMakePlaylist
+                    destination: ExportPlaylistView(rawText: wrapper.viewModel.scannedText),
+                    isActive: $wrapper.viewModel.shouldNavigateToMakePlaylist
                 ) {
                     EmptyView()
                 }
@@ -44,30 +45,19 @@ struct MainPosterView: View {
 }
 
 final class FetchFestivalViewModelWrapper: ObservableObject {
-    let viewModel: any PosterViewModel
-    let scanPosterViewModel: ScanPosterViewModel
-
-    @Published var scannedText: RawText?
-    @Published var shouldNavigateToMakePlaylist: Bool = false
+    @Published var festivalInfo: PosterItemModel
+    
+    var viewModel: any PosterViewModel
 
     private var cancellables = Set<AnyCancellable>()
-
-    init(
-        viewModel: some PosterViewModel,
-        scanPosterViewModel: ScanPosterViewModel
-    ) {
+    
+    init(viewModel: some PosterViewModel) {
         self.viewModel = viewModel
-        self.scanPosterViewModel = scanPosterViewModel
-        observeScanResult()
-    }
-
-    private func observeScanResult() {
-        scanPosterViewModel.$scannedText
-            .compactMap { $0 }
-            .sink { [weak self] text in
-                self?.scannedText = text
-                self?.shouldNavigateToMakePlaylist = true
-            }
-            .store(in: &cancellables)
+        self.festivalInfo = .empty
+        // Observable을 통해 festivalInfo 변화를 감지하고 업데이트 함
+        viewModel.festivalData.observe(on: self) { [weak self] items in
+            guard let item = items.first else {return}
+            self?.festivalInfo = item
+        }
     }
 }
