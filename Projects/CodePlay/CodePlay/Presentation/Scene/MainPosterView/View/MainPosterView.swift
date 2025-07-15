@@ -16,6 +16,8 @@ struct MainPosterView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
+                Spacer().frame(height: 60)
+                
                 ArtistCard(imageUrl: wrapper.festivalInfo.imageURL?.absoluteString, date: wrapper.festivalInfo.date, title: wrapper.festivalInfo.title, subTitle: wrapper.festivalInfo.subtitle)
                 Spacer().frame(height: 36)
                 
@@ -35,11 +37,7 @@ struct MainPosterView: View {
                
                 NavigationLink(destination:
                                 ScanPosterView(recognizedText: $recognizedText)
-                    .environmentObject(wrapper),
-//                        .onChange(of: recognizedText) {
-//                            wrapper.viewModel.updateRecognizedText(recognizedText)
-//                            isNavigateToScanPoster = false
-//                        },
+                    .environmentObject(wrapper)
                     isActive: $isNavigateToScanPoster
                 ) {
                     EmptyView()
