@@ -2,7 +2,7 @@
 //  FetchFestivalViewModel.swift
 //  CodePlay
 //
-//  Created by 성현 on 7/15/25.
+//  Created by 아우신얀 on 7/11/25.
 //
 import Foundation
 import UIKit
