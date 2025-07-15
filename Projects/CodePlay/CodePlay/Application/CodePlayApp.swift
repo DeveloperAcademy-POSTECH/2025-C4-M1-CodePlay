@@ -24,8 +24,13 @@ struct CodePlayApp: App {
     }()
 
     var body: some Scene {
+        let appDIContainer = AppDIContainer()
+        
         WindowGroup {
-            MainView()
+            MainView(mainFactory: DefaultMainFactory())
+                .environmentObject(
+                appDIContainer.mainSceneDIContainer().makeFetchFestivalViewModelWrapper()
+            )
         }
         .modelContainer(sharedModelContainer)
     }

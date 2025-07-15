@@ -1,5 +1,5 @@
 //
-//  ScannerView.swift
+//  ScanPosterView.swift
 //  CodePlay
 //
 //  Created by 아우신얀 on 7/11/25.
@@ -9,7 +9,7 @@ import SwiftUI
 import VisionKit
 import Vision
 
-struct ScannerView: UIViewControllerRepresentable {
+struct ScanPosterView: UIViewControllerRepresentable {
     @Environment(\.presentationMode) var presentationMode
     @Binding var recognizedText: String
     
@@ -26,9 +26,9 @@ struct ScannerView: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) { }
     
     class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
-        var parent: ScannerView
+        var parent: ScanPosterView
         
-        init(_ parent: ScannerView) {
+        init(_ parent: ScanPosterView) {
             self.parent = parent
         }
         
