@@ -9,7 +9,7 @@ import SwiftUI
 internal import Combine
 
 struct MainPosterView: View {
-    @EnvironmentObject var wrapper: FetchFestivalViewModelWrapper
+    @EnvironmentObject var wrapper: PosterViewModelWrapper
     @State private var recognizedText: String = ""
     @State private var isNavigateToScanPoster = false
 
@@ -25,7 +25,6 @@ struct MainPosterView: View {
                 
                 Text("인식해 애플뮤직 플레이리스트로 만들어보세요")
                 
-//                Spacer().frame(height: 56)
                 Spacer()
 
                 BottomButton(title: "페스티벌 라인업 인식", action: {
@@ -57,7 +56,8 @@ struct MainPosterView: View {
     }
 }
 
-final class FetchFestivalViewModelWrapper: ObservableObject {
+// MARK: PosterViewModelWrapper
+final class PosterViewModelWrapper: ObservableObject {
     @Published var festivalInfo: PosterItemModel = .mock
     
     var viewModel: any PosterViewModel

@@ -10,7 +10,8 @@ import SwiftUI
 final class MainSceneDIContainer {
     // MARK: Factory
     func checkLicenseFactory() -> any MainFactory {
-        return DefaultMainFactory()
+        let viewModelWrapper = makePosterViewModelWrapper()
+        return DefaultMainFactory(posterViewModelWrapper: viewModelWrapper)
     }
     
     // MARK: UseCases
@@ -77,8 +78,8 @@ final class MainSceneDIContainer {
     }
     
     // MARK: ViewModelWrapper
-    func makeFetchFestivalViewModelWrapper() -> FetchFestivalViewModelWrapper {
-        return FetchFestivalViewModelWrapper(
+    func makePosterViewModelWrapper() -> PosterViewModelWrapper {
+        return PosterViewModelWrapper(
             viewModel: makePosterViewModel()
         )
     }

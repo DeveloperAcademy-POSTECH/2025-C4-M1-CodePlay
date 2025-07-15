@@ -7,20 +7,24 @@
 
 import SwiftUI
 
-struct MainFactoryDependencies {
+struct MainFactoryDependency: RootDependency {
     let mainFactory: any MainFactory
 }
 
 protocol MainFactory {
     associatedtype SomeView: View
-    func licenseCheckView() -> SomeView
+    func mainPosterView() -> SomeView
 }
 
 final class DefaultMainFactory: MainFactory {
+    private let posterViewModelWrapper: PosterViewModelWrapper
     
-    init () {}
-    
-    public func licenseCheckView() -> some View {
-        return AppleMusicConnectView()
+    init(posterViewModelWrapper: PosterViewModelWrapper) {
+        self.posterViewModelWrapper = posterViewModelWrapper
+    }
+
+    func mainPosterView() -> some View {
+        return MainPosterView()
+            .environmentObject(posterViewModelWrapper)
     }
 }
