@@ -1,5 +1,5 @@
 //
-//  RecognizeTextUseCase.swift
+//  File.swift
 //  CodePlay
 //
 //  Created by 아우신얀 on 7/11/25.
@@ -8,16 +8,14 @@
 import Foundation
 import UIKit
 
-/// VisionKit을 통해 텍스트를 추출하는 Usecase
-protocol RecognizeTextUseCase {
+protocol ScanPosterUseCase {
     func execute(with images: [UIImage]) async throws -> RawText
 }
 
-// MARK: DefaultRecognizeTextUseCase
-final class DefaultRecognizeTextUseCase: RecognizeTextUseCase {
-    private let repository: RecognizeTextRepository
+class DefaultScanPosterUseCase: ScanPosterUseCase {
+    private let repository: ScanPosterRepository
     
-    init(repository: RecognizeTextRepository) {
+    init(repository: ScanPosterRepository) {
         self.repository = repository
     }
     

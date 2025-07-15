@@ -1,5 +1,5 @@
 //
-//  RecognizeTextRepository.swift
+//  CheckLicenseRepository.swift
 //  CodePlay
 //
 //  Created by 아우신얀 on 7/12/25.
@@ -8,13 +8,11 @@
 import UIKit
 import Vision
 
-// MARK: TextRecognitionRepository
-protocol RecognizeTextRepository {
+protocol ScanPosterRepository {
     func execute(with images: [UIImage]) async throws -> RawText
 }
 
-// MARK: DefaultRecognizeTextRepository
-final class DefaultRecognizeTextRepository: RecognizeTextRepository {
+final class DefaultScanPosterRepository: ScanPosterRepository {
     func execute(with images: [UIImage]) async throws -> RawText {
         var fullText = ""
         
