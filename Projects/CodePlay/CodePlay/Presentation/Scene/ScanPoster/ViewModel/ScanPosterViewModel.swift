@@ -21,4 +21,3 @@ final class ScanPosterViewModel: ObservableObject {
         self.scannedText = RawText(text: text)
     }
 }
-

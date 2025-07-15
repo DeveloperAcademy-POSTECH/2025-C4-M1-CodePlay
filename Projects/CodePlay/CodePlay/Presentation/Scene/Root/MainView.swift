@@ -20,4 +20,3 @@ struct MainView<Factory: MainFactory>: View {
         }
     }
 }
-

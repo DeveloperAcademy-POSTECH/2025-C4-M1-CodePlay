@@ -27,15 +27,15 @@ protocol FetchFestivalViewModel: FetchFestivalViewModelInput, FetchFestivalViewM
 // MARK: DefaultMainViewModel
 final class DefaultFetchFestivalViewModel: FetchFestivalViewModel {
     var rawText: Observable<RawText?> = Observable(nil)
-    private let ScanPosterUseCase: ScanPosterUseCase
+    private let scanPosterUseCase: ScanPosterUseCase
     
-    init(ScanPosterUseCase: ScanPosterUseCase) {
-        self.ScanPosterUseCase = ScanPosterUseCase
+    init(scanPosterUseCase: ScanPosterUseCase) {
+        self.scanPosterUseCase = scanPosterUseCase
     }
     
     func recongizeFestivalLineup(from images: [UIImage]) {
         Task {
-            let result = try await ScanPosterUseCase.execute(with: images)
+            let result = try await scanPosterUseCase.execute(with: images)
             await MainActor.run {
                 self.rawText.value = result
             }
@@ -46,4 +46,3 @@ final class DefaultFetchFestivalViewModel: FetchFestivalViewModel {
         rawText.value = nil
     }
 }
-

@@ -73,13 +73,13 @@ final class MainSceneDIContainer {
     
     // MARK: ViewModel
     private func fetchFestivalViewModel() -> any FetchFestivalViewModel {
-        DefaultFetchFestivalViewModel(ScanPosterUseCase: makeScanPosterUseCase())
+        DefaultFetchFestivalViewModel(scanPosterUseCase: makeScanPosterUseCase())
     }
     
     // MARK: ViewModelWrapper
     func makeFetchFestivalViewModelWrapper() -> FetchFestivalViewModelWrapper {
         let useCase = makeScanPosterUseCase()
-        let fetchVM = DefaultFetchFestivalViewModel(ScanPosterUseCase: useCase)
+        let fetchVM = DefaultFetchFestivalViewModel(scanPosterUseCase: useCase)
         let scanVM = ScanPosterViewModel(scanPosterUseCase: useCase)
 
         return FetchFestivalViewModelWrapper(

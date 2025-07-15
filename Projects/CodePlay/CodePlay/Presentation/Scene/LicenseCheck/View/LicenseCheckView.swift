@@ -11,7 +11,7 @@ struct LicenseCheckView: View {
     @State var isNavigateToFetchFestival = false
     
     var body: some View {
-        NavigationStack{
+        NavigationStack {
             Button(action: {
                 isNavigateToFetchFestival = true
                 print("버튼 눌림")

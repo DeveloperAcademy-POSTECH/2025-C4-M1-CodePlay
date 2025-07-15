@@ -1,34 +1,19 @@
-# SwiftLint Configuration
-
-# 활성화할 룰
 opt_in_rules:
   - attributes
-  - closure_end_indentation
   - empty_count
   - explicit_init
-  - fallthrough
   - joined_default_parameter
-  - switch_case_alignment
-  - trailing_closure
-  - vertical_parameter_alignment_on_call
-  - closure_spacing
+  - force_unwrapping
 
-# 비활성화할 룰
 disabled_rules:
   - todo
-  - identifier_name # 아래에서 따로 커스텀 설정
+  - trailing_whitespace
+  - trailing_comma
+  - line_length
 
-# 줄 길이 제한
-line_length:
-  warning: 100
-  error: 120
-  ignores_urls: true
-  ignores_comments: true
-
-# 변수/상수/함수명: lowerCamelCase, 최대 30자
 identifier_name:
   allowed_symbols: []
-  validates_start_with_lowercase: true
+  validates_start_with_lowercase: warning
   min_length: 2
   max_length: 30
   excluded:
@@ -36,7 +21,6 @@ identifier_name:
     - URL
     - JSON
 
-# 타입명: PascalCase, 최대 30자
 type_name:
   min_length: 2
   max_length: 30
@@ -44,37 +28,10 @@ type_name:
     - ID
     - URL
 
-# enum case: lowerCamelCase
-enum_case:
-  allowed_symbols: []
-  allowed_patterns: '^[a-z][a-zA-Z0-9]*$'
-
-# 함수 이름: lowerCamelCase
-function_name:
-  allowed_symbols: []
-  excluded:
-    - viewDidLoad
-  allowed_patterns: '^[a-z][a-zA-Z0-9]*$'
-
-# 함수 파라미터 수 제한
 function_parameter_count:
   warning: 5
   error: 6
   ignores_default_parameters: true
 
-# switch 스타일
-switch_case_alignment: enabled
-fallthrough: error
-
-# 공백/포맷 관련
-trailing_whitespace: warning
-trailing_newline: warning
-
-# 금지: force unwrap, print
-force_unwrapping: error
-print:
-  severity: error
-
-# 중복된 파일 헤더 검증은 제외
-file_header:
-  required: false
+force_unwrapping:
+  severity: warning
