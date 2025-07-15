@@ -20,11 +20,11 @@ struct FetchFestivalView: View {
                     recognizedText = ""
                     isNavigateToScanPoster = true
                 }
-
+                
                 NavigationLink(destination:
                     ScanPosterView(recognizedText: $recognizedText)
-                        .onChange(of: recognizedText) { newValue in
-                            wrapper.scanPosterViewModel.updateRecognizedText(newValue)
+                        .onChange(of: recognizedText) {
+                            wrapper.scanPosterViewModel.updateRecognizedText(recognizedText)
                             isNavigateToScanPoster = false
                         },
                     isActive: $isNavigateToScanPoster

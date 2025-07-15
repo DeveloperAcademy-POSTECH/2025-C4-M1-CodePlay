@@ -9,7 +9,7 @@ import SwiftUI
 
 final class MainSceneDIContainer {
     // MARK: Factory
-    func checkLicenseFactory() -> MainFactory {
+    func checkLicenseFactory() -> any MainFactory {
         return DefaultMainFactory()
     }
     
