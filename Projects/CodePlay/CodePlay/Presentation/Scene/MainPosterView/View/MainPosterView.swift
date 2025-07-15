@@ -46,11 +46,6 @@ struct MainPosterView: View {
                 ScanPosterView(recognizedText: $recognizedText)
                     .environmentObject(wrapper)
             }
-            .onAppear {
-                print("✅ MainPosterView onAppear")
-                print("recognizedText: \(recognizedText)")
-                print("viewModel.scannedText: \(wrapper.scannedText?.text ?? "없음")")
-            }
         }
     }
 }
