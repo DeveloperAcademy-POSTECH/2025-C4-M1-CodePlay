@@ -21,6 +21,6 @@ final class DefaultMainFactory: MainFactory {
     init () {}
     
     public func licenseCheckView() -> some View {
-        return LicenseCheckView()
+        return AppleMusicConnectView()
     }
 }

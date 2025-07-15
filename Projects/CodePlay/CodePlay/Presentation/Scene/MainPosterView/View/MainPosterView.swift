@@ -1,5 +1,5 @@
 //
-//  FetchFestivalView.swift
+//  MainPosterView.swift
 //  CodePlay
 //
 //  Created by 성현 on 7/15/25.
@@ -8,7 +8,7 @@
 import SwiftUI
 internal import Combine
 
-struct FetchFestivalView: View {
+struct MainPosterView: View {
     @EnvironmentObject var wrapper: FetchFestivalViewModelWrapper
     @State private var recognizedText: String = ""
     @State private var isNavigateToScanPoster = false
@@ -44,7 +44,7 @@ struct FetchFestivalView: View {
 }
 
 final class FetchFestivalViewModelWrapper: ObservableObject {
-    let viewModel: any FetchFestivalViewModel
+    let viewModel: any PosterViewModel
     let scanPosterViewModel: ScanPosterViewModel
 
     @Published var scannedText: RawText?
@@ -53,7 +53,7 @@ final class FetchFestivalViewModelWrapper: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     init(
-        viewModel: some FetchFestivalViewModel,
+        viewModel: some PosterViewModel,
         scanPosterViewModel: ScanPosterViewModel
     ) {
         self.viewModel = viewModel
