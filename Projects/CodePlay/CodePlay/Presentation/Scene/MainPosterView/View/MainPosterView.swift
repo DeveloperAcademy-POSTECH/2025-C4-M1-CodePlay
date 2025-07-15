@@ -15,12 +15,25 @@ struct MainPosterView: View {
 
     var body: some View {
         NavigationStack {
-            VStack {
-                Button("포스터 스캔 시작") {
+            VStack(spacing: 0) {
+                ArtistCard(imageUrl: wrapper.festivalInfo.imageURL?.absoluteString, date: wrapper.festivalInfo.date, title: wrapper.festivalInfo.title, subTitle: wrapper.festivalInfo.subtitle)
+                Spacer().frame(height: 36)
+                
+                Text("페스티벌 포스터로 미리 예습해보세요!")
+                
+                Spacer().frame(height: 12)
+                
+                Text("인식해 애플뮤직 플레이리스트로 만들어보세요")
+                
+//                Spacer().frame(height: 56)
+                Spacer()
+
+                BottomButton(title: "페스티벌 라인업 인식", action: {
                     recognizedText = ""
                     isNavigateToScanPoster = true
-                }
-                
+                })
+                .padding(.bottom, 36)
+               
                 NavigationLink(destination:
                                 ScanPosterView(recognizedText: $recognizedText)
                     .environmentObject(wrapper),
@@ -45,7 +58,7 @@ struct MainPosterView: View {
 }
 
 final class FetchFestivalViewModelWrapper: ObservableObject {
-    @Published var festivalInfo: PosterItemModel
+    @Published var festivalInfo: PosterItemModel = .mock
     
     var viewModel: any PosterViewModel
 
@@ -53,7 +66,6 @@ final class FetchFestivalViewModelWrapper: ObservableObject {
     
     init(viewModel: some PosterViewModel) {
         self.viewModel = viewModel
-        self.festivalInfo = .empty
         // Observable을 통해 festivalInfo 변화를 감지하고 업데이트 함
         viewModel.festivalData.observe(on: self) { [weak self] items in
             guard let item = items.first else {return}
