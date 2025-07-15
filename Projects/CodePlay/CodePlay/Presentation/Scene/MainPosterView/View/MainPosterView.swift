@@ -37,7 +37,7 @@ struct MainPosterView: View {
                
                 NavigationLink(destination:
                                 ScanPosterView(recognizedText: $recognizedText)
-                    .environmentObject(wrapper)
+                    .environmentObject(wrapper),
                     isActive: $isNavigateToScanPoster
                 ) {
                     EmptyView()
