@@ -72,7 +72,7 @@ final class MainSceneDIContainer {
     }
     
     // MARK: ViewModel
-    private func fetchFestivalViewModel() -> any PosterViewModel {
+    private func makePosterViewModel() -> any PosterViewModel {
         DefaultPosterViewModel(scanPosterUseCase: makeScanPosterUseCase())
     }
     
