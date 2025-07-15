@@ -11,4 +11,9 @@ final class AppDIContainer {
     func mainSceneDIContainer() -> MainSceneDIContainer {
         return MainSceneDIContainer()
     }
+    
+    func appleMusicConnectViewModelWrapper() -> AppleMusicConnectViewModelWrapper {
+            let viewModel = DefaultAppleMusicConnectViewModel()
+            return AppleMusicConnectViewModelWrapper(viewModel: viewModel)
+    }
 }

@@ -10,12 +10,11 @@ import SwiftData
 
 @main
 struct CodePlayApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+    private let diContainer = MainSceneDIContainer()
 
+    var sharedModelContainer: ModelContainer = {
+        let schema = Schema([Item.self])
+        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
@@ -24,16 +23,13 @@ struct CodePlayApp: App {
     }()
 
     var body: some Scene {
-        let appDIContainer = AppDIContainer()
-        
         WindowGroup {
-//            MainView(mainFactory: DefaultMainFactory(posterViewModelWrapper: <#PosterViewModelWrapper#>))
-//                .environmentObject(
-//                appDIContainer.mainSceneDIContainer().makeFetchFestivalViewModelWrapper()
-//            )
-            AppComponent()
-                .makePosterRootView()
+            MainView(
+                mainFactory: diContainer.checkLicenseFactory(),
+                wrapper: diContainer.appleMusicConnectViewModelWrapper()
+            )
         }
         .modelContainer(sharedModelContainer)
     }
 }
+

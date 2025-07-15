@@ -77,10 +77,18 @@ final class MainSceneDIContainer {
         DefaultPosterViewModel(scanPosterUseCase: makeScanPosterUseCase())
     }
     
+    private func appleMusicConnectViewModel() -> any AppleMusicConnectViewModel {
+        DefaultAppleMusicConnectViewModel()
+    }
+    
     // MARK: ViewModelWrapper
     func makePosterViewModelWrapper() -> PosterViewModelWrapper {
         return PosterViewModelWrapper(
             viewModel: makePosterViewModel()
         )
+    }
+    
+    func appleMusicConnectViewModelWrapper() -> AppleMusicConnectViewModelWrapper {
+        AppleMusicConnectViewModelWrapper(viewModel: appleMusicConnectViewModel())
     }
 }
