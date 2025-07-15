@@ -18,6 +18,6 @@ final class AppFlowCoordinator {
 
     func mainFlowStart() -> any MainFactory {
         let mainSceneDIContainer = appDIContainer.mainSceneDIContainer()
-        return mainSceneDIContainer.checkLicenseFactory()
+        return mainSceneDIContainer.makeMainFactory()
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 final class MainSceneDIContainer {
     // MARK: Factory
-    func checkLicenseFactory() -> any MainFactory {
+    func makeMainFactory() -> any MainFactory {
         let viewModelWrapper = makePosterViewModelWrapper()
         return DefaultMainFactory(posterViewModelWrapper: viewModelWrapper)
     }
