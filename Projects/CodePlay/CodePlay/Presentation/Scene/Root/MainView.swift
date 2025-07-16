@@ -7,16 +7,17 @@
 
 import SwiftUI
 
-struct MainView<Factory: MainFactory>: View {
-    private let mainFactory: Factory
-
-    init(mainFactory: Factory) {
+struct MainView: View {
+    private let mainFactory: any MainFactory
+    
+    init(mainFactory: any MainFactory) {
         self.mainFactory = mainFactory
     }
 
     var body: some View {
         Group {
-            mainFactory.licenseCheckView()
+            mainFactory.mainPosterView()
+                .wrapAnyView()
         }
     }
 }

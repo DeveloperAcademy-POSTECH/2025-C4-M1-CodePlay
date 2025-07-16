@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 protocol ScanPosterUseCase {
-    func execute(with images: [UIImage]) async throws -> RawText
+    func execute(with images: [UIImage]) async throws -> FestivalInfo
 }
 
 class DefaultScanPosterUseCase: ScanPosterUseCase {
@@ -19,7 +19,7 @@ class DefaultScanPosterUseCase: ScanPosterUseCase {
         self.repository = repository
     }
     
-    func execute(with images: [UIImage]) async throws -> RawText {
+    func execute(with images: [UIImage]) async throws -> FestivalInfo {
         return try await repository.execute(with: images)
     }
 }

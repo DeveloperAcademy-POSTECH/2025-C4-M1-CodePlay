@@ -27,10 +27,8 @@ struct CodePlayApp: App {
         let appDIContainer = AppDIContainer()
         
         WindowGroup {
-            MainView(mainFactory: DefaultMainFactory())
-                .environmentObject(
-                appDIContainer.mainSceneDIContainer().makeFetchFestivalViewModelWrapper()
-            )
+            AppComponent()
+                .makePosterRootView()
         }
         .modelContainer(sharedModelContainer)
     }
