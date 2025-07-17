@@ -11,6 +11,7 @@ import VisionKit
 
 struct ScanPosterView: UIViewControllerRepresentable {
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var wrapper: PosterViewModelWrapper
     @Binding var recognizedText: String
 
     func makeCoordinator() -> Coordinator {
@@ -74,9 +75,10 @@ struct ScanPosterView: UIViewControllerRepresentable {
                 }
 
                 DispatchQueue.main.async {
-                    self.parent.recognizedText += recognizedStrings.joined(
-                        separator: "\n"
-                    )
+                    let fullText = recognizedStrings.joined(separator: "\n")
+                    self.parent.recognizedText += fullText
+                    self.parent.wrapper.viewModel.scannedText.value = RawText(text: fullText)
+                    self.parent.wrapper.viewModel.shouldNavigateToMakePlaylist.value = true
                 }
             }
 
