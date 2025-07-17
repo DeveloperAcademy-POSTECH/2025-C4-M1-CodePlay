@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftData
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -28,12 +29,44 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             }
         }
     }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        let userInfo = notification.request.content.userInfo
+        print("🔔 실시간 푸시 수신 (포그라운드) - userInfo:", userInfo)
+                
+        completionHandler([.banner, .sound, .badge])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        print("🔔 푸시 탭됨 - userInfo:", userInfo)
+                
+        completionHandler()
+    }
+    
+    func saveDeviceInfo(userId: UUID, token: String, context: ModelContext) {
+        let info = DeviceInfo(userId: userId, deviceToken: token)
+        context.insert(info)
+        
+        do {
+            try context.save()
+        } catch {
+            print("디바이스 토큰 저장 안됨: \(error)")
+        }
+    }
 }
 
 extension AppDelegate {
     func application(_: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let token = deviceToken.map { String(format: "%02x", $0) }.joined()
         print("Apns로 받은 디바이스 토큰: \(token)")
+        
+        // 토큰 저장
+        UserDefaults.standard.set(token, forKey: "deviceToken")
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {

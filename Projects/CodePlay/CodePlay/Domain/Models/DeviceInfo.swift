@@ -6,8 +6,15 @@
 //
 
 import Foundation
+import SwiftData
 
-struct DeviceInfo {
-    let userId: UUID
-    let deviceToken: String
+@Model
+class DeviceInfo {
+    @Attribute(.unique) var userId: UUID
+    var deviceToken: String
+    
+    init(userId: UUID, deviceToken: String) {
+        self.userId = userId
+        self.deviceToken = deviceToken
+    }
 }
