@@ -5,14 +5,15 @@
 //  Created by 성현 on 7/15/25.
 //
 
-import SwiftUI
-import MusicKit
 internal import Combine
+import MusicKit
+import SwiftUI
 
 struct AppleMusicConnectView: View {
     @ObservedObject var viewModelWrapper: AppleMusicConnectViewModelWrapper
     @State private var showingSettings = false
-    
+    @State var shouldRequestMusicAuth: Bool = false
+
     var body: some View {
         VStack(spacing: 0) {
             // 상단 여백 (Safe Area 고려하여 조정)
@@ -59,7 +60,7 @@ struct AppleMusicConnectView: View {
                         .font(Font.custom("KoddiUD OnGothic", size: 18))
                         .foregroundColor(.red)
                         .multilineTextAlignment(.center)
-                    
+
                     Button(action: {
                         viewModelWrapper.viewModel.openSettings()
                     }) {
@@ -74,21 +75,14 @@ struct AppleMusicConnectView: View {
                 }
                 .padding(.horizontal, 16)
             } else {
-                // 권한 요청 버튼
-                Button(action: {
-                    viewModelWrapper.viewModel.requestMusicAuthorization()
-                }) {
-                    HStack {
-                        Text("Apple Music에 연결")
-                            .font(Font.custom("KoddiUD OnGothic", size: 20))
-                            .foregroundColor(.white)
+                BottomButton(
+                    title: "Apple Music에 연결",
+                    action: {
+                        viewModelWrapper.viewModel
+                            .shouldRequestMusicAuthorization.value = true
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 18)
-                    .background(Color(red: 0.37, green: 0.37, blue: 0.37))
-                    .cornerRadius(999)
-                }
-                .padding(.horizontal, 16) // 좌우 여백
+                )
+                .padding(.horizontal, 16)
             }
 
             // 에러 메시지 표시
@@ -106,7 +100,7 @@ struct AppleMusicConnectView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.white)
-        .ignoresSafeArea(.all, edges: .bottom) // 하단 Safe Area 무시
+        .ignoresSafeArea(.all, edges: .bottom)  // 하단 Safe Area 무시
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("설정") {
@@ -115,9 +109,6 @@ struct AppleMusicConnectView: View {
                 .font(Font.custom("KoddiUD OnGothic", size: 16))
                 .foregroundColor(.blue)
             }
-        }
-        .sheet(isPresented: $showingSettings) {
-            MusicSettingsView(viewModelWrapper: viewModelWrapper)
         }
     }
 }
@@ -128,20 +119,23 @@ final class AppleMusicConnectViewModelWrapper: ObservableObject {
     @Published var subscriptionStatus: MusicSubscriptionModel?
     @Published var errorMessage: String?
     @Published var canPlayMusic: Bool = false
-    
+
+    @Published var shouldRequestMusicAuth: Bool = false
+
     var viewModel: any AppleMusicConnectViewModel
-    
+
     init(viewModel: any AppleMusicConnectViewModel) {
         self.viewModel = viewModel
-        
+
         // Observable 바인딩
         viewModel.authorizationStatus.observe(on: self) { [weak self] status in
             DispatchQueue.main.async {
                 self?.authorizationStatus = status
             }
         }
-        
-        viewModel.subscriptionStatus.observe(on: self) { [weak self] subscription in
+
+        viewModel.subscriptionStatus.observe(on: self) {
+            [weak self] subscription in
             DispatchQueue.main.async {
                 self?.subscriptionStatus = subscription
             }
@@ -157,6 +151,13 @@ final class AppleMusicConnectViewModelWrapper: ObservableObject {
             DispatchQueue.main.async {
                 self?.canPlayMusic = canPlay
             }
+        }
+
+        viewModel.shouldRequestMusicAuthorization.observe(on: self) {
+            [weak self] value in
+            guard value else { return }
+            self?.viewModel.shouldRequestMusicAuthorization.value = false
+            self?.viewModel.requestMusicAuthorization()
         }
     }
 }

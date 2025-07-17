@@ -13,7 +13,7 @@ struct FestivalInfo: Identifiable {
     let date: String
     let title: String
     let subtitle: String
-    
+
     init(id: UUID, date: String, title: String, subtitle: String) {
         self.id = id
         self.date = date

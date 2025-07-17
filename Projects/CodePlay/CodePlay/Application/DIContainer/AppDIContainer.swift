@@ -12,8 +12,13 @@ final class AppDIContainer {
         return MainSceneDIContainer()
     }
     
+    private func makeCheckLicenseUseCase() -> CheckLicenseUseCase {
+        let repository = DefaultCheckLicenseRepository()
+        return DefaultCheckLicenseUseCase(repository: repository)
+    }
+    
     func appleMusicConnectViewModelWrapper() -> AppleMusicConnectViewModelWrapper {
-            let viewModel = DefaultAppleMusicConnectViewModel()
-            return AppleMusicConnectViewModelWrapper(viewModel: viewModel)
+        let viewModel = DefaultAppleMusicConnectViewModel(checkLicenseUseCase: makeCheckLicenseUseCase())
+        return AppleMusicConnectViewModelWrapper(viewModel: viewModel)
     }
 }
