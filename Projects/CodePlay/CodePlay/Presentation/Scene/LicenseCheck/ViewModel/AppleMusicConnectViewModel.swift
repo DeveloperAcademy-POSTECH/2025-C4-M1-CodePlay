@@ -24,6 +24,7 @@ protocol AppleMusicConnectViewModelOutput {
     var errorMessage: Observable<String?> { get }
     var canPlayMusic: Observable<Bool> { get }
     var shouldRequestMusicAuthorization: Observable<Bool> { get }
+    var shouldOpenSettings: Observable<Bool> { get }
 }
 
 // MARK: - Unified
@@ -42,6 +43,7 @@ final class DefaultAppleMusicConnectViewModel: AppleMusicConnectViewModel {
     var errorMessage: Observable<String?> = Observable(nil)
     var canPlayMusic: Observable<Bool> = Observable(false)
     var shouldRequestMusicAuthorization: Observable<Bool> = Observable(false)
+    var shouldOpenSettings: Observable<Bool> = Observable(false)
 
     private let checkLicenseUseCase: CheckLicenseUseCase
 
@@ -125,10 +127,15 @@ final class DefaultAppleMusicConnectViewModel: AppleMusicConnectViewModel {
 
     private func observeTriggers() {
         shouldRequestMusicAuthorization.observe(on: self) { [weak self] value in
-            print("🟡 observeTriggers fired with value:", value)  // ← 로그 찍기
             guard value else { return }
             self?.shouldRequestMusicAuthorization.value = false
             self?.requestMusicAuthorization()
+        }
+        
+        shouldOpenSettings.observe(on: self) { [weak self] value in
+            guard value else { return }
+            self?.shouldOpenSettings.value = false
+            self?.openSettings()
         }
     }
 }

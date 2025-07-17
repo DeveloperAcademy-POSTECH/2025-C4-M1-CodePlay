@@ -12,7 +12,6 @@ import SwiftUI
 struct AppleMusicConnectView: View {
     @ObservedObject var viewModelWrapper: AppleMusicConnectViewModelWrapper
     @State private var showingSettings = false
-    @State var shouldRequestMusicAuth: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -60,20 +59,12 @@ struct AppleMusicConnectView: View {
                         .font(Font.custom("KoddiUD OnGothic", size: 18))
                         .foregroundColor(.red)
                         .multilineTextAlignment(.center)
-
-                    Button(action: {
-                        viewModelWrapper.viewModel.openSettings()
-                    }) {
-                        Text("설정으로 이동")
-                            .font(Font.custom("KoddiUD OnGothic", size: 20))
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 18)
-                            .background(Color.blue)
-                            .cornerRadius(999)
+                    
+                    BottomButton(title: "설정으로 이동") {
+                        viewModelWrapper.viewModel.shouldOpenSettings.value = true
                     }
+                    .padding(.horizontal, 16)
                 }
-                .padding(.horizontal, 16)
             } else {
                 BottomButton(
                     title: "Apple Music에 연결",
@@ -101,15 +92,6 @@ struct AppleMusicConnectView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.white)
         .ignoresSafeArea(.all, edges: .bottom)  // 하단 Safe Area 무시
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("설정") {
-                    showingSettings = true
-                }
-                .font(Font.custom("KoddiUD OnGothic", size: 16))
-                .foregroundColor(.blue)
-            }
-        }
     }
 }
 
@@ -120,22 +102,18 @@ final class AppleMusicConnectViewModelWrapper: ObservableObject {
     @Published var errorMessage: String?
     @Published var canPlayMusic: Bool = false
 
-    @Published var shouldRequestMusicAuth: Bool = false
-
     var viewModel: any AppleMusicConnectViewModel
 
     init(viewModel: any AppleMusicConnectViewModel) {
         self.viewModel = viewModel
 
-        // Observable 바인딩
         viewModel.authorizationStatus.observe(on: self) { [weak self] status in
             DispatchQueue.main.async {
                 self?.authorizationStatus = status
             }
         }
 
-        viewModel.subscriptionStatus.observe(on: self) {
-            [weak self] subscription in
+        viewModel.subscriptionStatus.observe(on: self) { [weak self] subscription in
             DispatchQueue.main.async {
                 self?.subscriptionStatus = subscription
             }
@@ -151,13 +129,6 @@ final class AppleMusicConnectViewModelWrapper: ObservableObject {
             DispatchQueue.main.async {
                 self?.canPlayMusic = canPlay
             }
-        }
-
-        viewModel.shouldRequestMusicAuthorization.observe(on: self) {
-            [weak self] value in
-            guard value else { return }
-            self?.viewModel.shouldRequestMusicAuthorization.value = false
-            self?.viewModel.requestMusicAuthorization()
         }
     }
 }
