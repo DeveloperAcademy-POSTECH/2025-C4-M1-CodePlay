@@ -24,8 +24,6 @@ struct CodePlayApp: App {
     }()
 
     var body: some Scene {
-        let appDIContainer = AppDIContainer()
-        
         WindowGroup {
             AppComponent()
                 .makePosterRootView()

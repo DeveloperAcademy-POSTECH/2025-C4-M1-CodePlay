@@ -16,7 +16,7 @@ final class MainSceneDIContainer {
     
     // MARK: UseCases
     private func makeCheckLicenseUseCase() -> CheckLicenseUseCase {
-        return DefaultCheckLicenseUseCase()
+        return DefaultCheckLicenseUseCase(repository: makeCheckLicenseRepository())
     }
     
     private func makeFetchFestivalUseCase() -> FetchFestivalUseCase {
@@ -77,10 +77,18 @@ final class MainSceneDIContainer {
         DefaultPosterViewModel(scanPosterUseCase: makeScanPosterUseCase())
     }
     
+    private func appleMusicConnectViewModel() -> any AppleMusicConnectViewModel {
+        DefaultAppleMusicConnectViewModel(checkLicenseUseCase: makeCheckLicenseUseCase())
+    }
+    
     // MARK: ViewModelWrapper
     func makePosterViewModelWrapper() -> PosterViewModelWrapper {
         return PosterViewModelWrapper(
             viewModel: makePosterViewModel()
         )
+    }
+    
+    func appleMusicConnectViewModelWrapper() -> AppleMusicConnectViewModelWrapper {
+        AppleMusicConnectViewModelWrapper(viewModel: appleMusicConnectViewModel())
     }
 }
