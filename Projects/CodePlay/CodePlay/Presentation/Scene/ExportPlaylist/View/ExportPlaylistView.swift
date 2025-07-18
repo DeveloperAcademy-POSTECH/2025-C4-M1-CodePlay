@@ -32,7 +32,7 @@ struct ExportPlaylistView: View {
             Spacer()
 
             NavigationLink(
-                destination: MadePlaylistView(), // 생성 완료 후 이동
+                destination: MadePlaylistView(wrapper: wrapper), // 생성 완료 후 이동
                 isActive: $wrapper.navigateToMadePlaylist
             ) {
                 EmptyView()
@@ -55,9 +55,17 @@ struct ExportPlaylistView: View {
 }
 
 struct MadePlaylistView: View {
+    @ObservedObject var wrapper: ExportPlaylistViewModelWrapper
+
     var body: some View {
-        Text("🎉 플레이리스트가 성공적으로 생성되었습니다!")
-            .padding()
+        VStack(spacing: 32) {
+            BottomButton(title: "Apple Music으로 전송") {
+                wrapper.exportToAppleMusic()
+            }
+            .padding(.horizontal, 16)
+
+            Spacer()
+        }
     }
 }
 
@@ -99,6 +107,12 @@ final class ExportPlaylistViewModelWrapper: ObservableObject {
                 }
                 self.navigateToMadePlaylist = true
             }
+        }
+    }
+    
+    func exportToAppleMusic() {
+        Task {
+            await viewModel.exportLatestPlaylistToAppleMusic()
         }
     }
 }

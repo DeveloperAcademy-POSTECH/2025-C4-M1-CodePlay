@@ -63,7 +63,7 @@ final class MainSceneDIContainer {
     
     func makeExportPlaylistViewModelWrapper(modelContext: ModelContext) -> ExportPlaylistViewModelWrapper {
         let useCase = makeExportPlaylistUseCase(modelContext: modelContext)
-        let viewModel = DefaultExportPlaylistViewModel(useCase: useCase)
+        let viewModel = DefaultExportPlaylistViewModel(useCase: useCase, modelContext: modelContext)
         return ExportPlaylistViewModelWrapper(viewModel: viewModel)
     }
 

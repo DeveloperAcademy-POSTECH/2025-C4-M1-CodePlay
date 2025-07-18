@@ -26,7 +26,10 @@ final class AppDIContainer {
     func makeExportPlaylistViewModelWrapper(modelContext: ModelContext) -> ExportPlaylistViewModelWrapper {
         let repository = DefaultExportPlaylistRepository(modelContext: modelContext)
         let useCase = DefaultExportPlaylistUseCase(repository: repository)
-        let viewModel = DefaultExportPlaylistViewModel(useCase: useCase)
+        let viewModel = DefaultExportPlaylistViewModel(
+            useCase: useCase,
+            modelContext: modelContext
+        )
         return ExportPlaylistViewModelWrapper(viewModel: viewModel)
     }
 }

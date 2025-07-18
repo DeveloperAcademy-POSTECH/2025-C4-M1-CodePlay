@@ -10,6 +10,7 @@ protocol ExportPlaylistUseCase {
     func preProcessRawText(_ rawText: RawText) -> [String]
     func searchArtists(from rawText: RawText) async -> [ArtistMatch]
     func searchTopSongs(from rawText: RawText, artistMatches: [ArtistMatch]) async throws -> [PlaylistEntry]
+    func exportToAppleMusic(playlist: Playlist, entries: [PlaylistEntry]) async throws
 }
 
 final class DefaultExportPlaylistUseCase: ExportPlaylistUseCase {
@@ -35,6 +36,11 @@ final class DefaultExportPlaylistUseCase: ExportPlaylistUseCase {
         repository.clearTemporaryData()
 
         return entries  // ✅ 여기 중요!
+    }
+    
+    func exportToAppleMusic(playlist: Playlist, entries: [PlaylistEntry]) async throws {
+        let trackIds = entries.map { $0.trackId }
+        try await repository.exportPlaylistToAppleMusic(title: playlist.title, trackIds: trackIds)
     }
 }
 

@@ -14,6 +14,7 @@ protocol ExportPlaylistRepository {
     func searchTopSongs(for artists: [ArtistMatch]) async -> [PlaylistEntry]
     func savePlaylist(title: String, entries: [PlaylistEntry]) async throws
     func clearTemporaryData()
+    func exportPlaylistToAppleMusic(title: String, trackIds: [String]) async throws
 }
 
 final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
@@ -154,15 +155,49 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
             entry.playlistId = playlistId
         }
 
-        try modelContext.insert(playlist)
-        for entry in entries {
-            try modelContext.insert(entry)
-        }
+        do {
+            try modelContext.insert(playlist)
+            for entry in entries {
+                try modelContext.insert(entry)
+            }
 
-        try modelContext.save()
+            try modelContext.save()
+            print("✅ Playlist '\(title)' 저장 완료")
+
+        } catch {
+            print("❌ Playlist 저장 실패: \(error)")
+            throw error
+        }
     }
+
 
     func clearTemporaryData() {
         temporaryMatches = []
+    }
+    
+    func exportPlaylistToAppleMusic(title: String, trackIds: [String]) async throws {
+        let musicItemIDs = trackIds.map { MusicItemID($0) }
+
+        let request = MusicCatalogResourceRequest<Song>(matching: \.id, memberOf: musicItemIDs)
+        let response = try await request.response()
+        let songs = response.items
+
+        guard !songs.isEmpty else {
+            throw NSError(
+                domain: "ExportPlaylistError",
+                code: 1001,
+                userInfo: [NSLocalizedDescriptionKey: "Apple Music에서 곡 정보를 찾을 수 없습니다."]
+            )
+        }
+
+        let songCollection = MusicItemCollection(songs)
+
+        let createdPlaylist = try await MusicLibrary.shared.createPlaylist(
+            name: title,
+            description: "CodePlay OCR 기반 자동 생성",
+            items: songCollection
+        )
+
+        print("✅ Apple Music playlist created: \(createdPlaylist.name)")
     }
 }
