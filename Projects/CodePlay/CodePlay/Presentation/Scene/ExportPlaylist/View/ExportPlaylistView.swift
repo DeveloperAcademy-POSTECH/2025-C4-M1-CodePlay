@@ -6,14 +6,48 @@
 //
 
 import SwiftUI
+internal import Combine
 
 struct ExportPlaylistView: View {
-    var rawText: RawText?
+    @StateObject private var wrapper: ExportPlaylistViewModelWrapper
+    let rawText: RawText?
+
+    init(rawText: RawText?, wrapper: ExportPlaylistViewModelWrapper) {
+        _wrapper = StateObject(wrappedValue: wrapper)
+        self.rawText = rawText
+    }
 
     var body: some View {
-        Text( /*@START_MENU_TOKEN@*/"Hello, World!" /*@END_MENU_TOKEN@*/)
-            .onAppear {
-                print(rawText?.text)
+        VStack {
+            Text("🎵 후보 아티스트")
+                .font(.title)
+            ForEach(wrapper.artistCandidates, id: \.self) { artist in
+                Text(artist)
             }
+        }
+        .onAppear {
+            wrapper.onAppear(with: rawText)
+        }
     }
 }
+
+final class ExportPlaylistViewModelWrapper: ObservableObject {
+    @Published var artistCandidates: [String] = []
+
+    let viewModel: ExportPlaylistViewModel
+
+    init(viewModel: ExportPlaylistViewModel) {
+        self.viewModel = viewModel
+
+        // 옵저버 연결
+        viewModel.artistCandidates.observe(on: self) { [weak self] candidates in
+            self?.artistCandidates = candidates
+        }
+    }
+
+    func onAppear(with rawText: RawText?) {
+        guard let rawText = rawText else { return }
+        viewModel.preProcessRawText(rawText)
+    }
+}
+

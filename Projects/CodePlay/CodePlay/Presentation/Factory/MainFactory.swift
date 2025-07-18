@@ -19,13 +19,16 @@ protocol MainFactory {
 
 final class DefaultMainFactory: MainFactory {
     private let posterViewModelWrapper: PosterViewModelWrapper
-    
-    init(posterViewModelWrapper: PosterViewModelWrapper) {
+    private let diContainer: MainSceneDIContainer
+
+    init(posterViewModelWrapper: PosterViewModelWrapper, diContainer: MainSceneDIContainer) {
         self.posterViewModelWrapper = posterViewModelWrapper
+        self.diContainer = diContainer
     }
 
     func mainPosterView() -> some View {
-        return MainPosterView()
+        return MainPosterView(diContainer: diContainer)
             .environmentObject(posterViewModelWrapper)
     }
 }
+

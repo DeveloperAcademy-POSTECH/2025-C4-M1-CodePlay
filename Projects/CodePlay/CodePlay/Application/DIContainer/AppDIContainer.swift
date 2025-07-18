@@ -21,4 +21,11 @@ final class AppDIContainer {
         let viewModel = DefaultAppleMusicConnectViewModel(checkLicenseUseCase: makeCheckLicenseUseCase())
         return AppleMusicConnectViewModelWrapper(viewModel: viewModel)
     }
+    
+    func makeExportPlaylistViewModelWrapper() -> ExportPlaylistViewModelWrapper {
+        let repository = DefaultExportPlaylistRepository()
+        let useCase = DefaultExportPlaylistUseCase(repository: repository)
+        let viewModel = DefaultExportPlaylistViewModel(useCase: useCase)
+        return ExportPlaylistViewModelWrapper(viewModel: viewModel)
+    }
 }
