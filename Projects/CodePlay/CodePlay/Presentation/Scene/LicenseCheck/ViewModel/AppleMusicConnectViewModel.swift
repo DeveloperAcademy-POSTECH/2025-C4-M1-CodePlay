@@ -14,7 +14,6 @@ protocol AppleMusicConnectViewModelInput {
     func checkMusicSubscription()
     func updateMusicAuthorizationStatus()
     func openSettings()
-    func openAppleMusicSubscription()
 }
 
 // MARK: - Output
@@ -111,10 +110,6 @@ final class DefaultAppleMusicConnectViewModel: AppleMusicConnectViewModel {
 
     func openSettings() {
         checkLicenseUseCase.openSettings()
-    }
-
-    func openAppleMusicSubscription() {
-        checkLicenseUseCase.openAppleMusicSubscriptionPage()
     }
 
     // MARK: Private Helpers

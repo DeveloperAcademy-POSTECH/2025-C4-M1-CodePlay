@@ -10,7 +10,6 @@ protocol CheckLicenseUseCase {
     func checkMusicSubscription() async throws -> MusicSubscriptionModel
     func fetchCurrentAuthorizationStatus() -> MusicAuthorizationStatusModel
     func openSettings()
-    func openAppleMusicSubscriptionPage()
 }
 
 final class DefaultCheckLicenseUseCase: CheckLicenseUseCase {
@@ -42,7 +41,7 @@ final class DefaultCheckLicenseUseCase: CheckLicenseUseCase {
         repository.openSystemSettings()
     }
 
-    func openAppleMusicSubscriptionPage() {
-        repository.openAppleMusicSubscriptionPage()
-    }
+//    func openAppleMusicSubscriptionPage() {
+//        repository.openAppleMusicSubscriptionPage()
+//    }
 }
