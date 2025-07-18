@@ -66,6 +66,72 @@ struct MadePlaylistView: View {
 
             Spacer()
         }
+        .background(
+            NavigationLink(destination: ExportLoadingView(wrapper: wrapper), isActive: $wrapper.isExporting) {
+                EmptyView()
+            }
+        )
+        .fullScreenCover(isPresented: $wrapper.isExportCompleted) {
+            ExportSuccessView()
+        }
+    }
+}
+
+struct ExportLoadingView: View {
+    @ObservedObject var wrapper: ExportPlaylistViewModelWrapper
+    @State private var progress: Double = 0.0
+
+    var body: some View {
+        VStack(spacing: 24) {
+            Spacer()
+
+            Text("Apple Music으로 전송 중...")
+                .font(.title3)
+
+            ProgressView(value: progress)
+                .progressViewStyle(.linear)
+                .padding(.horizontal, 32)
+
+            Spacer()
+        }
+        .onAppear {
+            withAnimation(.easeInOut(duration: 5)) {
+                progress = 1.0
+            }
+        }
+    }
+}
+
+struct ExportSuccessView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 32) {
+                Spacer()
+
+                Text("🎉 전송이 완료되었습니다!")
+                    .font(.title2)
+                    .multilineTextAlignment(.center)
+
+                BottomButton(title: "Apple Music으로 이동") {
+                    if let url = URL(string: "music://") {
+                        UIApplication.shared.open(url)
+                    }
+                }
+                .padding(.horizontal, 16)
+
+                Spacer()
+            }
+            .navigationTitle("전송 완료")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("닫기") {
+                        dismiss()
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -74,6 +140,8 @@ final class ExportPlaylistViewModelWrapper: ObservableObject {
     @Published var artistCandidates: [String] = []
     @Published var progressStep: Int = 0
     @Published var navigateToMadePlaylist: Bool = false
+    @Published var isExporting: Bool = false
+    @Published var isExportCompleted: Bool = false
 
     let viewModel: ExportPlaylistViewModel
 
@@ -111,8 +179,15 @@ final class ExportPlaylistViewModelWrapper: ObservableObject {
     }
     
     func exportToAppleMusic() {
-        Task {
-            await viewModel.exportLatestPlaylistToAppleMusic()
+            isExporting = true
+
+            Task {
+                await viewModel.exportLatestPlaylistToAppleMusic()
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    self.isExporting = false
+                    self.isExportCompleted = true
+                }
+            }
         }
-    }
 }
