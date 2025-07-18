@@ -4,11 +4,12 @@
 //
 //  Created by 성현 on 7/15/25.
 //
+import Foundation
 
 protocol ExportPlaylistUseCase {
     func preProcessRawText(_ rawText: RawText) -> [String]
     func searchArtists(from rawText: RawText) async -> [ArtistMatch]
-    func searchTopSongs()
+    func searchTopSongs(from rawText: RawText, artistMatches: [ArtistMatch]) async throws -> [PlaylistEntry]
 }
 
 final class DefaultExportPlaylistUseCase: ExportPlaylistUseCase {
@@ -26,8 +27,14 @@ final class DefaultExportPlaylistUseCase: ExportPlaylistUseCase {
         return await repository.searchArtists(from: rawText)
     }
 
-    func searchTopSongs() {
-        // TODO
+    func searchTopSongs(from rawText: RawText, artistMatches: [ArtistMatch]) async throws -> [PlaylistEntry] {
+        let title = rawText.text.components(separatedBy: .newlines).first ?? "My Playlist"
+        let entries = await repository.searchTopSongs(for: artistMatches)
+
+        try await repository.savePlaylist(title: title, entries: entries)
+        repository.clearTemporaryData()
+
+        return entries  // ✅ 여기 중요!
     }
 }
 

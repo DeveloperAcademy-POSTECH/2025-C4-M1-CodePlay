@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftData
 
 final class AppDIContainer {
     func mainSceneDIContainer() -> MainSceneDIContainer {
@@ -22,8 +23,8 @@ final class AppDIContainer {
         return AppleMusicConnectViewModelWrapper(viewModel: viewModel)
     }
     
-    func makeExportPlaylistViewModelWrapper() -> ExportPlaylistViewModelWrapper {
-        let repository = DefaultExportPlaylistRepository()
+    func makeExportPlaylistViewModelWrapper(modelContext: ModelContext) -> ExportPlaylistViewModelWrapper {
+        let repository = DefaultExportPlaylistRepository(modelContext: modelContext)
         let useCase = DefaultExportPlaylistUseCase(repository: repository)
         let viewModel = DefaultExportPlaylistViewModel(useCase: useCase)
         return ExportPlaylistViewModelWrapper(viewModel: viewModel)

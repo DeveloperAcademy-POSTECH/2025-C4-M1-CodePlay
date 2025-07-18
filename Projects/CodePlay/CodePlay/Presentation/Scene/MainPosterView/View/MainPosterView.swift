@@ -7,11 +7,13 @@
 
 import SwiftUI
 internal import Combine
+import SwiftData
 
 struct MainPosterView: View {
     @EnvironmentObject var wrapper: PosterViewModelWrapper
     @State private var recognizedText: String = ""
     @State private var isNavigateToScanPoster = false
+    @Environment(\.modelContext) var modelContext
     let diContainer: MainSceneDIContainer
     
     var body: some View {
@@ -38,8 +40,8 @@ struct MainPosterView: View {
                 
                 NavigationLink(
                     destination: ExportPlaylistView(
-                        rawText: wrapper.scannedText,
-                        wrapper: diContainer.makeExportPlaylistViewModelWrapper()),
+                       rawText: wrapper.scannedText,
+                       wrapper: diContainer.makeExportPlaylistViewModelWrapper(modelContext: modelContext)),
                     isActive: $wrapper.shouldNavigateToMakePlaylist
                 ) {
                     EmptyView()

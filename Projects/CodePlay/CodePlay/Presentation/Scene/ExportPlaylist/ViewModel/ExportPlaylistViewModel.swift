@@ -9,6 +9,7 @@ import Foundation
 protocol ExportPlaylistViewModel {
     func preProcessRawText(_ rawText: RawText)
     func searchArtists(from rawText: RawText) async -> [ArtistMatch]
+    func searchTopSongs(from rawText: RawText, artistMatches: [ArtistMatch]) async -> [PlaylistEntry]
     var artistCandidates: Observable<[String]> { get }
 }
 
@@ -28,5 +29,9 @@ final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {
 
     func searchArtists(from rawText: RawText) async -> [ArtistMatch] {
         await useCase.searchArtists(from: rawText)
+    }
+
+    func searchTopSongs(from rawText: RawText, artistMatches: [ArtistMatch]) async -> [PlaylistEntry] {
+        (try? await useCase.searchTopSongs(from: rawText, artistMatches: artistMatches)) ?? []
     }
 }

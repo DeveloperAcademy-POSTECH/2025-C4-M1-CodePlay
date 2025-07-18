@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 final class MainSceneDIContainer {
     // MARK: Factory
@@ -23,8 +24,8 @@ final class MainSceneDIContainer {
         return DefaultScanPosterUseCase(repository: makeScanPosterRepository())
     }
     
-    private func makeExportPlaylistUseCase() -> ExportPlaylistUseCase {
-        return DefaultExportPlaylistUseCase(repository: makeExportPlaylistRepository())
+    private func makeExportPlaylistUseCase(modelContext: ModelContext) -> ExportPlaylistUseCase {
+        return DefaultExportPlaylistUseCase(repository: makeExportPlaylistRepository(modelContext: modelContext))
     }
     
     // MARK: Repository
@@ -36,8 +37,8 @@ final class MainSceneDIContainer {
         DefaultScanPosterRepository()
     }
     
-    private func makeExportPlaylistRepository() -> ExportPlaylistRepository {
-        DefaultExportPlaylistRepository()
+    private func makeExportPlaylistRepository(modelContext: ModelContext) -> ExportPlaylistRepository {
+        DefaultExportPlaylistRepository(modelContext: modelContext)
     }
     
     // MARK: ViewModel
@@ -60,8 +61,8 @@ final class MainSceneDIContainer {
         AppleMusicConnectViewModelWrapper(viewModel: appleMusicConnectViewModel())
     }
     
-    func makeExportPlaylistViewModelWrapper() -> ExportPlaylistViewModelWrapper {
-        let useCase = makeExportPlaylistUseCase()
+    func makeExportPlaylistViewModelWrapper(modelContext: ModelContext) -> ExportPlaylistViewModelWrapper {
+        let useCase = makeExportPlaylistUseCase(modelContext: modelContext)
         let viewModel = DefaultExportPlaylistViewModel(useCase: useCase)
         return ExportPlaylistViewModelWrapper(viewModel: viewModel)
     }
