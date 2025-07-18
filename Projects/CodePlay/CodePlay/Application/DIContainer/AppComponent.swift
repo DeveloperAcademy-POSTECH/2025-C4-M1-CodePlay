@@ -18,6 +18,9 @@ final class AppComponent {
     }
     
     private func rootComponent(mainFactory: any MainFactory) -> RootComponent {
-        RootComponent(dependency: MainFactoryDependency(mainFactory: mainFactory))
+        RootComponent(dependency: MainFactoryDependency(
+                mainFactory: mainFactory,
+                musicWrapper: appDIContainer.appleMusicConnectViewModelWrapper()
+        ))
     }
 }

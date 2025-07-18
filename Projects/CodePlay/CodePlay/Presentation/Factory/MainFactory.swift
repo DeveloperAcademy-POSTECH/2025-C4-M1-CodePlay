@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainFactoryDependency: RootDependency {
     let mainFactory: any MainFactory
+    let musicWrapper: AppleMusicConnectViewModelWrapper
 }
 
 protocol MainFactory {
