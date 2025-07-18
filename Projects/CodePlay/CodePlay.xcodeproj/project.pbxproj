@@ -3,13 +3,15 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 90;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		0918E5B02E1DF93B007E2D1E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 0918E5AF2E1DF931007E2D1E /* .swiftlint.yml */; };
-		D8CEA65D2E20A7C2000E4703 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = D8CEA65C2E20A7C2000E4703 /* CombineMoya */; };
-		D8CEA65F2E20A7C2000E4703 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = D8CEA65E2E20A7C2000E4703 /* Moya */; };
+		D8DA034E2E28F44800DF8AE8 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = D8DA034D2E28F44800DF8AE8 /* CombineMoya */; };
+		D8DA03502E28F44800DF8AE8 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = D8DA034F2E28F44800DF8AE8 /* Moya */; };
+		D8DA03522E28F44800DF8AE8 /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = D8DA03512E28F44800DF8AE8 /* ReactiveMoya */; };
+		D8DA03542E28F44800DF8AE8 /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = D8DA03532E28F44800DF8AE8 /* RxMoya */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -17,9 +19,22 @@
 		D8391C3E2E1CC9C000A44C3F /* CodePlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodePlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D819C4582E28F6EB009CB69B /* Exceptions for "CodePlay" folder in "CodePlay" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D8391C3D2E1CC9C000A44C3F /* CodePlay */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		D8391C402E1CC9C000A44C3F /* CodePlay */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D819C4582E28F6EB009CB69B /* Exceptions for "CodePlay" folder in "CodePlay" target */,
+			);
 			path = CodePlay;
 			sourceTree = "<group>";
 		};
@@ -28,12 +43,12 @@
 /* Begin PBXFrameworksBuildPhase section */
 		D8391C3B2E1CC9C000A44C3F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				D8CEA65F2E20A7C2000E4703 /* Moya in Frameworks */,
-				D8CEA65D2E20A7C2000E4703 /* CombineMoya in Frameworks */,
+				D8DA03502E28F44800DF8AE8 /* Moya in Frameworks */,
+				D8DA034E2E28F44800DF8AE8 /* CombineMoya in Frameworks */,
+				D8DA03542E28F44800DF8AE8 /* RxMoya in Frameworks */,
+				D8DA03522E28F44800DF8AE8 /* ReactiveMoya in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -69,15 +84,15 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			fileSystemSynchronizedGroups = (
 				D8391C402E1CC9C000A44C3F /* CodePlay */,
 			);
 			name = CodePlay;
 			packageProductDependencies = (
-				D8CEA65C2E20A7C2000E4703 /* CombineMoya */,
-				D8CEA65E2E20A7C2000E4703 /* Moya */,
+				D8DA034D2E28F44800DF8AE8 /* CombineMoya */,
+				D8DA034F2E28F44800DF8AE8 /* Moya */,
+				D8DA03512E28F44800DF8AE8 /* ReactiveMoya */,
+				D8DA03532E28F44800DF8AE8 /* RxMoya */,
 			);
 			productName = CodePlay;
 			productReference = D8391C3E2E1CC9C000A44C3F /* CodePlay.app */;
@@ -108,9 +123,9 @@
 			mainGroup = D8391C352E1CC9C000A44C3F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				D8CEA65B2E20A7C2000E4703 /* XCRemoteSwiftPackageReference "Moya" */,
+				D8DA034C2E28F44800DF8AE8 /* XCRemoteSwiftPackageReference "Moya" */,
 			);
-			preferredProjectObjectVersion = 77;
+			preferredProjectObjectVersion = 90;
 			productRefGroup = D8391C3F2E1CC9C000A44C3F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -123,11 +138,9 @@
 /* Begin PBXResourcesBuildPhase section */
 		D8391C3C2E1CC9C000A44C3F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				0918E5B02E1DF93B007E2D1E /* .swiftlint.yml in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
@@ -135,35 +148,39 @@
 		D8CEA66A2E20AE45000E4703 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ${SRCROOT} swiftgen config run\n\nif [[ \"$(uname -m)\" == arm64 ]]\nthen\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif command -v swiftlint >/dev/null 2>&1\nthen\n    swiftlint\nelse\n    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions.\"\nfi\n";
+			shellScript = (
+				"cd ${SRCROOT} swiftgen config run",
+				"",
+				"if [[ \"$(uname -m)\" == arm64 ]]",
+				"then",
+				"    export PATH=\"/opt/homebrew/bin:$PATH\"",
+				"fi",
+				"",
+				"if command -v swiftlint >/dev/null 2>&1",
+				"then",
+				"    swiftlint",
+				"else",
+				"    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions.\"",
+				"fi",
+				"",
+				"",
+				"",
+				"",
+			);
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D8391C3A2E1CC9C000A44C3F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		D8391C492E1CC9C100A44C3F /* Debug */ = {
+		D8391C492E1CC9C100A44C3F /* Debug configuration for PBXProject "CodePlay" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -227,7 +244,7 @@
 			};
 			name = Debug;
 		};
-		D8391C4A2E1CC9C100A44C3F /* Release */ = {
+		D8391C4A2E1CC9C100A44C3F /* Release configuration for PBXProject "CodePlay" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -284,11 +301,12 @@
 			};
 			name = Release;
 		};
-		D8391C4C2E1CC9C100A44C3F /* Debug */ = {
+		D8391C4C2E1CC9C100A44C3F /* Debug configuration for PBXNativeTarget "CodePlay" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CodePlay/CodePlay.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -298,6 +316,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CodePlay/Info.plist;
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "이 앱은 Apple Music 콘텐츠에 접근하여 재생목록을 생성하고 음악 추천 기능을 제공합니다.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 권한 주세요.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -328,11 +347,12 @@
 			};
 			name = Debug;
 		};
-		D8391C4D2E1CC9C100A44C3F /* Release */ = {
+		D8391C4D2E1CC9C100A44C3F /* Release configuration for PBXNativeTarget "CodePlay" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CodePlay/CodePlay.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -342,6 +362,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CodePlay/Info.plist;
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "이 앱은 Apple Music 콘텐츠에 접근하여 재생목록을 생성하고 음악 추천 기능을 제공합니다.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 권한 주세요.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -378,25 +399,23 @@
 		D8391C392E1CC9C000A44C3F /* Build configuration list for PBXProject "CodePlay" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D8391C492E1CC9C100A44C3F /* Debug */,
-				D8391C4A2E1CC9C100A44C3F /* Release */,
+				D8391C492E1CC9C100A44C3F /* Debug configuration for PBXProject "CodePlay" */,
+				D8391C4A2E1CC9C100A44C3F /* Release configuration for PBXProject "CodePlay" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		D8391C4B2E1CC9C100A44C3F /* Build configuration list for PBXNativeTarget "CodePlay" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D8391C4C2E1CC9C100A44C3F /* Debug */,
-				D8391C4D2E1CC9C100A44C3F /* Release */,
+				D8391C4C2E1CC9C100A44C3F /* Debug configuration for PBXNativeTarget "CodePlay" */,
+				D8391C4D2E1CC9C100A44C3F /* Release configuration for PBXNativeTarget "CodePlay" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		D8CEA65B2E20A7C2000E4703 /* XCRemoteSwiftPackageReference "Moya" */ = {
+		D8DA034C2E28F44800DF8AE8 /* XCRemoteSwiftPackageReference "Moya" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Moya/Moya.git";
 			requirement = {
@@ -407,15 +426,25 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		D8CEA65C2E20A7C2000E4703 /* CombineMoya */ = {
+		D8DA034D2E28F44800DF8AE8 /* CombineMoya */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = D8CEA65B2E20A7C2000E4703 /* XCRemoteSwiftPackageReference "Moya" */;
+			package = D8DA034C2E28F44800DF8AE8 /* XCRemoteSwiftPackageReference "Moya" */;
 			productName = CombineMoya;
 		};
-		D8CEA65E2E20A7C2000E4703 /* Moya */ = {
+		D8DA034F2E28F44800DF8AE8 /* Moya */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = D8CEA65B2E20A7C2000E4703 /* XCRemoteSwiftPackageReference "Moya" */;
+			package = D8DA034C2E28F44800DF8AE8 /* XCRemoteSwiftPackageReference "Moya" */;
 			productName = Moya;
+		};
+		D8DA03512E28F44800DF8AE8 /* ReactiveMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D8DA034C2E28F44800DF8AE8 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = ReactiveMoya;
+		};
+		D8DA03532E28F44800DF8AE8 /* RxMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D8DA034C2E28F44800DF8AE8 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = RxMoya;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
