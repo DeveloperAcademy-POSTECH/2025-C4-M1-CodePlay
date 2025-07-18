@@ -7,7 +7,7 @@
 
 protocol ExportPlaylistUseCase {
     func preProcessRawText(_ rawText: RawText) -> [String]
-    func searchArtist()
+    func searchArtists(from rawText: RawText) async -> [ArtistMatch]
     func searchTopSongs()
 }
 
@@ -22,8 +22,8 @@ final class DefaultExportPlaylistUseCase: ExportPlaylistUseCase {
         return repository.prepareArtistCandidates(from: rawText)
     }
 
-    func searchArtist() {
-        // TODO
+    func searchArtists(from rawText: RawText) async -> [ArtistMatch] {
+        return await repository.searchArtists(from: rawText)
     }
 
     func searchTopSongs() {
