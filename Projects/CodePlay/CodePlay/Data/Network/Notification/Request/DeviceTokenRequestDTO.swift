@@ -13,7 +13,7 @@ struct DeviceTokenRequestDTO: Codable {
     let deviceToken: String
     
     init(user: DeviceInfo) {
-        self.userId = user.userId.uuidString
+        self.userId = user.userId.uuidString // UUID를 String으로 변환
         self.deviceToken = user.deviceToken
     }
 }

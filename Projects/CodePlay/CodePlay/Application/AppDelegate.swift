@@ -67,6 +67,21 @@ extension AppDelegate {
         
         // 토큰 저장
         UserDefaults.standard.set(token, forKey: "deviceToken")
+        
+        // 서버에 디바이스 토큰 post
+        let userId = UUID()
+        let deviceInfo = DeviceInfo(userId: userId, deviceToken: token)
+        let dto = DeviceTokenRequestDTO(user: deviceInfo)
+        
+        let service = DefaultNotificationAPIService(session: URLSession.shared)
+        Task {
+            do {
+                let response = try await service.postDeviceToken(model: dto)
+                print("서버 등록 성공: \(response.endpointArn)")
+            } catch {
+                print("서버에 디바이스 토큰 전송 실패: \(error)")
+            }
+        }
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
