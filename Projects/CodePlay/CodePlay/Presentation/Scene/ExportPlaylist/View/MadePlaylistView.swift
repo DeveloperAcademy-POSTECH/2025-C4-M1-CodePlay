@@ -33,7 +33,7 @@ struct MadePlaylistView: View {
                     
                     // 페스티벌 정보
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("2025 부산국제록페스티벌")
+                        Text("2025 부산국제록페스티벌") // 추후 RawText의 첫번째 줄에서 가져오는걸로 수정 예정
                             .font(.system(size: 17, weight: .bold))
                             .foregroundColor(.black)
                         

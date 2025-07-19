@@ -35,7 +35,7 @@ final class DefaultExportPlaylistUseCase: ExportPlaylistUseCase {
         try await repository.savePlaylist(title: title, entries: entries)
         repository.clearTemporaryData()
 
-        return entries  // ✅ 여기 중요!
+        return entries
     }
     
     func exportToAppleMusic(playlist: Playlist, entries: [PlaylistEntry]) async throws {
