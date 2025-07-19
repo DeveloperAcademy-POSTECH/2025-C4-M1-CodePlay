@@ -12,7 +12,7 @@ protocol ExportPlaylistRepository {
     func prepareArtistCandidates(from rawText: RawText) -> [String]
     func searchArtists(from rawText: RawText) async -> [ArtistMatch]
     func searchTopSongs(for artists: [ArtistMatch]) async -> [PlaylistEntry]
-    func savePlaylist(title: String, entries: [PlaylistEntry]) async throws
+    func savePlaylist(title: String, entries: [PlaylistEntry]) async throws -> Playlist
     func clearTemporaryData()
     func exportPlaylistToAppleMusic(title: String, trackIds: [String]) async throws
 }
@@ -147,7 +147,7 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
     }
 
     @MainActor
-    func savePlaylist(title: String, entries: [PlaylistEntry]) async throws {
+    func savePlaylist(title: String, entries: [PlaylistEntry]) async throws -> Playlist {
         let playlistId = UUID()
         let playlist = Playlist(id: playlistId, title: title, createdAt: .now)
 
@@ -155,21 +155,14 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
             entry.playlistId = playlistId
         }
 
-        do {
-            try modelContext.insert(playlist)
-            for entry in entries {
-                try modelContext.insert(entry)
-            }
-
-            try modelContext.save()
-            print("✅ Playlist '\(title)' 저장 완료")
-
-        } catch {
-            print("❌ Playlist 저장 실패: \(error)")
-            throw error
+        try modelContext.insert(playlist)
+        for entry in entries {
+            try modelContext.insert(entry)
         }
-    }
 
+        try modelContext.save()
+        return playlist
+    }
 
     func clearTemporaryData() {
         temporaryMatches = []

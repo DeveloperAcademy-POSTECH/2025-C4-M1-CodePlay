@@ -54,28 +54,6 @@ struct ExportPlaylistView: View {
     }
 }
 
-struct MadePlaylistView: View {
-    @ObservedObject var wrapper: ExportPlaylistViewModelWrapper
-
-    var body: some View {
-        VStack(spacing: 32) {
-            BottomButton(title: "Apple Music으로 전송") {
-                wrapper.exportToAppleMusic()
-            }
-            .padding(.horizontal, 16)
-
-            Spacer()
-        }
-        .background(
-            NavigationLink(destination: ExportLoadingView(wrapper: wrapper), isActive: $wrapper.isExporting) {
-                EmptyView()
-            }
-        )
-        .fullScreenCover(isPresented: $wrapper.isExportCompleted) {
-            ExportSuccessView()
-        }
-    }
-}
 
 struct ExportLoadingView: View {
     @ObservedObject var wrapper: ExportPlaylistViewModelWrapper
@@ -142,6 +120,7 @@ final class ExportPlaylistViewModelWrapper: ObservableObject {
     @Published var navigateToMadePlaylist: Bool = false
     @Published var isExporting: Bool = false
     @Published var isExportCompleted: Bool = false
+    @Published var playlistEntries: [PlaylistEntry] = []
 
     let viewModel: ExportPlaylistViewModel
 
@@ -170,6 +149,7 @@ final class ExportPlaylistViewModelWrapper: ObservableObject {
             let songs = await viewModel.searchTopSongs(from: rawText, artistMatches: matches)
             DispatchQueue.main.async {
                 self.progressStep = 3
+                self.playlistEntries = songs 
                 for entry in songs {
                     print("🎵 \(entry.artistName) - \(entry.trackTitle)")
                 }
