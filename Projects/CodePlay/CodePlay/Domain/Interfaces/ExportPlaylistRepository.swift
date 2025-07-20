@@ -116,7 +116,7 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                     let trackId = song.id.rawValue
                     let trackTitle = song.title
 
-                    let trackPreviewUrl: String = song.previewAssets?.first?.url.absoluteString ?? ""
+                    let trackPreviewUrl: String = song.previewAssets?.first?.url?.absoluteString ?? ""
                     let albumArtworkUrl: String = song.artwork?.url(width: 300, height: 300)?.absoluteString ?? ""
 
                     let entry = PlaylistEntry(
