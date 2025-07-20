@@ -20,7 +20,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		D819C4582E28F6EB009CB69B /* Exceptions for "CodePlay" folder in "CodePlay" target */ = {
+		0996ADCE2E2D21DB00B57383 /* Exceptions for "CodePlay" folder in "CodePlay" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -33,7 +33,7 @@
 		D8391C402E1CC9C000A44C3F /* CodePlay */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				D819C4582E28F6EB009CB69B /* Exceptions for "CodePlay" folder in "CodePlay" target */,
+				0996ADCE2E2D21DB00B57383 /* Exceptions for "CodePlay" folder in "CodePlay" target */,
 			);
 			path = CodePlay;
 			sourceTree = "<group>";
@@ -163,6 +163,7 @@
 				"else",
 				"    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions.\"",
 				"fi",
+				"",
 				"",
 				"",
 				"",
