@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 final class MainSceneDIContainer {
     // MARK: Factory
     func makeMainFactory() -> any MainFactory {
         let viewModelWrapper = makePosterViewModelWrapper()
-        return DefaultMainFactory(posterViewModelWrapper: viewModelWrapper)
+        return DefaultMainFactory(posterViewModelWrapper: viewModelWrapper, diContainer: MainSceneDIContainer())
     }
     
     // MARK: UseCases
@@ -19,28 +20,12 @@ final class MainSceneDIContainer {
         return DefaultCheckLicenseUseCase(repository: makeCheckLicenseRepository())
     }
     
-    private func makeFetchFestivalUseCase() -> FetchFestivalUseCase {
-        return DefaultFetchFestivalUseCase()
-    }
-    
     private func makeScanPosterUseCase() -> ScanPosterUseCase {
         return DefaultScanPosterUseCase(repository: makeScanPosterRepository())
     }
     
-    private func makeAnalyzingWordUseCase() -> AnalyzingWordUseCase {
-        return DefaultAnalyzingWordUseCase()
-    }
-    
-    private func makeSearchSongUseCase() -> SearchSongUseCase {
-        return DefaultSearchSongUseCase()
-    }
-    
-    private func makeFetchPlaylistUseCase() -> FetchPlaylistUseCase {
-        return DefaultFetchPlaylistUseCase()
-    }
-    
-    private func makeSendPlaylistUseCase() -> SendPlaylistUseCase {
-        return DefaultSendPlaylistUseCase()
+    private func makeExportPlaylistUseCase(modelContext: ModelContext) -> ExportPlaylistUseCase {
+        return DefaultExportPlaylistUseCase(repository: makeExportPlaylistRepository(modelContext: modelContext))
     }
     
     // MARK: Repository
@@ -48,28 +33,12 @@ final class MainSceneDIContainer {
         DefaultCheckLicenseRepository()
     }
     
-    private func makeFetchFestivalRepository() -> FetchFestivalRepository {
-        DefaultFetchFestivalRepository()
-    }
-    
     private func makeScanPosterRepository() -> ScanPosterRepository {
         DefaultScanPosterRepository()
     }
     
-    private func makeAnalyzingWordRepository() -> AnalyzingWordRepository {
-        DefaultAnalyzingWordRepository()
-    }
-    
-    private func makeSearchSongRepository() -> SearchSongRepository {
-        DefaultSearchSongRepository()
-    }
-    
-    private func makeFetchPlaylistRepository() -> FetchPlaylistRepository {
-        DefaultFetchPlaylistRepository()
-    }
-    
-    private func makeSendPlaylistRepository() -> SendPlaylistRepository {
-        DefaultSendPlaylistRepository()
+    private func makeExportPlaylistRepository(modelContext: ModelContext) -> ExportPlaylistRepository {
+        DefaultExportPlaylistRepository(modelContext: modelContext)
     }
     
     // MARK: ViewModel
@@ -91,4 +60,11 @@ final class MainSceneDIContainer {
     func appleMusicConnectViewModelWrapper() -> AppleMusicConnectViewModelWrapper {
         AppleMusicConnectViewModelWrapper(viewModel: appleMusicConnectViewModel())
     }
+    
+    func makeExportPlaylistViewModelWrapper(modelContext: ModelContext) -> ExportPlaylistViewModelWrapper {
+        let useCase = makeExportPlaylistUseCase(modelContext: modelContext)
+        let viewModel = DefaultExportPlaylistViewModel(useCase: useCase, modelContext: modelContext)
+        return ExportPlaylistViewModelWrapper(viewModel: viewModel)
+    }
+
 }

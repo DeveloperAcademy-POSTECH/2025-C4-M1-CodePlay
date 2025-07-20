@@ -40,8 +40,4 @@ final class DefaultCheckLicenseUseCase: CheckLicenseUseCase {
     func openSettings() {
         repository.openSystemSettings()
     }
-
-//    func openAppleMusicSubscriptionPage() {
-//        repository.openAppleMusicSubscriptionPage()
-//    }
 }
