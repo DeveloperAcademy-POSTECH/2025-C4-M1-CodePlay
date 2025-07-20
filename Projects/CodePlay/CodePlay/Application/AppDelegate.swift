@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SwiftData
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -46,17 +45,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         print("🔔 푸시 탭됨 - userInfo:", userInfo)
                 
         completionHandler()
-    }
-    
-    func saveDeviceInfo(userId: UUID, token: String, context: ModelContext) {
-        let info = DeviceInfo(userId: userId, deviceToken: token)
-        context.insert(info)
-        
-        do {
-            try context.save()
-        } catch {
-            print("디바이스 토큰 저장 안됨: \(error)")
-        }
     }
 }
 

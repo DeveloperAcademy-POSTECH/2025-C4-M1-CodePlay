@@ -10,8 +10,9 @@ import MusicKit
 import SwiftUI
 
 struct AppleMusicConnectView: View {
-    @ObservedObject var viewModelWrapper: AppleMusicConnectViewModelWrapper
+    @EnvironmentObject var viewModelWrapper: MusicViewModelWrapper
     @State private var showingSettings = false
+    let diContainer: MainLicenseDIContainer
 
     var body: some View {
         VStack(spacing: 0) {
@@ -96,7 +97,7 @@ struct AppleMusicConnectView: View {
 }
 
 // MARK: - ViewModelWrapper for ObservableObject compatibility
-final class AppleMusicConnectViewModelWrapper: ObservableObject {
+final class MusicViewModelWrapper: ObservableObject {
     @Published var authorizationStatus: MusicAuthorizationStatusModel?
     @Published var subscriptionStatus: MusicSubscriptionModel?
     @Published var errorMessage: String?
@@ -132,3 +133,4 @@ final class AppleMusicConnectViewModelWrapper: ObservableObject {
         }
     }
 }
+

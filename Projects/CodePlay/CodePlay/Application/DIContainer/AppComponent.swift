@@ -7,20 +7,35 @@
 
 import SwiftUI
 
+private struct AppDependency: RootDependency {
+    let mainFactory: any MainFactory
+    let licenseFactory: any LicenseFactory
+}
+
 final class AppComponent {
     private let appDIContainer = AppDIContainer()
-    
-    private lazy var appFlowCoordinator: AppFlowCoordinator = .init(appDIContainer: appDIContainer)
-    
-    func makePosterRootView() -> some View {
+
+    private lazy var appFlowCoordinator: AppFlowCoordinator = .init(
+        appDIContainer: appDIContainer
+    )
+
+    func makeRootView() -> some View {
         let mainFactory = appFlowCoordinator.mainFlowStart()
-        return rootComponent(mainFactory: mainFactory).makeView()
-    }
-    
-    private func rootComponent(mainFactory: any MainFactory) -> RootComponent {
-        RootComponent(dependency: MainFactoryDependency(
-                mainFactory: mainFactory,
-                musicWrapper: appDIContainer.appleMusicConnectViewModelWrapper()
-        ))
+        let licenseDIContainer = appDIContainer.mainLicenseSceneDIContainer()
+
+        let musicWrapper =
+            licenseDIContainer.appleMusicConnectViewModelWrapper()
+        let licenseFactory = DefaultLicenseFactory(
+            musicWrapper: musicWrapper,
+            diContainer: licenseDIContainer
+        )
+        LicenseManager.shared.configure(with: musicWrapper)
+
+        let dependency = AppDependency(
+            mainFactory: mainFactory,
+            licenseFactory: licenseFactory
+        )
+
+        return RootComponent(dependency: dependency).makeView()
     }
 }

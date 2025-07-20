@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: RootDependency
 protocol RootDependency {
     var mainFactory: any MainFactory { get }
-    var musicWrapper: AppleMusicConnectViewModelWrapper { get }
+    var licenseFactory: any LicenseFactory { get }
 }
 
 final class RootComponent {
@@ -21,7 +21,10 @@ final class RootComponent {
     }
     
     func makeView() -> some View {
-        MainView(mainFactory: dependency.mainFactory,
-                 wrapper: dependency.musicWrapper)
+        if LicenseManager.shared.isLicensed {
+            return AnyView(MainView(mainFactory: dependency.mainFactory))
+        } else {
+            return AnyView(dependency.licenseFactory.mainLicenseView())
+        }
     }
 }

@@ -20,4 +20,9 @@ final class AppFlowCoordinator {
         let mainSceneDIContainer = appDIContainer.mainSceneDIContainer()
         return mainSceneDIContainer.makeMainFactory()
     }
+    
+    func licenseFlowStart() -> any LicenseFactory {
+        let licenseSceneDIContainer = appDIContainer.mainLicenseSceneDIContainer()
+        return licenseSceneDIContainer.makeMainLicenseFactory()
+    }
 }

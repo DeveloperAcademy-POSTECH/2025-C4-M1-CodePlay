@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct MainFactoryDependency: RootDependency {
+    var licenseFactory: any LicenseFactory
+    
     let mainFactory: any MainFactory
-    let musicWrapper: AppleMusicConnectViewModelWrapper
 }
 
 protocol MainFactory {

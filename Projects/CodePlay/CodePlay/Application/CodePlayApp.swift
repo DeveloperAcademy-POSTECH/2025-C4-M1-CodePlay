@@ -29,7 +29,7 @@ struct CodePlayApp: App {
     var body: some Scene {
         WindowGroup {
             AppComponent()
-                .makePosterRootView()
+                .makeRootView()
         }
         .modelContainer(sharedModelContainer)
     }
