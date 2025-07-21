@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainView: View {
     @EnvironmentObject var wrapper: MusicViewModelWrapper
+    @Environment(\.scenePhase) var scenePhase
     private let mainFactory: any MainFactory
     private let licenseFactory: any LicenseFactory
     
@@ -29,6 +30,12 @@ struct MainView: View {
         }
         .onAppear {
             wrapper.appleMusicConnectViewModel.updateMusicAuthorizationStatus()
+        }
+        .onChange(of: scenePhase) { newPhase in
+            if newPhase == .active {
+                wrapper.appleMusicConnectViewModel.updateMusicAuthorizationStatus()
+            }
+            
         }
     }
 }

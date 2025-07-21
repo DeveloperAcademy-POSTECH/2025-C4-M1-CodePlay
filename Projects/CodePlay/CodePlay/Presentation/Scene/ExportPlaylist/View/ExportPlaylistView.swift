@@ -56,7 +56,6 @@ struct ExportPlaylistView: View {
 
 // MARK: 애플뮤직 플레이리스트로 전송하는 뷰 (hifi 06_1부분)
 struct ExportLoadingView: View {
-//    @EnvironmentObject var wrapper: AppleMusicConnectView
     @State private var progress: Double = 0.0
 
     var body: some View {

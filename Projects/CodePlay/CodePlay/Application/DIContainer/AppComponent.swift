@@ -34,9 +34,6 @@ final class AppComponent {
             diContainer.appleMusicConnectViewModelWrapper()
         let posterWraper = diContainer.makePosterViewModelWrapper()
 
-        LicenseManager.shared.configure(with: musicWrapper)
-        print("🔍 License Status: \(LicenseManager.shared.isLicensed)")
-
         let rootView = MainView(mainFactory: mainFactory, licenseFactory: licenseFactory)
             .environmentObject(musicWrapper)
             .environmentObject(posterWraper)

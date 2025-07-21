@@ -13,11 +13,8 @@ struct MainFactoryDependency: RootDependency {
 }
 
 protocol MainFactory {
-    associatedtype PosterViewType: View
-    associatedtype MusicViewType: View
-    
-    func mainPosterView() -> PosterViewType
-    func mainMusicView() -> MusicViewType
+    func mainPosterView() -> AnyView
+    func mainMusicView() -> AnyView
 }
 
 final class DefaultMainFactory: MainFactory {
@@ -31,14 +28,14 @@ final class DefaultMainFactory: MainFactory {
         self.diContainer = diContainer
     }
 
-    public func mainPosterView() -> some View {
-        return MainPosterView()
-            .environmentObject(posterViewModelWrapper)
+    public func mainPosterView() -> AnyView {
+        return AnyView(MainPosterView()
+            .environmentObject(posterViewModelWrapper))
     }
     
-    public func mainMusicView() -> some View {
-        return AppleMusicConnectView()
-            .environmentObject(musicViewModelWrapper)
+    public func mainMusicView() -> AnyView {
+        return AnyView(AppleMusicConnectView()
+            .environmentObject(musicViewModelWrapper))
     }
 }
 
