@@ -26,7 +26,7 @@ protocol AppleMusicConnectViewModelOutput {
     var shouldOpenSettings: Observable<Bool> { get }
 }
 
-// MARK: - Unified
+// MARK: - AppleMusicConnectViewModel
 protocol AppleMusicConnectViewModel: AppleMusicConnectViewModelInput,
     AppleMusicConnectViewModelOutput, ObservableObject
 {}
@@ -54,7 +54,6 @@ final class DefaultAppleMusicConnectViewModel: AppleMusicConnectViewModel {
     }
 
     // MARK: Input
-
     func requestMusicAuthorization() {
         Task {
             do {
@@ -120,7 +119,6 @@ final class DefaultAppleMusicConnectViewModel: AppleMusicConnectViewModel {
     }
 
     // MARK: Private Helpers
-
     private func updateCanPlayMusic() {
         let isAuthorized = authorizationStatus.value?.isAuthorized ?? false
         let hasSubscription = subscriptionStatus.value?.canPlayMusic ?? false

@@ -94,10 +94,6 @@ struct AppleMusicConnectView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.white)
         .ignoresSafeArea(.all, edges: .bottom)  // 하단 Safe Area 무시
-        .onChange(of: viewModelWrapper.canPlayMusic) {
-            print("onChange 실행됨")
-            print("??:\(viewModelWrapper.canPlayMusic)")
-        }
     }
 }
 
