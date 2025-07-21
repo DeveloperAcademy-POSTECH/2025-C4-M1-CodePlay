@@ -10,7 +10,8 @@ import SwiftUI
 // MARK: RootDependency
 protocol RootDependency {
     var mainFactory: any MainFactory { get }
-    var musicWrapper: AppleMusicConnectViewModelWrapper { get }
+    var licenseFactory: any LicenseFactory { get }
+
 }
 
 final class RootComponent {
@@ -21,7 +22,6 @@ final class RootComponent {
     }
     
     func makeView() -> some View {
-        MainView(mainFactory: dependency.mainFactory,
-                 wrapper: dependency.musicWrapper)
+        MainView(mainFactory: dependency.mainFactory, licenseFactory: dependency.licenseFactory)
     }
 }
