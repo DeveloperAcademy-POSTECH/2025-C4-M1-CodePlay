@@ -47,16 +47,23 @@ extension PosterItemModel {
     }
     
     static var empty: PosterItemModel {
-        PosterItemModel(id: UUID(), title: "", subtitle: "", date: "")
+        PosterItemModel(
+            id: UUID(),
+            imageURL: nil,
+            image: nil,
+            title: "",
+            subtitle: "",
+            date: ""
+        )
     }
     
     /// 목데이터 추가
     static let mock: PosterItemModel = PosterItemModel(
-            id: UUID(),
-            imageURL: URL(string: "https://picsum.photos/296/296"),
-            image: nil,
-            title: "2025 부산국제록페스티벌",
-            subtitle: "86 Songs",
-            date: "2025.09.26.(금) ~ 2025.09.28(일)"
-        )
+        id: UUID(),
+        imageURL: URL(string: "https://picsum.photos/296/296"),
+        image: nil,
+        title: "2025 부산국제록페스티벌",
+        subtitle: "86 Songs",
+        date: "2025.09.26.(금) ~ 2025.09.28(일)"
+    )
 }

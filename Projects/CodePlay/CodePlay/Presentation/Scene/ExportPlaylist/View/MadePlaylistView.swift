@@ -80,7 +80,8 @@ struct MadePlaylistView: View {
                 Spacer()
 
                 Button("편집") {
-                    // 편집 액션 예정
+                    // 편집 기능은 스와이프로 대체 (swipeActions 사용)
+                    // 추가 편집 모드가 필요하면 여기에 구현
                 }
                 .font(.system(size: 14, weight: .bold))
                 .foregroundColor(.black)
@@ -89,19 +90,41 @@ struct MadePlaylistView: View {
             .padding(.top, 20)
 
             // 리스트
-            ScrollView {
-                LazyVStack(spacing: 8) {
-                    ForEach(wrapper.playlistEntries, id: \.id) { entry in
-                        CustomList(
-                            imageUrl: entry.albumArtworkUrl,
-                            title: entry.trackTitle,
-                            artist: entry.artistName
-                        )
+            List {
+                ForEach(wrapper.playlistEntries, id: \.id) { entry in
+                    CustomList(
+                        imageUrl: entry.albumArtworkUrl,
+                        title: entry.trackTitle,
+                        artist: entry.artistName,
+                        trackId: entry.trackId,
+                        isCurrentlyPlaying: wrapper.currentlyPlayingTrackId == entry.trackId,
+                        isPlaying: wrapper.isPlaying,
+                        onAlbumCoverTap: {
+                            print("🎯 MadePlaylistView에서 탭 호출됨")
+                            wrapper.togglePreview(for: entry.trackId)
+                        }
+                    )
+                    .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        Button(role: .destructive) {
+                            print("🗑️ 삭제 버튼 탭됨 - \(entry.trackTitle)")
+                            if let index = wrapper.playlistEntries.firstIndex(where: { $0.id == entry.id }) {
+                                wrapper.deleteEntry(at: IndexSet(integer: index))
+                            }
+                        } label: {
+                            Label("삭제", systemImage: "trash")
+                        }
                     }
                 }
-                .padding(.horizontal, 8)
-                .padding(.top, 16)
+                .onDelete { indexSet in
+                    print("🗑️ onDelete 호출됨")
+                    wrapper.deleteEntry(at: indexSet)
+                }
             }
+            .listStyle(PlainListStyle())
+            .scrollContentBackground(.hidden)
         }
 
             Spacer()
@@ -135,3 +158,5 @@ struct MadePlaylistView: View {
         }
     }
 }
+
+

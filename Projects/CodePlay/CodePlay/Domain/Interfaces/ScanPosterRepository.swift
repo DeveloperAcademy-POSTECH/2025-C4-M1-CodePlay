@@ -36,6 +36,7 @@ final class DefaultScanPosterRepository: ScanPosterRepository {
         }
         let rawText = RawText(text: fullText)
         let parsed = parseFestivalInfo(from: rawText)
+        print(rawText.text)
         return parsed
     }
 
