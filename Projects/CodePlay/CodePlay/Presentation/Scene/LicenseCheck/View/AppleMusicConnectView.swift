@@ -69,8 +69,10 @@ struct AppleMusicConnectView: View {
                 BottomButton(
                     title: "Apple Music에 연결",
                     action: {
-                        viewModelWrapper.appleMusicConnectViewModel
-                            .shouldRequestMusicAuthorization.value = true
+                        Task {
+                            // 권한 요청
+                            viewModelWrapper.appleMusicConnectViewModel   .shouldRequestMusicAuthorization.value = true
+                        }
                     }
                 )
                 .padding(.horizontal, 16)
@@ -92,6 +94,10 @@ struct AppleMusicConnectView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.white)
         .ignoresSafeArea(.all, edges: .bottom)  // 하단 Safe Area 무시
+        .onChange(of: viewModelWrapper.canPlayMusic) {
+            print("onChange 실행됨")
+            print("??:\(viewModelWrapper.canPlayMusic)")
+        }
     }
 }
 
@@ -123,6 +129,12 @@ final class MusicViewModelWrapper: ObservableObject {
         appleMusicConnectViewModel.authorizationStatus.observe(on: self) { [weak self] status in
             DispatchQueue.main.async {
                 self?.authorizationStatus = status
+                
+                if status?.status == .authorized {
+                    self?.canPlayMusic = true
+                } else {
+                    self?.canPlayMusic = false
+                }
             }
         }
 
@@ -141,6 +153,7 @@ final class MusicViewModelWrapper: ObservableObject {
         appleMusicConnectViewModel.canPlayMusic.observe(on: self) { [weak self] canPlay in
             DispatchQueue.main.async {
                 self?.canPlayMusic = canPlay
+                print("[viewModelWrapper]:\(self?.canPlayMusic)")
             }
         }
     }
