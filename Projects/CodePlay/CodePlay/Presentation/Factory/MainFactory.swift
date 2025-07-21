@@ -34,7 +34,6 @@ final class DefaultMainFactory: MainFactory {
     public func mainPosterView() -> some View {
         return MainPosterView()
             .environmentObject(posterViewModelWrapper)
-    
     }
     
     public func mainMusicView() -> some View {

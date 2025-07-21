@@ -9,7 +9,6 @@ import SwiftUI
 
 struct LicenseFactoryDependency: RootDependency {
     var mainFactory: any MainFactory
-    
     let licenseFactory: any LicenseFactory
 }
 
