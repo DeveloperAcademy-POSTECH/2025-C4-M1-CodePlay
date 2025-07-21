@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 private struct AppDependency: RootDependency {
     let mainFactory: any MainFactory
@@ -13,29 +14,33 @@ private struct AppDependency: RootDependency {
 }
 
 final class AppComponent {
+    let modelContext: ModelContext
     private let appDIContainer = AppDIContainer()
+    
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+    }
 
     private lazy var appFlowCoordinator: AppFlowCoordinator = .init(
-        appDIContainer: appDIContainer
+        appDIContainer: appDIContainer, modelContext: modelContext
     )
 
     func makeRootView() -> some View {
         let mainFactory = appFlowCoordinator.mainFlowStart()
-        let licenseDIContainer = appDIContainer.mainLicenseSceneDIContainer()
+        let licenseFactory = appFlowCoordinator.licenseFlowStart()
+        let diContainer = appDIContainer.mainSceneDIContainer(modelContext: modelContext)
 
         let musicWrapper =
-            licenseDIContainer.appleMusicConnectViewModelWrapper()
-        let licenseFactory = DefaultLicenseFactory(
-            musicWrapper: musicWrapper,
-            diContainer: licenseDIContainer
-        )
+            diContainer.appleMusicConnectViewModelWrapper()
+        let posterWraper = diContainer.makePosterViewModelWrapper()
+
         LicenseManager.shared.configure(with: musicWrapper)
+        print("🔍 License Status: \(LicenseManager.shared.isLicensed)")
 
-        let dependency = AppDependency(
-            mainFactory: mainFactory,
-            licenseFactory: licenseFactory
-        )
-
-        return RootComponent(dependency: dependency).makeView()
+        let rootView = MainView(mainFactory: mainFactory, licenseFactory: licenseFactory)
+            .environmentObject(musicWrapper)
+            .environmentObject(posterWraper)
+        
+        return rootView
     }
 }

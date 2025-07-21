@@ -20,15 +20,15 @@ protocol LicenseFactory {
 
 final class DefaultLicenseFactory: LicenseFactory {
     private let musicWrapper: MusicViewModelWrapper
-    private let diContainer: MainLicenseDIContainer
+    private let diContainer: MainSceneDIContainer
     
-    init(musicWrapper: MusicViewModelWrapper, diContainer: MainLicenseDIContainer) {
+    init(musicWrapper: MusicViewModelWrapper, diContainer: MainSceneDIContainer) {
         self.musicWrapper = musicWrapper
         self.diContainer = diContainer
     }
     
     func mainLicenseView() -> some View {
-        return AppleMusicConnectView(diContainer: diContainer)
+        return AppleMusicConnectView()
             .environmentObject(musicWrapper)
     }
     

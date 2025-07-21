@@ -11,6 +11,7 @@ import SwiftUI
 protocol RootDependency {
     var mainFactory: any MainFactory { get }
     var licenseFactory: any LicenseFactory { get }
+
 }
 
 final class RootComponent {
@@ -21,10 +22,6 @@ final class RootComponent {
     }
     
     func makeView() -> some View {
-        if LicenseManager.shared.isLicensed {
-            return AnyView(MainView(mainFactory: dependency.mainFactory))
-        } else {
-            return AnyView(dependency.licenseFactory.mainLicenseView())
-        }
+        MainView(mainFactory: dependency.mainFactory, licenseFactory: dependency.licenseFactory)
     }
 }

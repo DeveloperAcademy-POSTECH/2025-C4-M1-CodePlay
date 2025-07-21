@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MadePlaylistView: View {
-    @ObservedObject var wrapper: ExportPlaylistViewModelWrapper
+    @EnvironmentObject var wrapper: MusicViewModelWrapper
 
     var body: some View {
             // 페스티벌 정보 영역
@@ -126,7 +126,7 @@ struct MadePlaylistView: View {
             }
         }
         .background(
-            NavigationLink(destination: ExportLoadingView(wrapper: wrapper), isActive: $wrapper.isExporting) {
+            NavigationLink(destination: ExportLoadingView(), isActive: $wrapper.isExporting) {
                 EmptyView()
             }
         )
