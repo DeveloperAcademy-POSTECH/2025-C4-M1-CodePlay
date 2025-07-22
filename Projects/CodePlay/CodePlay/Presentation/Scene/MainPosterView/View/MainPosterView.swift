@@ -21,6 +21,7 @@ struct MainPosterView: View {
             VStack(spacing: 0) {
                 Spacer().frame(height: 60)
                 
+
                 ArtistCard(imageUrl: wrapper.festivalInfo.imageURL?.absoluteString, date: wrapper.festivalInfo.date, title: wrapper.festivalInfo.title, subTitle: wrapper.festivalInfo.subtitle)
                 Spacer().frame(height: 36)
                 
@@ -53,6 +54,17 @@ struct MainPosterView: View {
                     .environmentObject(wrapper)
             }
         }
+    }
+    
+    /// 등록한 페스티벌이 존재하지 않을 경우 보여주는 빈 카드뷰
+    private var EmptyCardView: some View {
+        VStack(alignment: .center) {
+            Text("아직 인식한 페스티벌 라인업이 없습니다.")
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxHeight: 420)
+        .padding(.horizontal, 72)
+        .liquidGlass()
     }
 }
 
