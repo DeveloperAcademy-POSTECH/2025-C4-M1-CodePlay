@@ -11,9 +11,9 @@ struct MadePlaylistView: View {
     @EnvironmentObject var wrapper: MusicViewModelWrapper
 
     var body: some View {
-        // 플레이리스트 영역
-        ScrollView {
-            LazyVStack(spacing: 8) {
+        VStack(spacing: 0) {
+            // 플레이리스트 영역
+            List {
                 ForEach(wrapper.playlistEntries, id: \.id) { entry in
                     CustomList(
                         imageUrl: entry.albumArtworkUrl,
@@ -22,6 +22,7 @@ struct MadePlaylistView: View {
                         trackId: entry.trackId,
                         isCurrentlyPlaying: wrapper.currentlyPlayingTrackId == entry.trackId,
                         isPlaying: wrapper.isPlaying,
+                        playbackProgress: wrapper.playbackProgress,
                         onAlbumCoverTap: {
                             wrapper.togglePreview(for: entry.trackId)
                         }
@@ -29,31 +30,22 @@ struct MadePlaylistView: View {
                     .listRowInsets(EdgeInsets())
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button(role: .destructive) {
-                            if let index = wrapper.playlistEntries.firstIndex(where: { $0.id == entry.id }) {
-                                wrapper.deleteEntry(at: IndexSet(integer: index))
-                            }
-                        } label: {
-                            Label("삭제", systemImage: "trash")
-                        }
-                    }
                 }
                 .onDelete { indexSet in
                     wrapper.deleteEntry(at: indexSet)
                 }
             }
-        }
+            .listStyle(PlainListStyle())
+            .background(Color.white)
 
-        Spacer()
-        
-        // Apple Music 내보내기 버튼
-        BottomButton(title: "Apple Music으로 전송") {
-            wrapper.exportToAppleMusic()
+            Spacer()
+            
+            // Apple Music 내보내기 버튼
+            BottomButton(title: "Apple Music으로 전송") {
+                wrapper.exportToAppleMusic()
+            }
+            .padding(.horizontal, 16)
         }
-        .padding(.horizontal, 16)// Home Indicator 공간
-        
-        .background(Color.white)
         .navigationTitle("플레이리스트")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

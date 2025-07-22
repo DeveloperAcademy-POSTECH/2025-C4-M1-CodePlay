@@ -118,15 +118,35 @@ final class MusicViewModelWrapper: ObservableObject {
     @Published var currentlyPlayingTrackId: String?
     /// 재생 상태 (재생 중/일시정지)
     @Published var isPlaying: Bool = false
+    /// 재생 진행률 (0.0 ~ 1.0, 30초 기준)
+    @Published var playbackProgress: Double = 0.0
 
     var appleMusicConnectViewModel: any AppleMusicConnectViewModel
     var exportViewModelWrapper: any ExportPlaylistViewModel
-    /// MusicKit 플레이어 (30초 미리듣기용)
-    private let player = ApplicationMusicPlayer.shared
+    /// MusicPlayer UseCase (Clean Architecture 적용)
+    private var musicPlayerUseCase: MusicPlayerUseCase
 
-    init(appleMusicConnectViewModel: any AppleMusicConnectViewModel, exportViewModelWrapper: any ExportPlaylistViewModel) {
+    init(appleMusicConnectViewModel: any AppleMusicConnectViewModel, exportViewModelWrapper: any ExportPlaylistViewModel, musicPlayerUseCase: MusicPlayerUseCase) {
         self.appleMusicConnectViewModel = appleMusicConnectViewModel
         self.exportViewModelWrapper = exportViewModelWrapper
+        self.musicPlayerUseCase = musicPlayerUseCase
+
+        // UseCase 상태 변경 알림 설정
+        self.musicPlayerUseCase.onPlaybackStateChanged = { [weak self] trackId, isPlaying in
+            DispatchQueue.main.async {
+                self?.currentlyPlayingTrackId = trackId
+                self?.isPlaying = isPlaying
+            }
+        }
+        
+        // UseCase 진행률 변경 알림 설정
+        self.musicPlayerUseCase.onProgressChanged = { [weak self] progress in
+            print("🎯 [MusicViewModelWrapper] 진행률 받음: \(progress)")
+            DispatchQueue.main.async {
+                self?.playbackProgress = progress
+                print("🎯 [MusicViewModelWrapper] UI 진행률 업데이트 완료: \(self?.playbackProgress ?? 0)")
+            }
+        }
 
         appleMusicConnectViewModel.authorizationStatus.observe(on: self) { [weak self] status in
             DispatchQueue.main.async {
@@ -219,7 +239,7 @@ final class MusicViewModelWrapper: ObservableObject {
             let remainingTrackIds = playlistEntries.map { $0.trackId }
             if !remainingTrackIds.contains(playingTrackId) {
                 Task {
-                    await stopPreview()
+                    await musicPlayerUseCase.stopPreview()
                 }
             }
         }
@@ -227,100 +247,9 @@ final class MusicViewModelWrapper: ObservableObject {
     
     /// 30초 미리듣기 재생/일시정지 토글
     func togglePreview(for trackId: String) {
-        print("🎯 앨범 커버 탭됨 - trackId: \(trackId)")
-        print("🎯 현재 재생 중인 곡: \(currentlyPlayingTrackId ?? "없음")")
-        print("🎯 재생 상태: \(isPlaying)")
         
-        if currentlyPlayingTrackId == trackId && isPlaying {
-            // 같은 곡이 재생 중이면 일시정지
-            print("🎯 일시정지 실행")
-            pausePreview()
-        } else {
-            // 다른 곡이거나 재생 중이 아니면 재생 시작
-            print("🎯 재생 시작 실행")
-            playPreview(trackId: trackId)
-        }
-    }
-    
-    /// 미리듣기 재생 시작
-    private func playPreview(trackId: String) {
         Task {
-            do {
-                // 이전 곡 중지
-                await stopPreview()
-                
-                // Apple Music 권한 확인
-                let authorizationStatus = await MusicAuthorization.request()
-                guard authorizationStatus == .authorized else {
-                    print("❌ Apple Music 권한이 필요합니다")
-                    return
-                }
-                
-                // MusicKit으로 곡 정보 가져오기
-                let musicItemID = MusicItemID(trackId)
-                let request = MusicCatalogResourceRequest<Song>(matching: \.id, equalTo: musicItemID)
-                let response = try await request.response()
-                
-                guard let song = response.items.first else {
-                    print("❌ 곡을 찾을 수 없습니다: \(trackId)")
-                    return
-                }
-                
-                // 재생 시작
-                player.queue = [song]
-                try await player.play()
-                
-                await MainActor.run {
-                    self.currentlyPlayingTrackId = trackId
-                    self.isPlaying = true
-                    print("🎵 재생 시작: \(song.title)")
-                }
-                
-                // 30초 후 자동 정지
-                DispatchQueue.main.asyncAfter(deadline: .now() + 30) {
-                    if self.currentlyPlayingTrackId == trackId {
-                        Task {
-                            await self.stopPreview()
-                        }
-                    }
-                }
-                
-            } catch {
-                print("❌ 재생 실패: \(error.localizedDescription)")
-                await MainActor.run {
-                    self.currentlyPlayingTrackId = nil
-                    self.isPlaying = false
-                }
-            }
-        }
-    }
-    
-    /// 미리듣기 일시정지
-    private func pausePreview() {
-        Task {
-            do {
-                try await player.pause()
-                await MainActor.run {
-                    self.isPlaying = false
-                    print("⏸️ 일시정지")
-                }
-            } catch {
-                print("❌ 일시정지 실패: \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    /// 미리듣기 중지
-    private func stopPreview() async {
-        do {
-            try await player.stop()
-            await MainActor.run {
-                self.currentlyPlayingTrackId = nil
-                self.isPlaying = false
-                print("⏹️ 재생 중지")
-            }
-        } catch {
-            print("❌ 중지 실패: \(error.localizedDescription)")
+            await musicPlayerUseCase.togglePreview(for: trackId)
         }
     }
 }

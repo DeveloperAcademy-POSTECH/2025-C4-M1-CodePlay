@@ -14,11 +14,11 @@ struct CustomList: View {
     let trackId: String  // 트랙 ID (미리듣기용)
     let isCurrentlyPlaying: Bool // 현재 재생 중인지 여부
     let isPlaying: Bool // 재생 상태
+    let playbackProgress: Double // 재생 진행률 (0.0 ~ 1.0)
     let onAlbumCoverTap: () -> Void // 앨범 커버 탭 액션
 
     var body: some View {
         Button(action: {
-            print("🔥 CustomList 전체 탭됨 - trackId: \(trackId)")
             onAlbumCoverTap()
         }) {
             HStack(spacing: 12) {
@@ -52,6 +52,27 @@ struct CustomList: View {
                         @unknown default:
                             EmptyView()
                         }
+                    }
+                    
+                    // 원형 프로그레스 바 (30초 진행률 표시)
+                    if isCurrentlyPlaying && isPlaying {
+                        // 배경 원 (회색)
+                        Circle()
+                            .stroke(Color.white.opacity(0.3), lineWidth: 3)
+                            .frame(width: 56, height: 56)
+                        
+                        // 진행률 원 (하얀색)
+                        Circle()
+                            .trim(from: 0, to: playbackProgress)
+                            .stroke(Color.white, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                            .frame(width: 38, height: 38)
+                            .rotationEffect(.degrees(-90)) // 12시 방향부터 시작
+                            .animation(.linear(duration: 0.1), value: playbackProgress)
+                            .onAppear {
+                            }
+                            .onChange(of: playbackProgress) { newProgress in
+                   
+                            }
                     }
                     
                     // 재생/일시정지 버튼 오버레이
@@ -103,6 +124,22 @@ extension CustomList {
         self.trackId = ""
         self.isCurrentlyPlaying = false
         self.isPlaying = false
+        self.playbackProgress = 0.0
         self.onAlbumCoverTap = {}
     }
+}
+
+#Preview {
+    CustomList(
+        imageUrl: "https://example.com/album.jpg",
+        title: "Sample Song",
+        artist: "Sample Artist",
+        trackId: "sample123",
+        isCurrentlyPlaying: true,
+        isPlaying: true,
+        playbackProgress: 0.3,
+        onAlbumCoverTap: {
+            print("Album cover tapped")
+        }
+    )
 }
