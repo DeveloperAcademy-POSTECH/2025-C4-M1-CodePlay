@@ -28,8 +28,10 @@ struct CodePlayApp: App {
 
     var body: some Scene {
         WindowGroup {
-            AppComponent()
-                .makePosterRootView()
+            let modelContext = sharedModelContainer.mainContext
+            AppComponent(modelContext: modelContext)
+                .makeRootView()
+                .environment(\.modelContext, modelContext)
         }
         .modelContainer(sharedModelContainer)
     }

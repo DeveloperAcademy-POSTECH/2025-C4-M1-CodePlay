@@ -17,9 +17,22 @@
 		D8391C3E2E1CC9C000A44C3F /* CodePlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodePlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		097FB4022E2F3624004F9F4C /* Exceptions for "CodePlay" folder in "CodePlay" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D8391C3D2E1CC9C000A44C3F /* CodePlay */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		D8391C402E1CC9C000A44C3F /* CodePlay */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				097FB4022E2F3624004F9F4C /* Exceptions for "CodePlay" folder in "CodePlay" target */,
+			);
 			path = CodePlay;
 			sourceTree = "<group>";
 		};

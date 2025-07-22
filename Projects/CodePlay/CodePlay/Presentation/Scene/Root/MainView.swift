@@ -2,18 +2,20 @@
 //  MainView.swift
 //  CodePlay
 //
-//  Created by 성현 on 7/15/25.
+//  Created by 성현, Yan on 7/15/25.
 //
 
 import SwiftUI
 
 struct MainView: View {
-    @StateObject private var wrapper: AppleMusicConnectViewModelWrapper
+    @EnvironmentObject var wrapper: MusicViewModelWrapper
+    @Environment(\.scenePhase) var scenePhase
     private let mainFactory: any MainFactory
-
-    init(mainFactory: any MainFactory, wrapper: AppleMusicConnectViewModelWrapper) {
+    private let licenseFactory: any LicenseFactory
+    
+    init(mainFactory: any MainFactory, licenseFactory: any LicenseFactory) {
         self.mainFactory = mainFactory
-        _wrapper = StateObject(wrappedValue: wrapper)
+        self.licenseFactory = licenseFactory
     }
 
     var body: some View {
@@ -22,11 +24,18 @@ struct MainView: View {
                 mainFactory.mainPosterView()
                     .wrapAnyView()
             } else {
-                AppleMusicConnectView(viewModelWrapper: wrapper)
+                licenseFactory.mainLicenseView()
+                    .wrapAnyView()
             }
         }
         .onAppear {
-            wrapper.viewModel.updateMusicAuthorizationStatus()
+            wrapper.appleMusicConnectViewModel.updateMusicAuthorizationStatus()
+        }
+        .onChange(of: scenePhase) { newPhase in
+            if newPhase == .active {
+                wrapper.appleMusicConnectViewModel.updateMusicAuthorizationStatus()
+            }
+            
         }
     }
 }

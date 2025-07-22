@@ -11,10 +11,10 @@ import SwiftData
 
 struct MainPosterView: View {
     @EnvironmentObject var wrapper: PosterViewModelWrapper
+    @EnvironmentObject var musicWrapper: MusicViewModelWrapper
     @State private var recognizedText: String = ""
     @State private var isNavigateToScanPoster = false
     @Environment(\.modelContext) var modelContext
-    let diContainer: MainSceneDIContainer
     
     var body: some View {
         NavigationStack {
@@ -39,10 +39,11 @@ struct MainPosterView: View {
                 .padding(.bottom, 36)
                 
                 NavigationLink(
-                    destination: ExportPlaylistView(
-                       rawText: wrapper.scannedText,
-                       wrapper: diContainer.makeExportPlaylistViewModelWrapper(modelContext: modelContext)),
-                    isActive: $wrapper.shouldNavigateToMakePlaylist
+                    isActive: $wrapper.shouldNavigateToMakePlaylist,
+                    destination: {
+                        ExportPlaylistView(rawText: wrapper.scannedText)
+                            .environmentObject(musicWrapper)
+                    }
                 ) {
                     EmptyView()
                 }
