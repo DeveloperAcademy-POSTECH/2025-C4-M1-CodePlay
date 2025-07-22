@@ -16,6 +16,9 @@ struct PosterItemModel: Equatable, Identifiable {
     var title: String
     var subtitle: String
     var date: String
+    var isEmpty: Bool {
+        return title.isEmpty && subtitle.isEmpty && date.isEmpty && imageURL == nil && image == nil
+    }
     
     mutating func update(image: UIImage) {
         self.image = image
@@ -51,12 +54,12 @@ extension PosterItemModel {
     }
     
     /// 목데이터 추가
-    static let mock: PosterItemModel = PosterItemModel(
-            id: UUID(),
-            imageURL: URL(string: "https://picsum.photos/296/296"),
-            image: nil,
-            title: "2025 부산국제록페스티벌",
-            subtitle: "86 Songs",
-            date: "2025.09.26.(금) ~ 2025.09.28(일)"
-        )
+//    static let mock: PosterItemModel = PosterItemModel(
+//            id: UUID(),
+//            imageURL: URL(string: "https://picsum.photos/296/296"),
+//            image: nil,
+//            title: "2025 부산국제록페스티벌",
+//            subtitle: "86 Songs",
+//            date: "2025.09.26.(금) ~ 2025.09.28(일)"
+//        )
 }
