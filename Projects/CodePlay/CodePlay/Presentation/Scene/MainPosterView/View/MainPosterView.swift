@@ -31,7 +31,11 @@ struct MainPosterView: View {
                     .liquidGlass()
 
                 } else {
-                    OverlappingCardsView(festivals: wrapper.festivalInfo)
+                    VStack {
+                        OverlappingCardsView(festivals: wrapper.festivalInfo)
+                        
+                        Spacer().frame(height: 12)
+                    }
                 }
                 
                 Spacer().frame(height: 56)
