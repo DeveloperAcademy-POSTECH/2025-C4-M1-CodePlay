@@ -34,6 +34,11 @@ final class DefaultScanPosterRepository: ScanPosterRepository {
 
             fullText += text + "\n"
         }
+        
+        print("--- OCR 추출된 전체 텍스트 ---")
+        print(fullText)
+        print("--------------------------")
+        
         let rawText = RawText(text: fullText)
         let parsed = parseFestivalInfo(from: rawText)
         return parsed

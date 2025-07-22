@@ -7,7 +7,7 @@
 import Foundation
 
 protocol ExportPlaylistUseCase {
-    func preProcessRawText(_ rawText: RawText) -> [String]
+    func preProcessRawText(_ rawText: RawText) -> Set<String>
     func searchArtists(from rawText: RawText) async -> [ArtistMatch]
     func searchTopSongs(from rawText: RawText, artistMatches: [ArtistMatch]) async throws -> [PlaylistEntry]
     func exportToAppleMusic(playlist: Playlist, entries: [PlaylistEntry]) async throws
@@ -20,7 +20,7 @@ final class DefaultExportPlaylistUseCase: ExportPlaylistUseCase {
         self.repository = repository
     }
 
-    func preProcessRawText(_ rawText: RawText) -> [String] {
+    func preProcessRawText(_ rawText: RawText) -> Set<String> {
         return repository.prepareArtistCandidates(from: rawText)
     }
 
@@ -29,7 +29,7 @@ final class DefaultExportPlaylistUseCase: ExportPlaylistUseCase {
     }
 
     func searchTopSongs(from rawText: RawText, artistMatches: [ArtistMatch]) async throws -> [PlaylistEntry] {
-        let title = rawText.text.components(separatedBy: .newlines).first ?? "My Playlist"
+        let title = rawText.text.components(separatedBy: CharacterSet.newlines).first ?? "My Playlist"
         let entries = await repository.searchTopSongs(for: artistMatches)
 
         try await repository.savePlaylist(title: title, entries: entries)

@@ -120,7 +120,7 @@ struct ExportSuccessView: View {
 /// - 내부 ViewModel의 상태를 SwiftUI에서 구독 가능하도록 래핑
 final class ExportPlaylistViewModelWrapper: ObservableObject {
     /// 후보 아티스트 문자열 리스트 (OCR → 후보 추출 결과)
-    @Published var artistCandidates: [String] = []
+    @Published var artistCandidates: Set<String> = []
     
     /// 현재 프로세스 단계 (0: 대기, 1: 아티스트 탐색 시작, 2: 아티스트 탐색 완료, 3: 인기곡 추출 완료)
     @Published var progressStep: Int = 0
