@@ -29,7 +29,7 @@ struct MadePlaylistView: View {
                                 CustomList(
                                     imageUrl: entry.albumArtworkUrl,
                                     title: entry.trackTitle,
-                                    artist: entry.artistName
+                                    albumName: entry.albumName
                                 )
                             }
                         }

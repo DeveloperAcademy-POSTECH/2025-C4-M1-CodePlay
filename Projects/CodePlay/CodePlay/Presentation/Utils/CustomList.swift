@@ -10,7 +10,7 @@ import SwiftUI
 struct CustomList: View {
     let imageUrl: String // 이미지 url
     let title: String    // 노래 제목
-    let artist: String   // 가수 이름
+    let albumName: String   // 가수 이름
 
     var body: some View {
         HStack(spacing: 12) {
@@ -49,7 +49,7 @@ struct CustomList: View {
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.black)
 
-                Text(artist)
+                Text(albumName)
                     .font(.system(size: 12))
                     .foregroundColor(.gray)
             }
