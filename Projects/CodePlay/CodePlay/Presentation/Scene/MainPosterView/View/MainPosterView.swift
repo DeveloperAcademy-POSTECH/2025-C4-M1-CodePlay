@@ -32,21 +32,6 @@ struct MainPosterView: View {
 
                 } else {
                     OverlappingCardsView(festivals: wrapper.festivalInfo)
-
-//                    TabView {
-//                            ForEach(wrapper.festivalInfo) { info in
-//                                ArtistCard(
-//                                    imageUrl: info.imageURL?.absoluteString,
-//                                    date: info.date,
-//                                    title: info.title,
-//                                    subTitle: info.subtitle
-//                                )
-//                                .padding(.horizontal, 16)
-//                            }
-//                        }
-//                        .tabViewStyle(.page)
-//                        .indexViewStyle(.page(backgroundDisplayMode: .always))
-//                        .frame(height: 420)
                 }
                 
                 Spacer().frame(height: 56)
