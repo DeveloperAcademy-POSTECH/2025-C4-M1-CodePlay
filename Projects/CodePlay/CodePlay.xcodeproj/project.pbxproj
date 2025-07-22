@@ -168,6 +168,10 @@
 				"",
 				"",
 				"",
+				"",
+				"",
+				"",
+				"",
 			);
 		};
 /* End PBXShellScriptBuildPhase section */

@@ -6,21 +6,38 @@
 //
 
 import SwiftUI
+import SwiftData
+
+private struct AppDependency: RootDependency {
+    let mainFactory: any MainFactory
+    let licenseFactory: any LicenseFactory
+}
 
 final class AppComponent {
+    let modelContext: ModelContext
     private let appDIContainer = AppDIContainer()
     
-    private lazy var appFlowCoordinator: AppFlowCoordinator = .init(appDIContainer: appDIContainer)
-    
-    func makePosterRootView() -> some View {
-        let mainFactory = appFlowCoordinator.mainFlowStart()
-        return rootComponent(mainFactory: mainFactory).makeView()
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
     }
-    
-    private func rootComponent(mainFactory: any MainFactory) -> RootComponent {
-        RootComponent(dependency: MainFactoryDependency(
-                mainFactory: mainFactory,
-                musicWrapper: appDIContainer.appleMusicConnectViewModelWrapper()
-        ))
+
+    private lazy var appFlowCoordinator: AppFlowCoordinator = .init(
+        appDIContainer: appDIContainer, modelContext: modelContext
+    )
+
+    func makeRootView() -> some View {
+        let mainFactory = appFlowCoordinator.mainFlowStart()
+        let licenseFactory = appFlowCoordinator.licenseFlowStart()
+        let diContainer = appDIContainer.mainSceneDIContainer(modelContext: modelContext)
+
+        let musicWrapper =
+            diContainer.appleMusicConnectViewModelWrapper()
+        let posterWraper = diContainer.makePosterViewModelWrapper()
+
+        let rootView = MainView(mainFactory: mainFactory, licenseFactory: licenseFactory)
+            .environmentObject(musicWrapper)
+            .environmentObject(posterWraper)
+        
+        return rootView
     }
 }

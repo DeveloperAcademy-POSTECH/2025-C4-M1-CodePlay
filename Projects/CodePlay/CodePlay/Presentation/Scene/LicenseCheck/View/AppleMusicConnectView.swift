@@ -10,7 +10,7 @@ import MusicKit
 import SwiftUI
 
 struct AppleMusicConnectView: View {
-    @ObservedObject var viewModelWrapper: AppleMusicConnectViewModelWrapper
+    @EnvironmentObject var viewModelWrapper: MusicViewModelWrapper
     @State private var showingSettings = false
 
     var body: some View {
@@ -59,9 +59,10 @@ struct AppleMusicConnectView: View {
                         .font(Font.custom("KoddiUD OnGothic", size: 18))
                         .foregroundColor(.red)
                         .multilineTextAlignment(.center)
-                    
+
                     BottomButton(title: "설정으로 이동") {
-                        viewModelWrapper.viewModel.shouldOpenSettings.value = true
+                        viewModelWrapper.appleMusicConnectViewModel
+                            .shouldOpenSettings.value = true
                     }
                     .padding(.horizontal, 16)
                 }
@@ -69,8 +70,11 @@ struct AppleMusicConnectView: View {
                 BottomButton(
                     title: "Apple Music에 연결",
                     action: {
-                        viewModelWrapper.viewModel
-                            .shouldRequestMusicAuthorization.value = true
+                        Task {
+                            // 권한 요청
+                            viewModelWrapper.appleMusicConnectViewModel
+                                .shouldRequestMusicAuthorization.value = true
+                        }
                     }
                 )
                 .padding(.horizontal, 16)
@@ -96,38 +100,126 @@ struct AppleMusicConnectView: View {
 }
 
 // MARK: - ViewModelWrapper for ObservableObject compatibility
-final class AppleMusicConnectViewModelWrapper: ObservableObject {
+final class MusicViewModelWrapper: ObservableObject {
     @Published var authorizationStatus: MusicAuthorizationStatusModel?
     @Published var subscriptionStatus: MusicSubscriptionModel?
     @Published var errorMessage: String?
     @Published var canPlayMusic: Bool = false
+    @Published var artistCandidates: [String] = []
+    /// 현재 프로세스 단계 (0: 대기, 1: 아티스트 탐색 시작, 2: 아티스트 탐색 완료, 3: 인기곡 추출 완료)
+    @Published var progressStep: Int = 0
+    /// 플레이리스트 생성 완료 후 MadePlaylistView로의 네비게이션 트리거
+    @Published var navigateToMadePlaylist: Bool = false
+    /// Apple Music으로 내보내기 중인지 여부
+    @Published var isExporting: Bool = false
+    /// Apple Music 내보내기 완료 여부
+    @Published var isExportCompleted: Bool = false
+    /// 완성된 플레이리스트 엔트리 목록
+    @Published var playlistEntries: [PlaylistEntry] = []
 
-    var viewModel: any AppleMusicConnectViewModel
+    var appleMusicConnectViewModel: any AppleMusicConnectViewModel
+    var exportViewModel: any ExportPlaylistViewModel
 
-    init(viewModel: any AppleMusicConnectViewModel) {
-        self.viewModel = viewModel
+    init(
+        appleMusicConnectViewModel: any AppleMusicConnectViewModel,
+        exportViewModelWrapper: any ExportPlaylistViewModel
+    ) {
+        self.appleMusicConnectViewModel = appleMusicConnectViewModel
+        self.exportViewModel = exportViewModelWrapper
 
-        viewModel.authorizationStatus.observe(on: self) { [weak self] status in
+        appleMusicConnectViewModel.authorizationStatus.observe(on: self) {
+            [weak self] status in
             DispatchQueue.main.async {
                 self?.authorizationStatus = status
+
+                if status?.status == .authorized {
+                    self?.canPlayMusic = true
+                } else {
+                    self?.canPlayMusic = false
+                }
             }
         }
 
-        viewModel.subscriptionStatus.observe(on: self) { [weak self] subscription in
+        appleMusicConnectViewModel.subscriptionStatus.observe(on: self) {
+            [weak self] subscription in
             DispatchQueue.main.async {
                 self?.subscriptionStatus = subscription
             }
         }
 
-        viewModel.errorMessage.observe(on: self) { [weak self] error in
+        appleMusicConnectViewModel.errorMessage.observe(on: self) {
+            [weak self] error in
             DispatchQueue.main.async {
                 self?.errorMessage = error
             }
         }
 
-        viewModel.canPlayMusic.observe(on: self) { [weak self] canPlay in
+        appleMusicConnectViewModel.canPlayMusic.observe(on: self) {
+            [weak self] canPlay in
             DispatchQueue.main.async {
                 self?.canPlayMusic = canPlay
+            }
+        }
+    }
+    /// View가 나타날 때 호출되는 함수
+    /// - OCR로부터 받은 RawText를 바탕으로 전체 흐름 수행
+    func onAppearOCR(
+        with rawText: RawText?,
+        completion: @escaping (Bool) -> Void
+    ) {
+        guard let rawText = rawText else {
+            completion(false)
+            return
+        }
+        progressStep = 0
+
+        // 1단계: 텍스트 전처리 (후보 아티스트 추출)
+        exportViewModel.preProcessRawText(rawText) { value in
+            if value {
+                print("[MusicViewModelWrapper] 실행됨")
+            } else {
+                print("[MusicViewModelWrapper] 실행안됨")
+            }
+        }
+        progressStep = 1
+
+        Task {
+            // 2단계: 아티스트 검색
+            let matches = await exportViewModel.searchArtists(from: rawText)
+            DispatchQueue.main.async {
+                self.progressStep = 2
+                matches.forEach {
+                    print("✅ \( $0.artistName ) (\($0.appleMusicId))")
+                }
+            }
+
+            // 3단계: 아티스트별 상위 곡 검색
+            let songs = await exportViewModel.searchTopSongs(
+                from: rawText,
+                artistMatches: matches
+            )
+            DispatchQueue.main.async {
+                self.progressStep = 3
+                self.playlistEntries = songs
+                for entry in songs {
+                    print("🎵 \(entry.artistName) - \(entry.trackTitle)")
+                }
+                self.navigateToMadePlaylist = true
+            }
+        }
+    }
+
+    /// Apple Music으로 플레이리스트를 내보내는 트리거 함수
+    func exportToAppleMusic() {
+        isExporting = true
+
+        Task {
+            await exportViewModel.exportLatestPlaylistToAppleMusic()
+
+            // 내보내기 완료 후 상태 업데이트 (5초 후 완료 상태 전환)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                self.isExporting = false
+                self.isExportCompleted = true
             }
         }
     }

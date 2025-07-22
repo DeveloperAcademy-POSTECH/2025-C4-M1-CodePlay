@@ -77,8 +77,16 @@ struct ScanPosterView: UIViewControllerRepresentable {
                 DispatchQueue.main.async {
                     let fullText = recognizedStrings.joined(separator: "\n")
                     self.parent.recognizedText += fullText
-                    self.parent.wrapper.viewModel.scannedText.value = RawText(text: fullText)
-                    self.parent.wrapper.viewModel.shouldNavigateToMakePlaylist.value = true
+                    let rawText = RawText(text: fullText)
+                    self.parent.wrapper.scannedText = rawText
+
+                    /// 비동기로 처리하여 뷰 전환에 딜레이 줌
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        print(
+                            "[ScanPosterView] 네비게이션 트리거 - 현재 scannedText: \(self.parent.wrapper.scannedText)"
+                        )
+                        self.parent.wrapper.shouldNavigateToMakePlaylist = true
+                    }
                 }
             }
 
