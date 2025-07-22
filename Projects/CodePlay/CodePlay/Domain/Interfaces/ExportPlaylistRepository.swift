@@ -38,6 +38,7 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
     // OCR 텍스트에서 아티스트 후보 문자열을 생성 (Set으로 반환하여 자동 중복 제거)
     // 이 함수는 원본 OCR 텍스트(rawText)를 받아서, 아티스트 이름일 가능성이 있는 문자열들을 추출합니다.
     func prepareArtistCandidates(from rawText: RawText) -> Set<String> {
+        print("[ExportPlaylistRepository]-prepareArtistCandidates 실행됨")
         // 1. OCR 텍스트를 줄(newline) 단위로 나눕니다.
         // `CharacterSet.newlines`는 모든 종류의 줄바꿈 문자(LF, CR, CRLF 등)를 포함하는 집합입니다.
         let lines = rawText.text.components(separatedBy: CharacterSet.newlines)

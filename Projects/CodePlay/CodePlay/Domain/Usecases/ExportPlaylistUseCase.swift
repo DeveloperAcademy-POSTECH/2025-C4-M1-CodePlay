@@ -21,6 +21,7 @@ final class DefaultExportPlaylistUseCase: ExportPlaylistUseCase {
     }
 
     func preProcessRawText(_ rawText: RawText) -> Set<String> {
+        print("[DefaultExportPlaylistUseCase]-preProcessRawText실행됨")
         return repository.prepareArtistCandidates(from: rawText)
     }
 

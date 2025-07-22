@@ -27,6 +27,7 @@
         }
 
         func preProcessRawText(_ rawText: RawText) {
+            print("[DefaultExportPlaylistViewModel]-preProcessRawText 실행됨")
 //            let candidates = useCase.preProcessRawText(rawText)
             let candidates: Set<String> = useCase.preProcessRawText(rawText)
             artistCandidates.value = candidates
