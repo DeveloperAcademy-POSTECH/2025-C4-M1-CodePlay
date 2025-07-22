@@ -31,7 +31,22 @@ struct MainPosterView: View {
                     .liquidGlass()
 
                 } else {
-                    ArtistCard(imageUrl: wrapper.festivalInfo.imageURL?.absoluteString, date: wrapper.festivalInfo.date, title: wrapper.festivalInfo.title, subTitle: wrapper.festivalInfo.subtitle)
+                    OverlappingCardsView(festivals: wrapper.festivalInfo)
+
+//                    TabView {
+//                            ForEach(wrapper.festivalInfo) { info in
+//                                ArtistCard(
+//                                    imageUrl: info.imageURL?.absoluteString,
+//                                    date: info.date,
+//                                    title: info.title,
+//                                    subTitle: info.subtitle
+//                                )
+//                                .padding(.horizontal, 16)
+//                            }
+//                        }
+//                        .tabViewStyle(.page)
+//                        .indexViewStyle(.page(backgroundDisplayMode: .always))
+//                        .frame(height: 420)
                 }
                 
                 Spacer().frame(height: 56)
@@ -70,7 +85,7 @@ struct MainPosterView: View {
 
 // MARK: PosterViewModelWrapper
 final class PosterViewModelWrapper: ObservableObject {
-    @Published var festivalInfo: PosterItemModel = .empty
+    @Published var festivalInfo: [PosterItemModel] = PosterItemModel.mock
     @Published var shouldNavigateToMakePlaylist: Bool = false
     @Published var scannedText: RawText? = nil
     var viewModel: any PosterViewModel
@@ -82,8 +97,9 @@ final class PosterViewModelWrapper: ObservableObject {
         
         // Observable을 통해 festivalInfo 변화를 감지하고 업데이트 함
         viewModel.festivalData.observe(on: self) { [weak self] items in
-            guard let item = items.first else {return}
-            self?.festivalInfo = item
+            if !items.isEmpty {
+                self?.festivalInfo = items
+            }
         }
         
         viewModel.shouldNavigateToMakePlaylist.observe(on: self) { [weak self] newData in
