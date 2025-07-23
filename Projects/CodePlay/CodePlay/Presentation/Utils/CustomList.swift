@@ -58,11 +58,6 @@ struct CustomList: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.white)
-                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 0.5)
-        )
-        .padding(.horizontal, 1)
+        .liquidGlass(style: .list)
     }
 }

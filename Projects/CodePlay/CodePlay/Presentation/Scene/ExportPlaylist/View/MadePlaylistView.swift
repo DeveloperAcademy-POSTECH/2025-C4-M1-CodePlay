@@ -19,7 +19,6 @@ struct MadePlaylistView: View {
         )
         
         ZStack {
-            // 🔵 배경 블러
             Color.clear
                 .backgroundWithBlur()
             
@@ -38,7 +37,6 @@ struct MadePlaylistView: View {
                                         title: entry.trackTitle,
                                         albumName: entry.albumName
                                     )
-                                    .liquidGlass()
                                 }
                             }
                         }
@@ -47,11 +45,10 @@ struct MadePlaylistView: View {
                 }
                 .padding(.horizontal, 15)
                 
-                Spacer()
-                
                 BottomButton(title: "Apple Music으로 전송") {
                     wrapper.exportToAppleMusic()
                 }
+                .liquidGlass(style: .listbutton)
                 .padding(.horizontal, 16)
                 .padding(.bottom, 24)
             }
@@ -78,14 +75,14 @@ struct MadePlaylistView: View {
                 }
             }
         }
-        .background(
-            NavigationLink(destination: ExportLoadingView(), isActive: $wrapper.isExporting) {
-                EmptyView()
-            }
-        )
         .fullScreenCover(isPresented: $wrapper.isExportCompleted) {
             ExportSuccessView()
         }
+        
+        NavigationLink(destination: ExportLoadingView(), isActive: $wrapper.isExporting) {
+            EmptyView()
+        }
+        .hidden()
     }
 
 }
