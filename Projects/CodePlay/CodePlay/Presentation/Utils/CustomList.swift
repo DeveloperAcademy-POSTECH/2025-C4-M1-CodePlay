@@ -68,11 +68,6 @@ struct CustomList: View {
                             .frame(width: 38, height: 38)
                             .rotationEffect(.degrees(-90)) // 12시 방향부터 시작
                             .animation(.linear(duration: 0.1), value: playbackProgress)
-                            .onAppear {
-                            }
-                            .onChange(of: playbackProgress) { newProgress in
-                   
-                            }
                     }
                     
                     // 재생/일시정지 버튼 오버레이

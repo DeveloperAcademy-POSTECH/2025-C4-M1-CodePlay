@@ -131,22 +131,22 @@ final class MusicViewModelWrapper: ObservableObject {
         self.exportViewModelWrapper = exportViewModelWrapper
         self.musicPlayerUseCase = musicPlayerUseCase
 
-        // UseCase 상태 변경 알림 설정
-        self.musicPlayerUseCase.onPlaybackStateChanged = { [weak self] trackId, isPlaying in
-            DispatchQueue.main.async {
-                self?.currentlyPlayingTrackId = trackId
-                self?.isPlaying = isPlaying
+        // UseCase를 통해 Repository 콜백 설정
+        self.musicPlayerUseCase.setupRepositoryCallbacks(
+            onPlaybackStateChanged: { [weak self] trackId, isPlaying in
+                DispatchQueue.main.async {
+                    self?.currentlyPlayingTrackId = trackId
+                    self?.isPlaying = isPlaying
+                }
+            },
+            onProgressChanged: { [weak self] progress in
+                print("🎯 [MusicViewModelWrapper] 진행률 받음: \(progress)")
+                DispatchQueue.main.async {
+                    self?.playbackProgress = progress
+                    print("🎯 [MusicViewModelWrapper] UI 진행률 업데이트 완료: \(self?.playbackProgress ?? 0)")
+                }
             }
-        }
-        
-        // UseCase 진행률 변경 알림 설정
-        self.musicPlayerUseCase.onProgressChanged = { [weak self] progress in
-            print("🎯 [MusicViewModelWrapper] 진행률 받음: \(progress)")
-            DispatchQueue.main.async {
-                self?.playbackProgress = progress
-                print("🎯 [MusicViewModelWrapper] UI 진행률 업데이트 완료: \(self?.playbackProgress ?? 0)")
-            }
-        }
+        )
 
         appleMusicConnectViewModel.authorizationStatus.observe(on: self) { [weak self] status in
             DispatchQueue.main.async {
@@ -239,7 +239,7 @@ final class MusicViewModelWrapper: ObservableObject {
             let remainingTrackIds = playlistEntries.map { $0.trackId }
             if !remainingTrackIds.contains(playingTrackId) {
                 Task {
-                    await musicPlayerUseCase.stopPreview()
+                    await musicPlayerUseCase.musicRepository.stopPreview()
                 }
             }
         }
@@ -249,7 +249,7 @@ final class MusicViewModelWrapper: ObservableObject {
     func togglePreview(for trackId: String) {
         
         Task {
-            await musicPlayerUseCase.togglePreview(for: trackId)
+            await musicPlayerUseCase.musicRepository.togglePreview(for: trackId)
         }
     }
 }
