@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct MadePlaylistView: View {
+    @EnvironmentObject var posterWrapper: PosterViewModelWrapper
     @EnvironmentObject var wrapper: MusicViewModelWrapper
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         let groupedEntries: [String: [PlaylistEntry]] = Dictionary(
@@ -16,47 +18,62 @@ struct MadePlaylistView: View {
             by: { $0.artistName }
         )
         
-        VStack(spacing: 0) {
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 8) {
-                    ForEach(groupedEntries.keys.sorted(), id: \.self) { artist in
-                        Section(header:
-                            Text(artist)
-                                .font(.title3)
-                                .bold()
-                        ) {
-                            ForEach(groupedEntries[artist] ?? []) { entry in
-                                CustomList(
-                                    imageUrl: entry.albumArtworkUrl,
-                                    title: entry.trackTitle,
-                                    albumName: entry.albumName
-                                )
+        ZStack {
+            // 🔵 배경 블러
+            Color.clear
+                .backgroundWithBlur()
+            
+            VStack(spacing: 0) {
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 8) {
+                        ForEach(groupedEntries.keys.sorted(), id: \.self) { artist in
+                            Section(header:
+                                Text(artist)
+                                    .font(.title3)
+                                    .bold()
+                            ) {
+                                ForEach(groupedEntries[artist] ?? []) { entry in
+                                    CustomList(
+                                        imageUrl: entry.albumArtworkUrl,
+                                        title: entry.trackTitle,
+                                        albumName: entry.albumName
+                                    )
+                                    .liquidGlass()
+                                }
                             }
                         }
                     }
+                    .padding(.top, 16)
                 }
-                .padding(.top, 16)
+                .padding(.horizontal, 15)
+                
+                Spacer()
+                
+                BottomButton(title: "Apple Music으로 전송") {
+                    wrapper.exportToAppleMusic()
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 24)
             }
-            .padding(.horizontal, 15)
         }
-        
-        Spacer()
-        
-        // Apple Music 내보내기 버튼
-        BottomButton(title: "Apple Music으로 전송") {
-            wrapper.exportToAppleMusic()
-        }
-        .padding(.horizontal, 16)// Home Indicator 공간
-        
-        .background(Color.white)
         .navigationTitle("플레이리스트")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: {
-                    // 뒤로가기 액션
+                    dismiss()
                 }) {
                     Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                }
+            }
+
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    posterWrapper.shouldNavigateToMakePlaylist = false
+                }) {
+                    Image(systemName: "xmark")
                         .foregroundColor(.black)
                 }
             }
@@ -70,4 +87,6 @@ struct MadePlaylistView: View {
             ExportSuccessView()
         }
     }
+
 }
+

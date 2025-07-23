@@ -61,7 +61,7 @@ struct CustomList: View {
         .background(
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color.white)
-                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 1)
+                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 0.5)
         )
         .padding(.horizontal, 1)
     }

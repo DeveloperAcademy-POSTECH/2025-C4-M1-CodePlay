@@ -13,6 +13,7 @@ struct ScanPosterView: UIViewControllerRepresentable {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var wrapper: PosterViewModelWrapper
     @Binding var recognizedText: String
+    @Binding var isPresented: Bool
 
     func makeCoordinator() -> Coordinator {
         return Coordinator(self)
@@ -79,6 +80,7 @@ struct ScanPosterView: UIViewControllerRepresentable {
                     self.parent.recognizedText += fullText
                     self.parent.wrapper.viewModel.scannedText.value = RawText(text: fullText)
                     self.parent.wrapper.viewModel.shouldNavigateToMakePlaylist.value = true
+                    self.parent.isPresented = false
                 }
             }
 

@@ -49,9 +49,10 @@ struct MainPosterView: View {
                 }
             }
             .fullScreenCover(isPresented: $isNavigateToScanPoster) {
-                ScanPosterView(recognizedText: $recognizedText)
+                ScanPosterView(recognizedText: $recognizedText, isPresented: $isNavigateToScanPoster)
                     .environmentObject(wrapper)
             }
+            .backgroundWithBlur()
         }
     }
 }
