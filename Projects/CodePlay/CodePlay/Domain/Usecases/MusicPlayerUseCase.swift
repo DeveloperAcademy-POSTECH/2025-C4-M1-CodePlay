@@ -59,14 +59,6 @@ final class DefaultMusicPlayerUseCase: MusicPlayerUseCase {
     
     init(repository: MusicPlayerRepository) {
         self.repository = repository
-        
-        // Repository 콜백을 UseCase 콜백으로 연결
-        self.repository.onPlaybackStateChanged = { [weak self] trackId, isPlaying in
-            self?.onPlaybackStateChanged?(trackId, isPlaying)
-        }
-        self.repository.onProgressChanged = { [weak self] progress in
-            self?.onProgressChanged?(progress)
-        }
     }
     
     func playPreview(trackId: String) async {

@@ -35,9 +35,9 @@ protocol MusicPlayerRepository {
     /// 진행률 변경 콜백 설정
     var onProgressChanged: ((Double) -> Void)? { get set }
     
-    /// 재생 상태 변경 콜백 설정  
+    /// 재생 상태 변경 콜백 설정
     var onPlaybackStateChanged: ((String?, Bool) -> Void)? { get set }
-} 
+}
 
 // MARK: - Default Music Player Repository Implementation
 final class DefaultMusicPlayerRepository: MusicPlayerRepository {
@@ -116,25 +116,17 @@ final class DefaultMusicPlayerRepository: MusicPlayerRepository {
     }
     
     func pausePreview() async {
-        do {
-            try await pauseTrack()
-            stopProgressTimer()
-            notifyStateChange()
-        } catch {
-  
+        withNotifyStateChange {
+            try? await self.pauseTrack()
+            self.stopProgressTimer()
         }
     }
     
     func stopPreview() async {
-        stopProgressTimer()
-        _playbackProgress = 0.0
-        onProgressChanged?(0.0)
-        
-        do {
-            try await stopTrack()
-            notifyStateChange()
-        } catch {
-            
+        withNotifyStateChange {
+            self.stopProgressTimer()
+            self.resetProgress()
+            try? await self.stopTrack()
         }
     }
     
@@ -184,4 +176,16 @@ final class DefaultMusicPlayerRepository: MusicPlayerRepository {
         let status = getCurrentPlayingStatus()
         onPlaybackStateChanged?(status.trackId, status.isPlaying)
     }
-} 
+
+    private func resetProgress() {
+        _playbackProgress = 0.0
+        onProgressChanged?(0.0)
+    }
+
+    private func withNotifyStateChange(_ block: @escaping () async -> Void) {
+        Task {
+            await block()
+            notifyStateChange()
+        }
+    }
+}
