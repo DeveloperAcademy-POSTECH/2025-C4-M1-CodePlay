@@ -11,49 +11,37 @@ struct MadePlaylistView: View {
     @EnvironmentObject var posterWrapper: PosterViewModelWrapper
     @EnvironmentObject var wrapper: MusicViewModelWrapper
     @Environment(\.dismiss) var dismiss
-    
+
     var body: some View {
         let groupedEntries: [String: [PlaylistEntry]] = Dictionary(
             grouping: wrapper.playlistEntries,
             by: { $0.artistName }
         )
-        
+
         ZStack(alignment: .bottom) {
             Color.clear
                 .backgroundWithBlur()
                 .ignoresSafeArea()
-            
+
             VStack(spacing: 0) {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 8) {
                         ForEach(groupedEntries.keys.sorted(), id: \.self) { artist in
-                            Section(header:
-                                Text(artist)
-                                    .font(.title3)
-                                    .bold()
-                            ) {
-                                ForEach(groupedEntries[artist] ?? []) { entry in
-                                    CustomList(
-                                        imageUrl: entry.albumArtworkUrl,
-                                        title: entry.trackTitle,
-                                        albumName: entry.albumName
-                                    )
-                                }
-                            }
+                            PlaylistSectionView(artist: artist, entries: groupedEntries[artist] ?? [], wrapper: wrapper)
                         }
                     }
                     .padding(.top, 16)
                     .padding(.horizontal, 15)
                     .padding(.bottom, 142)
                 }
+
+                BottomButton(title: "Apple Music으로 전송", kind: .colorFill) {
+                    wrapper.exportToAppleMusic()
+                }
+                .padding(.bottom, 50)
+                .padding(.top, 15)
+                .liquidGlass(style: .listbutton)
             }
-            
-            BottomButton(title: "Apple Music으로 전송", kind: .colorFill) {
-                wrapper.exportToAppleMusic()
-            }
-            .padding(.bottom, 50)
-            .padding(.top, 15)
-            .liquidGlass(style: .listbutton)
         }
         .edgesIgnoringSafeArea(.bottom)
         .navigationTitle("플레이리스트")
@@ -84,11 +72,13 @@ struct MadePlaylistView: View {
         .onAppear {
             UINavigationBar.applyLiquidGlassStyle()
         }
-        
+
         NavigationLink(destination: ExportLoadingView(), isActive: $wrapper.isExporting) {
             EmptyView()
         }
         .hidden()
     }
-
 }
+
+
+

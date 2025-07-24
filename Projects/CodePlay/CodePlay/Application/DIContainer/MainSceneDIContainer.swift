@@ -44,6 +44,10 @@ final class MainSceneDIContainer {
         -> ExportPlaylistUseCase {
         return DefaultExportPlaylistUseCase(repository: repository)
     }
+    
+    private func makeMusicPlayerUseCase() -> MusicPlayerUseCase {
+        return DefaultMusicPlayerUseCase(repository: makeMusicPlayerRepository())
+    }
 
     // MARK: Repository
     private func makeScanPosterRepository() -> ScanPosterRepository {
@@ -56,6 +60,10 @@ final class MainSceneDIContainer {
 
     private func makeExportPlaylistRepository() -> ExportPlaylistRepository {
         return DefaultExportPlaylistRepository(modelContext: modelContext)
+    }
+    
+    private func makeMusicPlayerRepository() -> MusicPlayerRepository {
+        return DefaultMusicPlayerRepository()
     }
     
     // MARK: ViewModel
@@ -85,10 +93,12 @@ final class MainSceneDIContainer {
     func appleMusicConnectViewModelWrapper() -> MusicViewModelWrapper {
            let exportRepository = makeExportPlaylistRepository()
            let exportViewModel = makeExportViewModel(exportRepository: exportRepository)
+           let musicPlayerUseCase = makeMusicPlayerUseCase()
 
            return MusicViewModelWrapper(
                appleMusicConnectViewModel: appleMusicConnectViewModel(),
-               exportViewModelWrapper: exportViewModel
+               exportViewModelWrapper: exportViewModel,
+               musicPlayerUseCase: musicPlayerUseCase
            )
        }
 }
