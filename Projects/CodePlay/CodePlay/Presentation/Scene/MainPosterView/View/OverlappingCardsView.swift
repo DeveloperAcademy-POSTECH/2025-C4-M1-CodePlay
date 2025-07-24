@@ -23,7 +23,7 @@ struct OverlappingCardsView: View {
                 
                 ScrollViewReader { proxy in
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: -10) {
+                        HStack(spacing: -16) {
                             ForEach(
                                 Array(festivals.enumerated()),
                                 id: \.element.id
@@ -65,6 +65,11 @@ struct OverlappingCardsView: View {
                                     }
                                 }
                                 .frame(width: cardWidth, height: 420)
+                                .scrollTransition { content, phase in
+                                    content
+                                        .scaleEffect(phase.isIdentity ? 1.0 : 0.95)
+                                        .opacity(phase.isIdentity ? 1.0 : 0.7)
+                                }
                                 .id(index)
                                 .onTapGesture {
                                     withAnimation(.easeInOut(duration: 0.5)) {
@@ -82,6 +87,9 @@ struct OverlappingCardsView: View {
                         }
                         .padding(.horizontal, geometry.size.width * 0.1)
                     }
+                    .scrollTargetBehavior(.viewAligned)
+                    .scrollTargetLayout()
+                    .scrollPosition(id: .constant(currentIndex))
                     .padding(.bottom, 20)
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
