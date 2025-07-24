@@ -19,7 +19,7 @@ struct ExportSuccessView: View {
                     .font(.title2)
                     .multilineTextAlignment(.center)
 
-                BottomButton(title: "Apple Music으로 이동") {
+                BottomButton(title: "Apple Music으로 이동", kind: .line) {
                     if let url = URL(string: "music://") {
                         UIApplication.shared.open(url)
                     }

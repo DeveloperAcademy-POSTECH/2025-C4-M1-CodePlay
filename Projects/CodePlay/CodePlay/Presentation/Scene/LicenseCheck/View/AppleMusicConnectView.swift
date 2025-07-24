@@ -60,7 +60,7 @@ struct AppleMusicConnectView: View {
                         .foregroundColor(.red)
                         .multilineTextAlignment(.center)
                     
-                    BottomButton(title: "설정으로 이동") {
+                    BottomButton(title: "설정으로 이동", kind: .line) {
                         viewModelWrapper.appleMusicConnectViewModel.shouldOpenSettings.value = true
                     }
                     .padding(.horizontal, 16)
@@ -68,6 +68,7 @@ struct AppleMusicConnectView: View {
             } else {
                 BottomButton(
                     title: "Apple Music에 연결",
+                    kind: .line,
                     action: {
                         Task {
                             // 권한 요청

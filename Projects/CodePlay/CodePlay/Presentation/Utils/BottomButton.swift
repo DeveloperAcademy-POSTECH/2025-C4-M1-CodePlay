@@ -7,40 +7,91 @@
 
 import SwiftUI
 
+enum ButtonKind{
+    case colorFill
+    case line
+}
+
 // MARK: BottomButton - 하단 버튼 컴포넌트
 struct BottomButton: View {
+    @Environment(\.colorScheme) private var colorScheme
+    
     let title: String
+    let kind: ButtonKind
     let action: () -> Void
     
-    @Environment(\.colorScheme) private var colorScheme
+    
+    init(title: String, kind: ButtonKind, action: @escaping () -> Void) {
+        self.title = title
+        self.kind = kind
+        self.action = action
+    }
+    
+    private var mainGradient: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: [
+                Color.second,
+                Color.prime//왜 Color.primary 가 안되는?
+            ]),
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+    }
     
     // TODO: HI-FI 컬러 확정 후 수정 예정
     private var backgroundColor: Color {
         colorScheme == .dark ? .black : .blue
     }
+   
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 999)
-                .frame(maxHeight: 60)
-                .padding(.horizontal, 16)
+            let capsuleShape = RoundedRectangle(cornerRadius: 999)
 
-            Button(action: {
-                action()
-            }, label: {
+            switch kind {
+            case .colorFill:
+                capsuleShape
+                    .fill(mainGradient)
+            case .line:
+                capsuleShape
+                    .fill(Color.clear)
+                    .overlay(
+                        capsuleShape
+                            .stroke(mainGradient, lineWidth: 1)
+                    )
+            }
+
+            Button(action: action) {
                 Text(title)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 87)
+                    .font(.BlgBold)
+                    .fontWeight(.bold)
+                    .foregroundStyle(kind == .colorFill ? Color.white : Color.prime)
+                    .padding(.horizontal, 20)
                     .padding(.vertical, 18)
-            })
+                    .frame(maxWidth: .infinity, maxHeight: 60)
+                    
+            }
         }
+        .contentShape(RoundedRectangle(cornerRadius: 999))
+        .frame(maxWidth: .infinity, maxHeight: 60)
+        .padding(.horizontal, 20)
     }
 }
+
 
 #Preview {
     BottomButton(
         title: "페스티벌 라인업 인식",
+        kind: .colorFill,
+        action: {
+            print("버튼 누름")
+        }
+    )
+    BottomButton(
+        title: "페스티벌 라인업 인식",
+        kind: .line,
         action: {
             print("버튼 누름")
         }
     )
 }
+

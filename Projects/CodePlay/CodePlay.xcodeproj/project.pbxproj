@@ -175,7 +175,6 @@
 				"",
 				"",
 				"",
-				"",
 			);
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -326,7 +325,8 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CodePlay/Info.plist;
-				INFOPLIST_KEY_NSAppleMusicUsageDescription = "이 앱은 Apple Music 콘텐츠에 접근하여 재생목록을 생성하고 음악 추천 기능을 제공합니다.";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 권한 주세요.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -372,7 +372,8 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CodePlay/Info.plist;
-				INFOPLIST_KEY_NSAppleMusicUsageDescription = "이 앱은 Apple Music 콘텐츠에 접근하여 재생목록을 생성하고 음악 추천 기능을 제공합니다.";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 권한 주세요.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

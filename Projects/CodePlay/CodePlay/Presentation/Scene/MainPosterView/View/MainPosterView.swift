@@ -48,7 +48,7 @@ struct MainPosterView: View {
                 
                 Spacer()
                 
-                BottomButton(title: "페스티벌 라인업 인식", action: {
+                BottomButton(title: "페스티벌 라인업 인식", kind: .colorFill, action: {
                     recognizedText = ""
                     isNavigateToScanPoster = true
                 })
