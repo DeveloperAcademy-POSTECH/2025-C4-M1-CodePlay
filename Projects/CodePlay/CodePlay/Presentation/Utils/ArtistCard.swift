@@ -26,11 +26,24 @@ struct ArtistCard: View {
                   .foregroundColor(.clear)
                   .frame(width: 296, height: 296)
                   .background(
-                    Image("ArtistImg")
-                      .resizable()
-                      .aspectRatio(contentMode: .fill)
-                      .frame(width: 296, height: 296)
-                      .clipped()
+                    Group {
+                        // 이미지 URL이 있는 경우 로컬 이미지로 처리
+                        if let imageUrl = imageUrl {
+                            // 모든 이미지를 로컬 이미지로 처리 (http URL도 이미지명으로 간주)
+                            Image(imageUrl)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 296, height: 296)
+                                .clipped()
+                        } else {
+                            // 기본 이미지
+                            Image("ArtistImg")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 296, height: 296)
+                                .clipped()
+                        }
+                    }
                   )
                   .cornerRadius(16)
                   .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
