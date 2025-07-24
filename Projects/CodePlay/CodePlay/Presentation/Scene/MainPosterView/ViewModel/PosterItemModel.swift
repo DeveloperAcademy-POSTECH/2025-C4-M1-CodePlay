@@ -16,7 +16,7 @@ struct PosterItemModel: Equatable, Identifiable {
     var title: String
     var subtitle: String
     var date: String
-    
+
     // 기본 initializer
     init(id: UUID = UUID(), imageURLs: [URL?] = [], image: UIImage? = nil, title: String, subtitle: String, date: String) {
         self.id = id
@@ -26,33 +26,32 @@ struct PosterItemModel: Equatable, Identifiable {
         self.subtitle = subtitle
         self.date = date
     }
-    
-    
+
     var currentImageURL: URL? {
         guard !imageURLs.isEmpty, currentImageIndex < imageURLs.count else { return nil }
         return imageURLs[currentImageIndex]
     }
-    
+
     var isEmpty: Bool {
         return title.isEmpty && subtitle.isEmpty && date.isEmpty
         && imageURLs.isEmpty && image == nil
     }
-    
+
     mutating func update(image: UIImage) {
         self.image = image
     }
-    
+
     mutating func updateFromInfo(_ info: FestivalInfo) {
         self.title = info.title
         self.subtitle = info.subtitle
         self.date = info.date
     }
-    
+
     mutating func nextImage() {
         guard !imageURLs.isEmpty else { return }
         currentImageIndex = (currentImageIndex + 1) % imageURLs.count
     }
-    
+
     mutating func clear() {
         self.image = nil
         self.date = ""
@@ -72,7 +71,7 @@ extension PosterItemModel {
         self.subtitle = info.subtitle
         self.date = info.date
     }
-    
+
     init(info: FestivalInfo, imageURL: URL?, image: UIImage?) {
         self.id = info.id
         self.imageURLs = [imageURL]
@@ -81,11 +80,11 @@ extension PosterItemModel {
         self.subtitle = info.subtitle
         self.date = info.date
     }
-    
+
     static var empty: PosterItemModel {
         PosterItemModel(id: UUID(), imageURLs: [], title: "", subtitle: "", date: "")
     }
-    
+
     /// 목데이터 추가
     static let mock: [PosterItemModel] = [
         PosterItemModel(

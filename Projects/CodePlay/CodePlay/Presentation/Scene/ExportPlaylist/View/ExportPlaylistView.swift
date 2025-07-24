@@ -7,6 +7,7 @@
 
 import SwiftUI
 internal import Combine
+import MusicKit
 
 // MARK: 애플뮤직 플레이리스트로 전송하는 뷰 (hifi 05_1부분)
 struct ExportPlaylistView: View {
@@ -55,4 +56,3 @@ struct ExportPlaylistView: View {
         }
     }
 }
-
