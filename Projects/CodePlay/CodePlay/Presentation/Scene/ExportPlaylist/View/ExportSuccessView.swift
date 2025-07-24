@@ -29,6 +29,7 @@ struct ExportSuccessView: View {
                 Spacer()
             }
             .navigationTitle("전송 완료")
+            .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("닫기") {
@@ -36,6 +37,7 @@ struct ExportSuccessView: View {
                     }
                 }
             }
+            .backgroundWithBlur()
         }
     }
 }

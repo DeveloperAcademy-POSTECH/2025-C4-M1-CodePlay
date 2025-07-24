@@ -64,7 +64,7 @@ struct ArtistCard: View {
                 .padding(.bottom, 18)
             }
         }
-        .liquidGlass()
+        .liquidGlass(style: .card)
         .frame(maxWidth: 320, maxHeight: 420)
     }
 }

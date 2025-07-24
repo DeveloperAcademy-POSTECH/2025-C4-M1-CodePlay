@@ -19,23 +19,26 @@ struct MainView: View {
     }
 
     var body: some View {
-        Group {
-            if wrapper.canPlayMusic {
-                mainFactory.mainPosterView()
-                    .wrapAnyView()
-            } else {
-                licenseFactory.mainLicenseView()
-                    .wrapAnyView()
+        ZStack{
+            Group {
+                if wrapper.canPlayMusic {
+                    mainFactory.mainPosterView()
+                        .wrapAnyView()
+                } else {
+                    licenseFactory.mainLicenseView()
+                        .wrapAnyView()
+                }
             }
-        }
-        .onAppear {
-            wrapper.appleMusicConnectViewModel.updateMusicAuthorizationStatus()
-        }
-        .onChange(of: scenePhase) { newPhase in
-            if newPhase == .active {
+            .onAppear {
                 wrapper.appleMusicConnectViewModel.updateMusicAuthorizationStatus()
             }
-            
+            .onChange(of: scenePhase) { newPhase in
+                if newPhase == .active {
+                    wrapper.appleMusicConnectViewModel.updateMusicAuthorizationStatus()
+                }
+                
+            }
         }
+        .ignoresSafeArea()
     }
 }

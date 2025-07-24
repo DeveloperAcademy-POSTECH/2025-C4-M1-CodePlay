@@ -38,6 +38,8 @@ struct ExportPlaylistView: View {
                 EmptyView()
             }
         }
+        .backgroundWithBlur()
+        .navigationBarBackButtonHidden(true)
         .onAppear {
             wrapper.onAppear(with: rawText)
         }
