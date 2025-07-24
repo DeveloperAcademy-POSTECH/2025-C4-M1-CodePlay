@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct CustomList: View {
-    let imageUrl: String // 이미지 url
-    let title: String    // 노래 제목
-    let artist: String   // 가수 이름
-    let trackId: String  // 트랙 ID (미리듣기용)
-    let isCurrentlyPlaying: Bool // 현재 재생 중인지 여부
-    let isPlaying: Bool // 재생 상태
-    let playbackProgress: Double // 재생 진행률 (0.0 ~ 1.0)
+    let imageUrl: String             // 앨범 커버 URL
+    let title: String                // 노래 제목
+    let albumName: String            // 앨범 이름 (또는 가수 이름)
+    let trackId: String              // 트랙 ID (미리듣기용)
+    let isCurrentlyPlaying: Bool     // 현재 재생 중인지 여부
+    let isPlaying: Bool              // 재생 상태
+    let playbackProgress: Double     // 재생 진행률 (0.0 ~ 1.0)
     let onAlbumCoverTap: () -> Void // 앨범 커버 탭 액션
 
     var body: some View {
@@ -31,7 +31,6 @@ struct CustomList: View {
                                 .frame(width: 48, height: 48)
                                 .background(Color.gray.opacity(0.1))
                                 .cornerRadius(8)
-
                         case .success(let image):
                             image
                                 .resizable()
@@ -39,7 +38,6 @@ struct CustomList: View {
                                 .frame(width: 48, height: 48)
                                 .clipped()
                                 .cornerRadius(8)
-
                         case .failure:
                             Image(systemName: "music.note")
                                 .resizable()
@@ -48,35 +46,34 @@ struct CustomList: View {
                                 .padding(8)
                                 .background(Color.gray.opacity(0.1))
                                 .cornerRadius(8)
-
                         @unknown default:
                             EmptyView()
                         }
                     }
-                    
-                    // 원형 프로그레스 바 (30초 진행률 표시)
-                    if isCurrentlyPlaying && isPlaying {
-                        // 배경 원 (회색)
-                        Circle()
-                            .stroke(Color.white.opacity(0.3), lineWidth: 3)
-                            .frame(width: 56, height: 56)
-                        
-                        // 진행률 원 (하얀색)
-                        Circle()
-                            .trim(from: 0, to: playbackProgress)
-                            .stroke(Color.white, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                            .frame(width: 38, height: 38)
-                            .rotationEffect(.degrees(-90)) // 12시 방향부터 시작
-                            .animation(.linear(duration: 0.1), value: playbackProgress)
-                    }
-                    
-                    // 재생/일시정지 버튼 오버레이
+
+                    // 재생 중일 경우: 진행률 + 재생버튼 오버레이
                     if isCurrentlyPlaying {
+                        // 배경 원
+                        if isPlaying {
+                            Circle()
+                                .stroke(Color.white.opacity(0.3), lineWidth: 3)
+                                .frame(width: 56, height: 56)
+
+                            // 진행률 원
+                            Circle()
+                                .trim(from: 0, to: playbackProgress)
+                                .stroke(Color.white, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                                .frame(width: 38, height: 38)
+                                .rotationEffect(.degrees(-90))
+                                .animation(.linear(duration: 0.1), value: playbackProgress)
+                        }
+
+                        // 재생/일시정지 아이콘
                         ZStack {
                             Circle()
                                 .fill(Color.black.opacity(0.7))
                                 .frame(width: 32, height: 32)
-                            
+
                             Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                                 .foregroundColor(.white)
                                 .font(.system(size: 14, weight: .bold))
@@ -84,12 +81,13 @@ struct CustomList: View {
                     }
                 }
 
+                // 제목 + 앨범명
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundColor(.black)
 
-                    Text(artist)
+                    Text(albumName)
                         .font(.system(size: 12))
                         .foregroundColor(.gray)
                 }
@@ -103,19 +101,20 @@ struct CustomList: View {
                     .fill(Color.white)
                     .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 1)
             )
-            .padding(.horizontal, 16)
-            .padding(.vertical, 4)
         }
         .buttonStyle(PlainButtonStyle())
+        .padding(.horizontal, 16)
+        .padding(.vertical, 4)
+        .liquidGlass(style: .list)
     }
 }
 
-// 기존 이니셜라이저와의 호환성을 위한 extension
+// MARK: - 기존 init 호환용 (간단한 리스트만 쓸 때)
 extension CustomList {
     init(imageUrl: String, title: String, artist: String) {
         self.imageUrl = imageUrl
         self.title = title
-        self.artist = artist
+        self.albumName = artist
         self.trackId = ""
         self.isCurrentlyPlaying = false
         self.isPlaying = false
@@ -128,7 +127,7 @@ extension CustomList {
     CustomList(
         imageUrl: "https://example.com/album.jpg",
         title: "Sample Song",
-        artist: "Sample Artist",
+        albumName: "Sample Album",
         trackId: "sample123",
         isCurrentlyPlaying: true,
         isPlaying: true,

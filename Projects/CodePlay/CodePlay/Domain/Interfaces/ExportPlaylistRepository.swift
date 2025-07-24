@@ -118,6 +118,7 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
 
                     let trackPreviewUrl: String = song.previewAssets?.first?.url?.absoluteString ?? ""
                     let albumArtworkUrl: String = song.artwork?.url(width: 300, height: 300)?.absoluteString ?? ""
+                    let albumName = song.albumTitle ?? "Unknown Album"
 
                     let entry = PlaylistEntry(
                         id: UUID(),
@@ -130,6 +131,7 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                         trackPreviewUrl: trackPreviewUrl,
                         profileArtworkUrl: artist.profileArtworkUrl,
                         albumArtworkUrl: albumArtworkUrl,
+                        albumName: albumName,
                         createdAt: .now
                     )
 

@@ -14,8 +14,8 @@ struct CodePlayApp: App {
     
     var sharedModelContainer: ModelContainer = {
             let schema = Schema([
-                Playlist.self,           // ✅ 포함되어야 함
-                PlaylistEntry.self,      // ✅ 포함되어야 함
+                Playlist.self,
+                PlaylistEntry.self,
             ])
             let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

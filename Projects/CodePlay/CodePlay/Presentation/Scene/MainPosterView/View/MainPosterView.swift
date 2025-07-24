@@ -20,9 +20,25 @@ struct MainPosterView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 Spacer().frame(height: 60)
+        
+                if wrapper.festivalInfo.isEmpty {
+                    VStack(alignment: .center) {
+                        Text("아직 인식한 페스티벌 라인업이 없습니다.")
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(maxHeight: 420)
+                    .padding(.horizontal, 72)
+                    .liquidGlass(style: .card)
+
+                } else {
+                    VStack {
+                        OverlappingCardsView(festivals: wrapper.festivalInfo)
+                        
+                        Spacer().frame(height: 12)
+                    }
+                }
                 
-                ArtistCard(imageUrl: wrapper.festivalInfo.imageURL?.absoluteString, date: wrapper.festivalInfo.date, title: wrapper.festivalInfo.title, subTitle: wrapper.festivalInfo.subtitle)
-                Spacer().frame(height: 36)
+                Spacer().frame(height: 56)
                 
                 Text("페스티벌 포스터로 미리 예습해보세요!")
                 
@@ -36,7 +52,7 @@ struct MainPosterView: View {
                     recognizedText = ""
                     isNavigateToScanPoster = true
                 })
-                .padding(.bottom, 36)
+                .padding(.bottom, 16)
                 
                 NavigationLink(
                     isActive: $wrapper.shouldNavigateToMakePlaylist,
@@ -49,16 +65,17 @@ struct MainPosterView: View {
                 }
             }
             .fullScreenCover(isPresented: $isNavigateToScanPoster) {
-                ScanPosterView(recognizedText: $recognizedText)
+                ScanPosterView(recognizedText: $recognizedText, isPresented: $isNavigateToScanPoster)
                     .environmentObject(wrapper)
             }
+            .backgroundWithBlur()
         }
     }
 }
 
 // MARK: PosterViewModelWrapper
 final class PosterViewModelWrapper: ObservableObject {
-    @Published var festivalInfo: PosterItemModel = .mock
+    @Published var festivalInfo: [PosterItemModel] = PosterItemModel.mock
     @Published var shouldNavigateToMakePlaylist: Bool = false
     @Published var scannedText: RawText? = nil
     var viewModel: any PosterViewModel
@@ -70,8 +87,9 @@ final class PosterViewModelWrapper: ObservableObject {
         
         // Observable을 통해 festivalInfo 변화를 감지하고 업데이트 함
         viewModel.festivalData.observe(on: self) { [weak self] items in
-            guard let item = items.first else {return}
-            self?.festivalInfo = item
+            if !items.isEmpty {
+                self?.festivalInfo = items
+            }
         }
         
         viewModel.shouldNavigateToMakePlaylist.observe(on: self) { [weak self] newData in

@@ -24,11 +24,13 @@ struct ExportLoadingView: View {
 
             Spacer()
         }
+        .navigationBarBackButtonHidden(true)
         .onAppear {
             withAnimation(.easeInOut(duration: 5)) {
                 progress = 1.0
             }
         }
+        .backgroundWithBlur()
     }
 }
 
