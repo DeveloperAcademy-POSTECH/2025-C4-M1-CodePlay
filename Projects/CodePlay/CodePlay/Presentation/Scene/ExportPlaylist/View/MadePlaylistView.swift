@@ -48,7 +48,7 @@ struct MadePlaylistView: View {
                 }
             }
             
-            BottomButton(title: "Apple Music으로 전송") {
+            BottomButton(title: "Apple Music으로 전송", kind: .colorFill) {
                 wrapper.exportToAppleMusic()
             }
             .padding(.bottom, 50)
