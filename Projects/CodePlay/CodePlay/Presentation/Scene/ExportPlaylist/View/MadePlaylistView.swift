@@ -84,7 +84,6 @@ struct MadePlaylistView: View {
         .onAppear {
             UINavigationBar.applyLiquidGlassStyle()
         }
-
         
         NavigationLink(destination: ExportLoadingView(), isActive: $wrapper.isExporting) {
             EmptyView()

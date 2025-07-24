@@ -110,17 +110,14 @@ struct LiquidGlassModifier: ViewModifier {
             content
                 .background(
                     ZStack {
-                        // Blur 효과
                         Rectangle()
                             .fill(.ultraThinMaterial)
 
-                        // 위에 덮는 LinearGradient
                         Rectangle()
                             .fill(Color.white.opacity(0.1))
                     }
                 )
                 .ignoresSafeArea()
-
         }
     }
 }
