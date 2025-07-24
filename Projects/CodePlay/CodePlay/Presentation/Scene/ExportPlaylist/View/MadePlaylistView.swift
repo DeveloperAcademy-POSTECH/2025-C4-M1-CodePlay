@@ -44,8 +44,8 @@ struct MadePlaylistView: View {
                     }
                     .padding(.top, 16)
                     .padding(.horizontal, 15)
+                    .padding(.bottom, 142)
                 }
-                .contentMargins(.top, 0)
             }
             
             BottomButton(title: "Apple Music으로 전송") {
