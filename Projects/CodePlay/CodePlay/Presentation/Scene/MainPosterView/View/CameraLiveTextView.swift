@@ -170,9 +170,8 @@ class CameraLiveTextViewController: UIViewController {
     }
     
     private func setupUI() {
-        // TODO: 상단 닫기 버튼 -> 네비게이션 바로 수정
         let closeButton = UIButton(type: .system)
-        closeButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        closeButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
         closeButton.tintColor = .white
         closeButton.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         closeButton.layer.cornerRadius = 20
@@ -183,7 +182,7 @@ class CameraLiveTextViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            closeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            closeButton.trailingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60),
             closeButton.widthAnchor.constraint(equalToConstant: 40),
             closeButton.heightAnchor.constraint(equalToConstant: 40)
         ])
@@ -217,10 +216,8 @@ class CameraLiveTextViewController: UIViewController {
         // 영역 내 텍스트들을 위치순으로 정렬하고 합치기
         let sortedTexts = textsInRegion.sorted { first, second in
             if abs(first.boundingBox.minY - second.boundingBox.minY) < 20 {
-                // 같은 줄이면 x 좌표로 정렬
                 return first.boundingBox.minX < second.boundingBox.minX
             } else {
-                // 다른 줄이면 y 좌표로 정렬
                 return first.boundingBox.minY < second.boundingBox.minY
             }
         }
@@ -234,6 +231,7 @@ class CameraLiveTextViewController: UIViewController {
             
             // 텍스트 전달
             delegate?.didSelectRegion(with: combinedText)
+            print(":\(combinedText)")
         }
     }
     
