@@ -175,7 +175,6 @@
 				"",
 				"",
 				"",
-				"",
 			);
 		};
 /* End PBXShellScriptBuildPhase section */
