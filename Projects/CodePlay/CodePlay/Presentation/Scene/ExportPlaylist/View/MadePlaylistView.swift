@@ -27,26 +27,7 @@ struct MadePlaylistView: View {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 8) {
                         ForEach(groupedEntries.keys.sorted(), id: \.self) { artist in
-                            Section(header:
-                                Text(artist)
-                                    .font(.title3)
-                                    .bold()
-                            ) {
-                                ForEach(groupedEntries[artist] ?? []) { entry in
-                                    CustomList(
-                                        imageUrl: entry.albumArtworkUrl,
-                                        title: entry.trackTitle,
-                                        artist: entry.artistName,
-                                        trackId: entry.trackId,
-                                        isCurrentlyPlaying: wrapper.currentlyPlayingTrackId == entry.trackId,
-                                        isPlaying: wrapper.isPlaying,
-                                        playbackProgress: wrapper.playbackProgress,
-                                        onAlbumCoverTap: {
-                                            wrapper.togglePreview(for: entry.trackId)
-                                        }
-                                    )
-                                }
-                            }
+                            PlaylistSectionView(artist: artist, entries: groupedEntries[artist] ?? [], wrapper: wrapper)
                         }
                     }
                     .padding(.top, 16)
