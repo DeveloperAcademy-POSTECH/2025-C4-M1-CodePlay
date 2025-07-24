@@ -21,6 +21,7 @@ struct MadePlaylistView: View {
         ZStack(alignment: .bottom) {
             Color.clear
                 .backgroundWithBlur()
+                .ignoresSafeArea()
             
             VStack(spacing: 0) {
                 ScrollView {
@@ -44,6 +45,7 @@ struct MadePlaylistView: View {
                     .padding(.top, 16)
                     .padding(.horizontal, 15)
                 }
+                .contentMargins(.top, 0)
             }
             
             BottomButton(title: "Apple Music으로 전송") {
@@ -52,7 +54,6 @@ struct MadePlaylistView: View {
             .padding(.bottom, 50)
             .padding(.top, 15)
             .liquidGlass(style: .listbutton)
-            .border(.black)
         }
         .edgesIgnoringSafeArea(.bottom)
         .navigationTitle("플레이리스트")
@@ -80,6 +81,10 @@ struct MadePlaylistView: View {
         .fullScreenCover(isPresented: $wrapper.isExportCompleted) {
             ExportSuccessView()
         }
+        .onAppear {
+            UINavigationBar.applyLiquidGlassStyle()
+        }
+
         
         NavigationLink(destination: ExportLoadingView(), isActive: $wrapper.isExporting) {
             EmptyView()

@@ -109,19 +109,18 @@ struct LiquidGlassModifier: ViewModifier {
         case .listbutton:
             content
                 .background(
-                    Rectangle()
-                        .fill(.ultraThinMaterial)
-                        .fill(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    .white.opacity(0.6), .white.opacity(0.3),
-                                ]),
-                                startPoint: UnitPoint(x: 0.0, y: 0.0),
-                                endPoint: UnitPoint(x: 0.1, y: 1.0)
-                            )
-                        )
+                    ZStack {
+                        // Blur 효과
+                        Rectangle()
+                            .fill(.ultraThinMaterial)
+
+                        // 위에 덮는 LinearGradient
+                        Rectangle()
+                            .fill(Color.white.opacity(0.1))
+                    }
                 )
                 .ignoresSafeArea()
+
         }
     }
 }
