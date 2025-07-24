@@ -51,7 +51,7 @@ struct OverlappingCardsView: View {
                                     .frame(width: cardWidth, height: 420)
                                     .scaleEffect(
                                         1.0 - normalizedDistance * 0.1
-                                    )  // 중앙에 가까울수록 크게
+                                    )
                                     .animation(
                                         .easeOut(duration: 0.2),
                                         value: normalizedDistance
@@ -68,12 +68,12 @@ struct OverlappingCardsView: View {
                                 .id(index)
                                 .onTapGesture {
                                     withAnimation(.easeInOut(duration: 0.5)) {
-                                        // 현재 선택된 카드가 아닐 때만 중앙으로 이동
+                                        
                                         if currentIndex != index {
                                             currentIndex = index
                                             proxy.scrollTo(index, anchor: .center)
                                         } else {
-                                            // 이미 선택된 카드를 탭하면 이미지만 변경
+                                            
                                             changeImageForCard(at: index)
                                         }
                                     }
@@ -84,7 +84,6 @@ struct OverlappingCardsView: View {
                     }
                     .padding(.bottom, 20)
                     .onAppear {
-                        // 첫 번째 카드를 중앙에 배치
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             proxy.scrollTo(0, anchor: .center)
                         }

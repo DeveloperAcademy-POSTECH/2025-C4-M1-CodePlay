@@ -8,12 +8,11 @@
 import Foundation
 import UIKit
 
-/// 뷰에 바인딩되는 데이터 모델 - 뷰에 표시될 수정가능한 모델 타입 구조
 struct PosterItemModel: Equatable, Identifiable {
     let id: UUID
-    var imageURLs: [URL?]  // 여러 이미지 URL 배열로 변경
-    var currentImageIndex: Int = 0  // 현재 표시할 이미지 인덱스
-    var image: UIImage?  // SwiftUI에서 즉시 보여줄 때
+    var imageURLs: [URL?]
+    var currentImageIndex: Int = 0
+    var image: UIImage?
     var title: String
     var subtitle: String
     var date: String
@@ -28,7 +27,7 @@ struct PosterItemModel: Equatable, Identifiable {
         self.date = date
     }
     
-    // 현재 선택된 이미지 URL 반환
+    
     var currentImageURL: URL? {
         guard !imageURLs.isEmpty, currentImageIndex < imageURLs.count else { return nil }
         return imageURLs[currentImageIndex]
@@ -36,25 +35,24 @@ struct PosterItemModel: Equatable, Identifiable {
     
     var isEmpty: Bool {
         return title.isEmpty && subtitle.isEmpty && date.isEmpty
-            && imageURLs.isEmpty && image == nil
+        && imageURLs.isEmpty && image == nil
     }
-
+    
     mutating func update(image: UIImage) {
         self.image = image
     }
-
+    
     mutating func updateFromInfo(_ info: FestivalInfo) {
         self.title = info.title
         self.subtitle = info.subtitle
         self.date = info.date
     }
     
-    // 다음 이미지로 순환 변경
     mutating func nextImage() {
         guard !imageURLs.isEmpty else { return }
         currentImageIndex = (currentImageIndex + 1) % imageURLs.count
     }
-
+    
     mutating func clear() {
         self.image = nil
         self.date = ""
@@ -75,7 +73,6 @@ extension PosterItemModel {
         self.date = info.date
     }
     
-    // 단일 URL용 convenience initializer (기존 호환성 유지)
     init(info: FestivalInfo, imageURL: URL?, image: UIImage?) {
         self.id = info.id
         self.imageURLs = [imageURL]
@@ -84,11 +81,11 @@ extension PosterItemModel {
         self.subtitle = info.subtitle
         self.date = info.date
     }
-
+    
     static var empty: PosterItemModel {
         PosterItemModel(id: UUID(), imageURLs: [], title: "", subtitle: "", date: "")
     }
-
+    
     /// 목데이터 추가
     static let mock: [PosterItemModel] = [
         PosterItemModel(
