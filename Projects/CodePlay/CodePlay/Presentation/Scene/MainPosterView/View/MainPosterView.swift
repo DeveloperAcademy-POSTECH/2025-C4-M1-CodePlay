@@ -65,8 +65,12 @@ struct MainPosterView: View {
                 }
             }
             .fullScreenCover(isPresented: $isNavigateToScanPoster) {
-                ScanPosterView(recognizedText: $recognizedText, isPresented: $isNavigateToScanPoster)
-                    .environmentObject(wrapper)
+                CameraLiveTextView(
+                    recognizedText: $recognizedText,
+                    isPresented: $isNavigateToScanPoster
+                )
+                .ignoresSafeArea()
+                .environmentObject(wrapper)
             }
             .backgroundWithBlur()
         }
