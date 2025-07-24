@@ -18,7 +18,7 @@ struct MadePlaylistView: View {
             by: { $0.artistName }
         )
         
-        ZStack {
+        ZStack(alignment: .bottom) {
             Color.clear
                 .backgroundWithBlur()
             
@@ -42,17 +42,19 @@ struct MadePlaylistView: View {
                         }
                     }
                     .padding(.top, 16)
+                    .padding(.horizontal, 15)
                 }
-                .padding(.horizontal, 15)
-                
-                BottomButton(title: "Apple Music으로 전송") {
-                    wrapper.exportToAppleMusic()
-                }
-                .liquidGlass(style: .listbutton)
-                .padding(.horizontal, 16)
-                .padding(.bottom, 24)
             }
+            
+            BottomButton(title: "Apple Music으로 전송") {
+                wrapper.exportToAppleMusic()
+            }
+            .padding(.bottom, 50)
+            .padding(.top, 15)
+            .liquidGlass(style: .listbutton)
+            .border(.black)
         }
+        .edgesIgnoringSafeArea(.bottom)
         .navigationTitle("플레이리스트")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
