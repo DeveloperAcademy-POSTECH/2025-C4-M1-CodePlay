@@ -20,6 +20,7 @@ final class PlaylistEntry {
     var trackPreviewUrl: String
     var profileArtworkUrl: String
     var albumArtworkUrl: String
+    var albumName: String
     var createdAt: Date
 
     init(
@@ -33,6 +34,7 @@ final class PlaylistEntry {
         trackPreviewUrl: String,
         profileArtworkUrl: String,
         albumArtworkUrl: String,
+        albumName: String,
         createdAt: Date = .now
     ) {
         self.id = id
@@ -45,6 +47,7 @@ final class PlaylistEntry {
         self.trackPreviewUrl = trackPreviewUrl
         self.profileArtworkUrl = profileArtworkUrl
         self.albumArtworkUrl = albumArtworkUrl
+        self.albumName = albumName
         self.createdAt = createdAt
     }
 }

@@ -13,6 +13,7 @@ struct ScanPosterView: UIViewControllerRepresentable {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var wrapper: PosterViewModelWrapper
     @Binding var recognizedText: String
+    @Binding var isPresented: Bool
 
     func makeCoordinator() -> Coordinator {
         return Coordinator(self)
