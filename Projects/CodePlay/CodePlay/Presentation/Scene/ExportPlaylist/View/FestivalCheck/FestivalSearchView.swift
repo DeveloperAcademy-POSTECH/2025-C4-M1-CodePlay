@@ -9,6 +9,8 @@ import SwiftUI
 
 struct FestivalSearchView: View {
     @Environment(\.dismiss) var dismiss
+    @State private var searchText = ""
+    @FocusState private var isSearchFocused: Bool
 
     // 더미데이터
     let recommendedSearches = [
@@ -52,7 +54,7 @@ struct FestivalSearchView: View {
                             FestivalBox(title: searchTerm)
                         }
                     }
-                    .frame(alignment: .leading)                    
+                    .frame(alignment: .leading)
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 24)
@@ -66,9 +68,12 @@ struct FestivalSearchView: View {
         .toolbar {
             // TODO: 특정뷰로 이동하도록 로직 수정 필요
             ToolbarItem(placement: .navigationBarLeading) {
-                Button("닫기") {
-                    dismiss()
-                }
+                Image(systemName: "chevron.left")
+                    .foregroundColor(.black)
+            }
+            
+            ToolbarItem(placement: .principal) {
+                SearchTextField(text: $searchText, isSearchFocused: $isSearchFocused)
             }
 
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -77,6 +82,39 @@ struct FestivalSearchView: View {
                 }
             }
         }
+    }
+}
+
+struct SearchTextField: View {
+    @Binding var text: String
+    @FocusState.Binding var isSearchFocused: Bool
+    
+    var body: some View {
+        HStack {
+            Image(systemName: "magnifyingglass")
+                .foregroundColor(.gray)
+                .font(.system(size: 16))
+            
+            TextField("페스티벌 이름을 입력하세요", text: $text)
+                .focused($isSearchFocused)
+                .textFieldStyle(PlainTextFieldStyle())
+                .font(.system(size: 16))
+            
+            if !text.isEmpty {
+                Button(action: {
+                    text = ""
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                        .font(.system(size: 16))
+                }
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(Color(.systemGray6))
+        .cornerRadius(10)
+        .frame(maxWidth: .infinity)
     }
 }
 
