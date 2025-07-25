@@ -14,6 +14,7 @@ struct MainPosterView: View {
     @EnvironmentObject var musicWrapper: MusicViewModelWrapper
     @State private var recognizedText: String = ""
     @State private var isNavigateToScanPoster = false
+    @State private var isNavigateToExmapleView = false // 예시뷰
     @Environment(\.modelContext) var modelContext
     
     var body: some View {
@@ -63,6 +64,14 @@ struct MainPosterView: View {
                 ) {
                     EmptyView()
                 }
+                
+                // TODO: UI확인을 위해 임시로 첫번째 공연 포스터를 들고오도록 설정 -> 추후 수정
+                NavigationLink(
+                    destination: FestivalCheckView(festival: wrapper.festivalInfo.first!),
+                    isActive: $isNavigateToExmapleView
+                ) {
+                    EmptyView()
+                }
             }
             .fullScreenCover(isPresented: $isNavigateToScanPoster) {
                 CameraLiveTextView(
@@ -71,6 +80,15 @@ struct MainPosterView: View {
                 )
                 .ignoresSafeArea()
                 .environmentObject(wrapper)
+            }
+            .toolbar { // 임시뷰
+                ToolbarItem {
+                    Button(action: {
+                        isNavigateToExmapleView = true
+                    }, label: {
+                        Text("버튼")
+                    })
+                }
             }
             .backgroundWithBlur()
         }

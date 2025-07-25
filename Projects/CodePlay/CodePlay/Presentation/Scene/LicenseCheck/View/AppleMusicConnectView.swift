@@ -33,9 +33,9 @@ struct AppleMusicConnectView: View {
 
             // 2. 큰 제목 텍스트
             Text("Apple Music을\n연결해주세요")
-                .font(Font.custom("KoddiUD OnGothic", size: 30).weight(.bold))
+                .font(.HlgBold())
                 .multilineTextAlignment(.center)
-                .foregroundColor(.black)
+                .foregroundColor(Color.neutral900)
                 .frame(maxWidth: .infinity, alignment: .center)
 
             // 제목과 설명 사이 간격
@@ -43,9 +43,9 @@ struct AppleMusicConnectView: View {
 
             // 3. 설명 텍스트
             Text("페스티벌 플레이리스트 생성을 위해\nApple Music을 연결해주세요.")
-                .font(Font.custom("KoddiUD OnGothic", size: 17))
+                .font(.BmdRegular())
                 .multilineTextAlignment(.center)
-                .foregroundColor(.black)
+                .foregroundColor(Color.neutral700)
                 .padding(.horizontal, 32)
 
             // 설명과 버튼 사이 간격
