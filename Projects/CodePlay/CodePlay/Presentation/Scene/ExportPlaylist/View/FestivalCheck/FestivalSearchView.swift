@@ -10,6 +10,7 @@ import SwiftUI
 struct FestivalSearchView: View {
     @Environment(\.dismiss) var dismiss
     @State private var searchText = ""
+    @State private var showSearchResults = false
     @FocusState private var isSearchFocused: Bool
 
     // 더미데이터
@@ -22,6 +23,15 @@ struct FestivalSearchView: View {
         "집콕보 2025 밤밤밤페...",
         "경기인디뮤직페스티벌 2...",
         "2025 사운드 플래닛 페...",
+    ]
+
+    // 검색 결과 더미 데이터
+    let searchResults = [
+        "2025 부산국제록페스티벌",
+        "2025 부산국제록페스티벌",
+        "2025 부산국제록페스티벌",
+        "2025 부산국제록페스티벌",
+        "2025 부산국제록페스티벌",
     ]
 
     var body: some View {
@@ -37,6 +47,8 @@ struct FestivalSearchView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     HStack {
                         Text("추천 검색어")
+                            .foregroundColor(Color.neutral900)
+                            .font(.HlgBold())
 
                         Spacer()
 
@@ -45,8 +57,8 @@ struct FestivalSearchView: View {
                             },
                             label: {
                                 Text("전체 삭제")
-                                    .foregroundColor(Color.neutral300)
-
+                                    .font(.BmdRegular())
+                                    .foregroundColor(Color.neutral700)
                             }
                         )
                     }
@@ -62,6 +74,10 @@ struct FestivalSearchView: View {
                     ) {
                         ForEach(recommendedSearches, id: \.self) { searchTerm in
                             FestivalBox(title: searchTerm)
+                                .onTapGesture {
+                                    searchText = searchTerm
+                                    performSearch()
+                                }
                         }
                     }
                     .frame(alignment: .leading)
@@ -106,6 +122,21 @@ struct FestivalSearchView: View {
             }
         }
     }
+
+    /// 검색어와 일치하는 결과가 있는지 확인하는 함수
+    private func performSearch() {
+        if !searchText.isEmpty {
+            let hasResults = recommendedSearches.contains {
+                $0.contains(searchText)
+            }
+            if hasResults {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    showSearchResults = true
+                    isSearchFocused = false
+                }
+            }
+        }
+    }
 }
 
 // MARK: SearchTextField
@@ -118,7 +149,7 @@ struct SearchTextField: View {
             TextField("페스티벌 이름을 입력하세요", text: $text)
                 .focused($isSearchFocused)
                 .textFieldStyle(PlainTextFieldStyle())
-                .font(.system(size: 16))
+                .font(.BmdRegular())
 
             if !text.isEmpty {
                 Button(action: {
@@ -130,7 +161,6 @@ struct SearchTextField: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        //        .background(Color(.systemGray6))
         .cornerRadius(10)
         .frame(maxWidth: .infinity)
     }
