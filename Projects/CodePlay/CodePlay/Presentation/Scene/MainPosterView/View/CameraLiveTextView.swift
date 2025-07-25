@@ -642,7 +642,7 @@ extension CameraLiveTextViewController {
     private func addFixedAreaInstructions() {
         // 상단 안내 텍스트
         let titleLabel = UILabel()
-        titleLabel.text = "영역 안에서 텍스트를 드래그하세요"
+        titleLabel.text = "포스터를 드래그하는 동안 화면을 움직이지 마세요."
         titleLabel.textColor = .white
         titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         titleLabel.textAlignment = .center
