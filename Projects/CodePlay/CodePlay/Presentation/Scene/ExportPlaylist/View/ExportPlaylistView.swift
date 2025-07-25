@@ -12,6 +12,7 @@ import MusicKit
 // MARK: 애플뮤직 플레이리스트로 전송하는 뷰 (hifi 05_1부분)
 struct ExportPlaylistView: View {
     @EnvironmentObject var wrapper: MusicViewModelWrapper
+    @State private var progress : Double = 0.0
     let rawText: RawText?
 
     init(rawText: RawText?) {
@@ -27,10 +28,32 @@ struct ExportPlaylistView: View {
                 .scaledToFit()
                 .frame(width: 320, height: 320)
             
-            ProgressView(value: Double(wrapper.progressStep), total: 3)
-                .progressViewStyle(LinearProgressViewStyle())
-                .padding(.horizontal)
-
+//            ProgressView(value: Double(wrapper.progressStep), total: 3)
+//                .progressViewStyle(LinearProgressViewStyle())
+//                .padding(.horizontal)
+            
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    // 배경
+                    Capsule()
+                        .frame(height: 6)
+                        .foregroundColor(Color.gray.opacity(0.2))
+                    
+                    // 그라디언트 프로그래스
+                    Capsule()
+                        .fill(
+                            LinearGradient(
+                                colors: [Color("Secondary"), Color("Primary")],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .frame(width: geometry.size.width * CGFloat(progress), height: 6)
+                }
+            }
+            .frame(height: 6)
+            .padding(.horizontal, 48)
+            
 //            Text(progressMessage(for: wrapper.progressStep))
 //                .font(.subheadline)
             
@@ -72,3 +95,4 @@ struct ExportPlaylistView: View {
 //        }
 //    }
 }
+
