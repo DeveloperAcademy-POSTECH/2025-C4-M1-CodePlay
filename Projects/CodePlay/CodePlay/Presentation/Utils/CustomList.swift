@@ -50,30 +50,30 @@ struct CustomList: View {
                 
                 // 재생 중일 경우: 진행률 + 재생버튼 오버레이
                 if isCurrentlyPlaying {
-                    // 배경 원
+                    // 배경 원 (48x48 크기로 고정하여 앨범 커버와 동일)
                     if isPlaying {
                         Circle()
-                            .stroke(Color.white.opacity(0.3), lineWidth: 3)
-                            .frame(width: 56, height: 56)
+                            .stroke(Color.white.opacity(0.3), lineWidth: 2)
+                            .frame(width: 40, height: 40)
                         
-                        // 진행률 원
+                        // 진행률 원 (더 작게 조정)
                         Circle()
                             .trim(from: 0, to: playbackProgress)
-                            .stroke(Color.white, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                            .frame(width: 38, height: 38)
+                            .stroke(Color.white, style: StrokeStyle(lineWidth: 2, lineCap: .round))
+                            .frame(width: 40, height: 40)
                             .rotationEffect(.degrees(-90))
                             .animation(.linear(duration: 0.1), value: playbackProgress)
                     }
                     
-                    // 재생/일시정지 아이콘
+                    // 재생/일시정지 아이콘 (크기 고정)
                     ZStack {
                         Circle()
                             .fill(Color.black.opacity(0.7))
-                            .frame(width: 32, height: 32)
+                            .frame(width: 24, height: 24)
                         
                         Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                             .foregroundColor(.white)
-                            .font(.system(size: 14, weight: .bold))
+                            .font(.system(size: 12, weight: .bold))
                     }
                 }
             }
