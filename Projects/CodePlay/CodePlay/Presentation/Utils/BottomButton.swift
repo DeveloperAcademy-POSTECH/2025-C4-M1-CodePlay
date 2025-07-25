@@ -30,8 +30,9 @@ struct BottomButton: View {
     private var mainGradient: LinearGradient {
         LinearGradient(
             gradient: Gradient(colors: [
-                Color("Secondary"),
-                Color("Primary")
+
+                Color("Primary"),
+                Color("Secondary")
             ]),
             startPoint: .leading,
             endPoint: .trailing
