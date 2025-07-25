@@ -31,7 +31,7 @@ struct FestivalSearchView: View {
                 .ignoresSafeArea()
             
             VStack(alignment: .leading) {
-                Spacer().frame(height: 26)
+//                Spacer().frame(height: 26)
                 
                 VStack(alignment: .leading, spacing: 20) {
                     
@@ -59,7 +59,7 @@ struct FestivalSearchView: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 24)
                 .frame(alignment: .topLeading)
-                .background(.white.opacity(0.4))
+                .background(.white.opacity(0.6))
                 .cornerRadius(20)
             }
             .padding(.horizontal, 18)

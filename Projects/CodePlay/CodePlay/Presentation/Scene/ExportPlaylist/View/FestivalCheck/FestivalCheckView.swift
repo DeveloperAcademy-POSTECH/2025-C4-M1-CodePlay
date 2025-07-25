@@ -89,6 +89,7 @@ struct FestivalCheckView: View {
             }
         }
         .edgesIgnoringSafeArea(.bottom)
+        .navigationBarBackButtonHidden(true)
     }
 }
 
