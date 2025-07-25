@@ -8,7 +8,8 @@
 import SwiftUI
 internal import Combine
 
-// MARK: 애플뮤직 플레이리스트로 전송하는 뷰 (hifi 05_1부분)
+
+// MARK: 아티스트별 인기곡을 가져오는 뷰 (hifi 04_1부분)
 struct ExportPlaylistView: View {
     @EnvironmentObject var wrapper: MusicViewModelWrapper
     let rawText: RawText?
@@ -19,6 +20,10 @@ struct ExportPlaylistView: View {
 
     var body: some View {
         VStack(spacing: 20) {
+            
+            GIFImage(gifName: "ArtistLoadLight", width: 280, height: 280)
+                .frame(width: 280, height: 280)
+            
             Text("🎵 플레이리스트 생성 중...")
                 .font(.title2)
 

@@ -15,6 +15,9 @@ struct ExportLoadingView: View {
         VStack(spacing: 24) {
             Spacer()
 
+            GIFImage(gifName: "PlaylistLoadLight", width: 360, height: 400)
+                .frame(width: 360, height: 400)
+            
             Text("Apple Music으로 전송 중...")
                 .font(.title3)
 
