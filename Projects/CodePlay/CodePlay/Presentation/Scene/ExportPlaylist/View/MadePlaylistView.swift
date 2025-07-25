@@ -22,12 +22,13 @@ struct MadePlaylistView: View {
             Color.clear
                 .backgroundWithBlur()
                 .ignoresSafeArea()
-
+            
             VStack(spacing: 0) {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 8) {
                         ForEach(groupedEntries.keys.sorted(), id: \.self) { artist in
                             PlaylistSectionView(artist: artist, entries: groupedEntries[artist] ?? [], wrapper: wrapper)
+                                .liquidGlass(style: .list)
                         }
                     }
                     .padding(.top, 16)
