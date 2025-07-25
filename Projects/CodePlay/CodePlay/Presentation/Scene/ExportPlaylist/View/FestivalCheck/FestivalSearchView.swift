@@ -48,7 +48,7 @@ struct FestivalSearchView: View {
                     HStack {
                         Text("추천 검색어")
                             .foregroundColor(Color.neutral900)
-                            .font(.HlgBold())
+                            .font(.BmdBold())
 
                         Spacer()
 
