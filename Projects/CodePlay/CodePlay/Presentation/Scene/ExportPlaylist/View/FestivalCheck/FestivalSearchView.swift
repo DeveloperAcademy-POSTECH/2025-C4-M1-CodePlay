@@ -11,7 +11,9 @@ struct FestivalSearchView: View {
     @Environment(\.dismiss) var dismiss
     @State private var searchText = ""
     @State private var showSearchResults = false
+    @State private var isNavigate: Bool = false
     @FocusState private var isSearchFocused: Bool
+    let festival: PosterItemModel
 
     // 더미데이터
     let recommendedSearches = [
@@ -43,6 +45,13 @@ struct FestivalSearchView: View {
             } else {
                 searchBeforeView
             }
+            
+            NavigationLink(
+                destination: SelectArtistView(festival: festival),
+                isActive: $isNavigate
+            ) {
+                EmptyView()
+            }.hidden()
         }
         .safeAreaInset(edge: .top) {
             Divider()
@@ -158,23 +167,27 @@ struct FestivalSearchView: View {
 
             LazyVStack(spacing: 12) {
                 ForEach(searchResults, id: \.self) { result in
-                    HStack {
-                        Text(result)
-                            .font(.BlgBold())
-                            .foregroundColor(Color.neutral700)
-                            .lineSpacing(2)
-                            .padding(.leading, 12)
-                            .padding(.vertical, 13)
-                        Spacer()
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: 50)
-                    .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 2)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(.white.opacity(0.9), lineWidth: 2)
-                    )
-                    .background(.white.opacity(0.3))
-                    .cornerRadius(12)
+                    Button(action: {
+                        isNavigate = true
+                    }, label: {
+                        HStack {
+                            Text(result)
+                                .font(.BlgBold())
+                                .foregroundColor(Color.neutral700)
+                                .lineSpacing(2)
+                                .padding(.leading, 12)
+                                .padding(.vertical, 13)
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: 50)
+                        .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 2)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(.white.opacity(0.9), lineWidth: 2)
+                        )
+                        .background(.white.opacity(0.3))
+                        .cornerRadius(12)
+                    })
                 }
             }
             .padding(.horizontal, 18)
@@ -227,8 +240,4 @@ struct SearchTextField: View {
         .cornerRadius(10)
         .frame(maxWidth: .infinity)
     }
-}
-
-#Preview {
-    FestivalSearchView()
 }

@@ -65,8 +65,9 @@ struct MainPosterView: View {
                     EmptyView()
                 }
                 
+                // TODO: UI확인을 위해 임시로 첫번째 공연 포스터를 들고오도록 설정 -> 추후 수정
                 NavigationLink(
-                    destination: FestivalCheckView(),
+                    destination: FestivalCheckView(festival: wrapper.festivalInfo.first!),
                     isActive: $isNavigateToExmapleView
                 ) {
                     EmptyView()
