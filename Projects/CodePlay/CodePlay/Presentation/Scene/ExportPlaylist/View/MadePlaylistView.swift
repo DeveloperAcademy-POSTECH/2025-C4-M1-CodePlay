@@ -22,7 +22,7 @@ struct MadePlaylistView: View {
             Color.clear
                 .backgroundWithBlur()
                 .ignoresSafeArea()
-
+            
             VStack(spacing: 0) {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 8) {

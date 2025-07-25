@@ -50,8 +50,7 @@ struct OverlappingCardsView: View {
                                     )
                                     .frame(width: cardWidth, height: 420)
                                     .scaleEffect(
-                                        1.0 - normalizedDistance * 0.1
-                                    )
+                                        1.0)
                                     .animation(
                                         .easeOut(duration: 0.2),
                                         value: normalizedDistance
