@@ -32,22 +32,12 @@ struct FestivalCheckView: View {
 
                 Spacer().frame(height: 36)
 
-//                if let festival = festival {
                     ArtistCard(
                         imageUrl: festival.currentImageURL?.absoluteString,
                         date: festival.date,
                         title: festival.title,
                         subTitle: festival.subtitle
                     )
-//                } else {
-//                    // 기본 카드 또는 로딩 상태
-//                    ArtistCard(
-//                        imageUrl: nil,
-//                        date: "2025.09.26.(금) ~ 2025.09.28(일)",
-//                        title: "2025 부산국제록페스티벌",
-//                        subTitle: "86 Songs"
-//                    )
-//                }
 
                 Spacer()
 
