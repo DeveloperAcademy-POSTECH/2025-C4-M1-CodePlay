@@ -56,7 +56,7 @@ struct BottomButton: View {
                     .fill(Color.clear)
                     .overlay(
                         capsuleShape
-                            .stroke(mainGradient, lineWidth: 1)
+                            .stroke(mainGradient, lineWidth: 2)
                     )
             }
 

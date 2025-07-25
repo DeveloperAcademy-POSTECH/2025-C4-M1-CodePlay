@@ -18,35 +18,34 @@ struct AppleMusicConnectView: View {
             // 상단 여백 (Safe Area 고려하여 조정)
             Spacer().frame(height: 106)
 
-            ZStack {
-                // 이미지 들어갈 자리
-                Image(systemName: "music.note")
-                    .font(.system(size: 80, weight: .light))
-                    .foregroundColor(.gray)
+            if viewModelWrapper.authorizationStatus?.status == .denied {
+                Image("Linkfail")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 320, height: 320)
+            } else {
+                Image("Linkapplemusic")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 320, height: 320)
             }
-            .frame(width: 280, height: 280)
-            .background(Color(red: 0.86, green: 0.86, blue: 0.86))
-            .cornerRadius(20)
 
             // 사각형과 제목 사이 간격
             Spacer().frame(height: 32)
 
             // 2. 큰 제목 텍스트
-            Text("Apple Music을\n연결해주세요")
-                .font(Font.custom("KoddiUD OnGothic", size: 30).weight(.bold))
-                .multilineTextAlignment(.center)
-                .foregroundColor(.black)
-                .frame(maxWidth: .infinity, alignment: .center)
+            Text("Apple Music을 연결해 주세요")
+                .font(.HlgBold)
+                .foregroundColor(.neutral900)
 
             // 제목과 설명 사이 간격
-            Spacer().frame(height: 4)
+//            Spacer().frame(height: 4)
 
             // 3. 설명 텍스트
-            Text("페스티벌 플레이리스트 생성을 위해\nApple Music을 연결해주세요.")
-                .font(Font.custom("KoddiUD OnGothic", size: 17))
+            Text("페스티벌 플레이리스트 생성을 위해\nApple Music을 연결해 주세요")
                 .multilineTextAlignment(.center)
-                .foregroundColor(.black)
-                .padding(.horizontal, 32)
+                .font(.BmdRegular)
+                .foregroundColor(.neutral700)
 
             // 설명과 버튼 사이 간격
             Spacer()
@@ -82,7 +81,7 @@ struct AppleMusicConnectView: View {
             // 에러 메시지 표시
             if let errorMessage = viewModelWrapper.errorMessage {
                 Text(errorMessage)
-                    .font(Font.custom("KoddiUD OnGothic", size: 14))
+                    .font(.BmdRegular)
                     .foregroundColor(.red)
                     .padding(.horizontal, 16)
                     .padding(.top, 16)

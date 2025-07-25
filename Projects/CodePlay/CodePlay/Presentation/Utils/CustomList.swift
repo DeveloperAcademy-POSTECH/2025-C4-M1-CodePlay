@@ -101,11 +101,12 @@ struct CustomList: View {
                     .fill(Color.white)
                     .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 1)
             )
+             .liquidGlass(style: .list) // 밑에 말고 여기 넣어야 적용
         }
         .buttonStyle(PlainButtonStyle())
         .padding(.horizontal, 16)
         .padding(.vertical, 4)
-        .liquidGlass(style: .list)
+       
     }
 }
 
@@ -124,16 +125,35 @@ extension CustomList {
 }
 
 #Preview {
-    CustomList(
-        imageUrl: "https://example.com/album.jpg",
-        title: "Sample Song",
-        albumName: "Sample Album",
-        trackId: "sample123",
-        isCurrentlyPlaying: true,
-        isPlaying: true,
-        playbackProgress: 0.3,
-        onAlbumCoverTap: {
-            print("Album cover tapped")
+    ZStack {
+        Color.blue
+            .ignoresSafeArea()
+
+        VStack {
+            CustomList(
+                imageUrl: "https://example.com/album.jpg",
+                title: "Sample Song",
+                albumName: "Sample Album",
+                trackId: "sample123",
+                isCurrentlyPlaying: true,
+                isPlaying: true,
+                playbackProgress: 0.3,
+                onAlbumCoverTap: {
+                    print("Album cover tapped")
+                }
+            )
+            CustomList(
+                imageUrl: "https://example.com/album.jpg",
+                title: "Sample Song 2",
+                albumName: "Sample Album 2",
+                trackId: "sample456",
+                isCurrentlyPlaying: false,
+                isPlaying: false,
+                playbackProgress: 0.0,
+                onAlbumCoverTap: {
+                    print("Album cover tapped")
+                }
+            )
         }
-    )
+    }
 }

@@ -31,6 +31,6 @@ extension Font {
 
     static let BsmBold: Font = .KoddiUDOnGothic(.Bold, size: 12)
     static let BsmRegular: Font = .KoddiUDOnGothic(.regular, size: 12)
-    
+        
 }
 

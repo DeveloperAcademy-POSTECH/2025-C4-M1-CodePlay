@@ -15,12 +15,27 @@ struct ExportLoadingView: View {
         VStack(spacing: 24) {
             Spacer()
 
-            Text("Apple Music으로 전송 중...")
-                .font(.title3)
+            Image("SendMusic")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 320, height: 320)
+            
+            Spacer(minLength: 0)
 
             ProgressView(value: progress)
                 .progressViewStyle(.linear)
                 .padding(.horizontal, 32)
+            
+            Text("Apple Music으로\n플레이리스트를 보내는 중...")
+                .font(.HlgBold)
+                .multilineTextAlignment(.center)
+                .foregroundColor(.neutral900)
+            
+//            Spacer().frame(height: 5)
+            
+            Text("잠시만 기다려 주세요")
+                .font(.BmdRegular)
+                .foregroundColor(.neutral700)
 
             Spacer()
         }
