@@ -6,38 +6,81 @@
 //
 
 import SwiftUI
-// MARK: 전송 완료 이후, 애플뮤직 앱으로 전환하는 뷰 (hifi 07_1부분)
+
+// MARK: 전송 완료 이후, 애플뮤직 앱으로 전환하는 뷰
 struct ExportSuccessView: View {
     @Environment(\.dismiss) private var dismiss
-
+    @EnvironmentObject var posterWrapper: PosterViewModelWrapper
+    
     var body: some View {
         NavigationStack {
-            VStack(spacing: 32) {
-                Spacer()
-
-                Text("🎉 전송이 완료되었습니다!")
-                    .font(.title2)
-                    .multilineTextAlignment(.center)
-
-                BottomButton(title: "Apple Music으로 이동", kind: .line) {
-                    if let url = URL(string: "music://") {
-                        UIApplication.shared.open(url)
+            ZStack(alignment: .bottom) {
+                Color.clear
+                    .backgroundWithBlur()
+                    .ignoresSafeArea()
+                
+                VStack(spacing: 0) {
+                    
+                    
+                    Spacer().frame(height: 80)
+                    
+                    
+                    Image("Playlist")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 320, height: 320)
+                    
+                    
+                    Spacer().frame(height: 96)
+                    
+                    
+                    Text("Apple Music에\n플레이리스트를 생성했어요!")
+                        .font(.KoddiUDOnGothic(.Bold, size: 24))
+                        .multilineTextAlignment(.center)
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
+                    
+                    
+                    Spacer().frame(height: 12)
+                    
+                    
+                    Text("애플뮤직에서 생성된 플레이리스트를 확인해보세요.")
+                        .font(.KoddiUDOnGothic(.regular, size: 14))
+                        .multilineTextAlignment(.center)
+                    
+                    
+                    Spacer().frame(height: 80)
+                    
+                    BottomButton(title: "Apple Music으로 가기", kind: .line) {
+                        if let url = URL(string: "music://") {
+                            UIApplication.shared.open(url)
+                        }
                     }
+                    .padding(.bottom, 16)
                 }
-                .padding(.horizontal, 16)
-
-                Spacer()
             }
-            .navigationTitle("전송 완료")
             .navigationBarBackButtonHidden(true)
+            .navigationBarHidden(false)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("닫기") {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        // MainView로 돌아가기 위해 모든 네비게이션 상태 초기화
+                        posterWrapper.shouldNavigateToMakePlaylist = false
+                        posterWrapper.viewModel.clearText()
                         dismiss()
+                    }) {
+                        Image(systemName: "xmark")
+                            .foregroundColor(.black)
+                            .font(.system(size: 16, weight: .medium))
                     }
                 }
             }
-            .backgroundWithBlur()
+            .toolbarBackground(.hidden, for: .navigationBar)
         }
     }
 }
+
+#Preview {
+    ExportSuccessView()
+}
+
