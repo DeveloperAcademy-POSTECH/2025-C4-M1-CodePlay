@@ -191,6 +191,8 @@
 /* Begin XCBuildConfiguration section */
 		D8391C492E1CC9C100A44C3F /* Debug configuration for PBXProject "CodePlay" */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = D8391C402E1CC9C000A44C3F /* CodePlay */;
+			baseConfigurationReferenceRelativePath = Data/Network/Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -255,6 +257,8 @@
 		};
 		D8391C4A2E1CC9C100A44C3F /* Release configuration for PBXProject "CodePlay" */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = D8391C402E1CC9C000A44C3F /* CodePlay */;
+			baseConfigurationReferenceRelativePath = Data/Network/Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -312,6 +316,8 @@
 		};
 		D8391C4C2E1CC9C100A44C3F /* Debug configuration for PBXNativeTarget "CodePlay" */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = D8391C402E1CC9C000A44C3F /* CodePlay */;
+			baseConfigurationReferenceRelativePath = Data/Network/Config.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -326,7 +332,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CodePlay/Info.plist;
-				INFOPLIST_KEY_NSAppleMusicUsageDescription = "이 앱은 Apple Music 콘텐츠에 접근하여 재생목록을 생성하고 음악 추천 기능을 제공합니다.";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 권한 주세요.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -339,6 +345,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = CodePlay.C4App;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -358,6 +365,8 @@
 		};
 		D8391C4D2E1CC9C100A44C3F /* Release configuration for PBXNativeTarget "CodePlay" */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = D8391C402E1CC9C000A44C3F /* CodePlay */;
+			baseConfigurationReferenceRelativePath = Data/Network/Config.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -372,7 +381,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CodePlay/Info.plist;
-				INFOPLIST_KEY_NSAppleMusicUsageDescription = "이 앱은 Apple Music 콘텐츠에 접근하여 재생목록을 생성하고 음악 추천 기능을 제공합니다.";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 권한 주세요.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -385,6 +394,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = CodePlay.C4App;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

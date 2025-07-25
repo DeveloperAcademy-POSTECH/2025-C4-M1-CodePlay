@@ -9,12 +9,12 @@ import Foundation
 import Moya
 
 // MARK: NotificationAPIService
-protocol NotificationAPIServiceProtocol {
+protocol FestInfoAPIServiceProtocol {
     func postDeviceToken(model: PostDeviceTokenRequestDTO) async throws -> [PostDeviceTokenResponseDTO]
 }
 
 // MARK: DefaultNotificationAPIService
-final class NotificationAPIService: BaseAPIService<NotificationTargetType>, NotificationAPIServiceProtocol {
+final class FestInfoAPIService: BaseAPIService<NotificationTargetType>, FestInfoAPIServiceProtocol {
     
     private let provider = MoyaProvider<NotificationTargetType>(plugins: [MoyaLoggerPlugin()])
     

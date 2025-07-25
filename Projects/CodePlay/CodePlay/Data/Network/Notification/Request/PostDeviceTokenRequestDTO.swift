@@ -8,7 +8,7 @@
 import Foundation
 
 /// 디바이스 토큰 - 서버 요청용 DTO
-struct DeviceTokenRequestDTO: Codable {
+struct PostDeviceTokenRequestDTO: Codable {
     let userId: String
     let deviceToken: String
     
