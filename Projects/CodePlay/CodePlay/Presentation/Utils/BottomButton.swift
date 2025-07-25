@@ -31,7 +31,7 @@ struct BottomButton: View {
         LinearGradient(
             gradient: Gradient(colors: [
                 Color("Primary"),
-                Color("Secondary")//왜 Color.primary 가 안되는?
+                Color("Secondary")
             ]),
             startPoint: .leading,
             endPoint: .trailing
