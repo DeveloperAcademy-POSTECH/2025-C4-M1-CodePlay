@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct FestivalCheckView: View {
-    @State private var festival: PosterItemModel?  // 단일 객체로 변경
-
+    @State private var festival: PosterItemModel?
+    @State private var isNavigate: Bool = false
+    
     var body: some View {
         ZStack {
             Color.clear
@@ -61,7 +62,7 @@ struct FestivalCheckView: View {
                     
                     
                     Button(action: {
-                        
+                        isNavigate = true
                     }, label: {
                         ZStack {
                             RoundedRectangle(cornerRadius: 999)
@@ -79,6 +80,13 @@ struct FestivalCheckView: View {
                 .padding(.horizontal, 16)
             }
             .padding(.bottom, 50)
+            
+            NavigationLink(
+                destination: FestivalSearchView(),
+                isActive: $isNavigate
+            ) {
+                EmptyView()
+            }
         }
         .edgesIgnoringSafeArea(.bottom)
     }
