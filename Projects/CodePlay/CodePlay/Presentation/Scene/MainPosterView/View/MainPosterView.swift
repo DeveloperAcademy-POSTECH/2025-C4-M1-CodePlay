@@ -28,7 +28,7 @@ struct MainPosterView: View {
                     }
                     .frame(maxHeight: 420)
                     .padding(.horizontal, 72)
-                    .liquidGlass()
+                    .liquidGlass(style: .card)
 
                 } else {
                     VStack {
@@ -48,7 +48,7 @@ struct MainPosterView: View {
                 
                 Spacer()
                 
-                BottomButton(title: "페스티벌 라인업 인식", action: {
+                BottomButton(title: "페스티벌 라인업 인식", kind: .colorFill, action: {
                     recognizedText = ""
                     isNavigateToScanPoster = true
                 })
@@ -65,9 +65,14 @@ struct MainPosterView: View {
                 }
             }
             .fullScreenCover(isPresented: $isNavigateToScanPoster) {
-                ScanPosterView(recognizedText: $recognizedText)
-                    .environmentObject(wrapper)
+                CameraLiveTextView(
+                    recognizedText: $recognizedText,
+                    isPresented: $isNavigateToScanPoster
+                )
+                .ignoresSafeArea()
+                .environmentObject(wrapper)
             }
+            .backgroundWithBlur()
         }
     }
 }

@@ -19,7 +19,7 @@ struct ExportSuccessView: View {
                     .font(.title2)
                     .multilineTextAlignment(.center)
 
-                BottomButton(title: "Apple Music으로 이동") {
+                BottomButton(title: "Apple Music으로 이동", kind: .line) {
                     if let url = URL(string: "music://") {
                         UIApplication.shared.open(url)
                     }
@@ -29,6 +29,7 @@ struct ExportSuccessView: View {
                 Spacer()
             }
             .navigationTitle("전송 완료")
+            .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("닫기") {
@@ -36,6 +37,7 @@ struct ExportSuccessView: View {
                     }
                 }
             }
+            .backgroundWithBlur()
         }
     }
 }

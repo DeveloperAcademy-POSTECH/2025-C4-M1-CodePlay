@@ -9,7 +9,7 @@ import SwiftUI
 
 enum KoddiUDOnGothic: String, CaseIterable {
     case regular = "KoddiUDOnGothic-Regular"
-    case Bold = "KoddiUDOnGothic-SemiBold"
+    case Bold = "KoddiUDOnGothic-Bold"
 }
 
 extension Font {

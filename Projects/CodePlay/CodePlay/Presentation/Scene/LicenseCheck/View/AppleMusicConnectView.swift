@@ -60,7 +60,7 @@ struct AppleMusicConnectView: View {
                         .foregroundColor(.red)
                         .multilineTextAlignment(.center)
                     
-                    BottomButton(title: "설정으로 이동") {
+                    BottomButton(title: "설정으로 이동", kind: .line) {
                         viewModelWrapper.appleMusicConnectViewModel.shouldOpenSettings.value = true
                     }
                     .padding(.horizontal, 16)
@@ -68,6 +68,7 @@ struct AppleMusicConnectView: View {
             } else {
                 BottomButton(
                     title: "Apple Music에 연결",
+                    kind: .line,
                     action: {
                         Task {
                             // 권한 요청
@@ -114,13 +115,39 @@ final class MusicViewModelWrapper: ObservableObject {
     @Published var isExportCompleted: Bool = false
     /// 완성된 플레이리스트 엔트리 목록
     @Published var playlistEntries: [PlaylistEntry] = []
+    /// 현재 재생 중인 곡의 ID (30초 미리듣기용)
+    @Published var currentlyPlayingTrackId: String?
+    /// 재생 상태 (재생 중/일시정지)
+    @Published var isPlaying: Bool = false
+    /// 재생 진행률 (0.0 ~ 1.0, 30초 기준)
+    @Published var playbackProgress: Double = 0.0
 
     var appleMusicConnectViewModel: any AppleMusicConnectViewModel
     var exportViewModelWrapper: any ExportPlaylistViewModel
+    /// MusicPlayer UseCase (Clean Architecture 적용)
+    private var musicPlayerUseCase: MusicPlayerUseCase
 
-    init(appleMusicConnectViewModel: any AppleMusicConnectViewModel, exportViewModelWrapper: any ExportPlaylistViewModel) {
+    init(appleMusicConnectViewModel: any AppleMusicConnectViewModel, exportViewModelWrapper: any ExportPlaylistViewModel, musicPlayerUseCase: MusicPlayerUseCase) {
         self.appleMusicConnectViewModel = appleMusicConnectViewModel
         self.exportViewModelWrapper = exportViewModelWrapper
+        self.musicPlayerUseCase = musicPlayerUseCase
+
+        // UseCase를 통해 Repository 콜백 설정
+        self.musicPlayerUseCase.setupRepositoryCallbacks(
+            onPlaybackStateChanged: { [weak self] trackId, isPlaying in
+                DispatchQueue.main.async {
+                    self?.currentlyPlayingTrackId = trackId
+                    self?.isPlaying = isPlaying
+                }
+            },
+            onProgressChanged: { [weak self] progress in
+                print("🎯 [MusicViewModelWrapper] 진행률 받음: \(progress)")
+                DispatchQueue.main.async {
+                    self?.playbackProgress = progress
+                    print("🎯 [MusicViewModelWrapper] UI 진행률 업데이트 완료: \(self?.playbackProgress ?? 0)")
+                }
+            }
+        )
 
         appleMusicConnectViewModel.authorizationStatus.observe(on: self) { [weak self] status in
             DispatchQueue.main.async {
@@ -151,6 +178,10 @@ final class MusicViewModelWrapper: ObservableObject {
                 self?.canPlayMusic = canPlay
                 print("[viewModelWrapper]:\(self?.canPlayMusic)")
             }
+        }
+        
+        exportViewModelWrapper.artistCandidates.observe(on: self) { [weak self] candidates in
+            self?.artistCandidates = candidates
         }
     }
     /// View가 나타날 때 호출되는 함수
@@ -197,6 +228,29 @@ final class MusicViewModelWrapper: ObservableObject {
                 self.isExporting = false
                 self.isExportCompleted = true
             }
+        }
+    }
+    
+    /// 플레이리스트에서 특정 곡 삭제
+    func deleteEntry(at indexSet: IndexSet) {
+        playlistEntries.remove(atOffsets: indexSet)
+        
+        // 삭제된 곡이 현재 재생 중이었다면 재생 중지
+        if let playingTrackId = currentlyPlayingTrackId {
+            let remainingTrackIds = playlistEntries.map { $0.trackId }
+            if !remainingTrackIds.contains(playingTrackId) {
+                Task {
+                    await musicPlayerUseCase.musicRepository.stopPreview()
+                }
+            }
+        }
+    }
+    
+    /// 30초 미리듣기 재생/일시정지 토글
+    func togglePreview(for trackId: String) {
+        
+        Task {
+            await musicPlayerUseCase.musicRepository.togglePreview(for: trackId)
         }
     }
 }

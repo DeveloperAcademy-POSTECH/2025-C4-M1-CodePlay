@@ -23,18 +23,31 @@ struct ArtistCard: View {
         ZStack {
             VStack(alignment: .leading) {
                 Rectangle()
-                  .foregroundColor(.clear)
-                  .frame(width: 296, height: 296)
-                  .background(
-                    Image("ArtistImg")
-                      .resizable()
-                      .aspectRatio(contentMode: .fill)
-                      .frame(width: 296, height: 296)
-                      .clipped()
-                  )
-                  .cornerRadius(16)
-                  .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
-
+                    .foregroundColor(.clear)
+                    .frame(width: 296, height: 296)
+                    .background(
+                        Group {
+                            
+                            if let imageUrl = imageUrl {
+                                
+                                Image(imageUrl)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 296, height: 296)
+                                    .clipped()
+                            } else {
+                                
+                                Image("ArtistImg")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 296, height: 296)
+                                    .clipped()
+                            }
+                        }
+                    )
+                    .cornerRadius(16)
+                    .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+                
                 Spacer().frame(height: 16)
                 
                 VStack(alignment: .leading, spacing: 4) {
@@ -51,7 +64,7 @@ struct ArtistCard: View {
                 .padding(.bottom, 18)
             }
         }
-        .liquidGlass()
+        .liquidGlass(style: .card)
         .frame(maxWidth: 320, maxHeight: 420)
     }
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 internal import Combine
+import MusicKit
 
 
 // MARK: 아티스트별 인기곡을 가져오는 뷰 (hifi 04_1부분)
@@ -43,6 +44,8 @@ struct ExportPlaylistView: View {
                 EmptyView()
             }
         }
+        .backgroundWithBlur()
+        .navigationBarBackButtonHidden(true)
         .onAppear {
             wrapper.onAppear(with: rawText)
         }
@@ -58,4 +61,3 @@ struct ExportPlaylistView: View {
         }
     }
 }
-
