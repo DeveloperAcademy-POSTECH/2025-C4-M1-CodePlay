@@ -29,23 +29,33 @@ struct FestivalSearchView: View {
             Color.clear
                 .backgroundWithBlur()
                 .ignoresSafeArea()
-            
+
             VStack(alignment: .leading) {
-//                Spacer().frame(height: 26)
-                
+
+                Spacer().frame(height: 26)
+
                 VStack(alignment: .leading, spacing: 20) {
-                    
                     HStack {
                         Text("추천 검색어")
-                        
+
                         Spacer()
-                        
-                        Text("전체 삭제")
+
+                        Button(
+                            action: {
+                            },
+                            label: {
+                                Text("전체 삭제")
+                                    .foregroundColor(Color.neutral300)
+
+                            }
+                        )
                     }
-                    
                     LazyVGrid(
                         columns: [
-                            GridItem(.adaptive(minimum: 150), alignment: .leading)
+                            GridItem(
+                                .adaptive(minimum: 150),
+                                alignment: .leading
+                            )
 
                         ],
                         spacing: 12
@@ -61,58 +71,66 @@ struct FestivalSearchView: View {
                 .frame(alignment: .topLeading)
                 .background(.white.opacity(0.6))
                 .cornerRadius(20)
+
+                Spacer()
             }
             .padding(.horizontal, 18)
+        }
+        .safeAreaInset(edge: .top) {
+            Divider()
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
             // TODO: 특정뷰로 이동하도록 로직 수정 필요
             ToolbarItem(placement: .navigationBarLeading) {
                 Image(systemName: "chevron.left")
-                    .foregroundColor(.black)
+                    .foregroundColor(.blue)
             }
-            
+
             ToolbarItem(placement: .principal) {
-                SearchTextField(text: $searchText, isSearchFocused: $isSearchFocused)
+                SearchTextField(
+                    text: $searchText,
+                    isSearchFocused: $isSearchFocused
+                )
             }
 
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("취소") {
-                    dismiss()
+                    searchText = ""
                 }
+            }
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                isSearchFocused = true
             }
         }
     }
 }
 
+// MARK: SearchTextField
 struct SearchTextField: View {
     @Binding var text: String
     @FocusState.Binding var isSearchFocused: Bool
-    
+
     var body: some View {
         HStack {
-            Image(systemName: "magnifyingglass")
-                .foregroundColor(.gray)
-                .font(.system(size: 16))
-            
             TextField("페스티벌 이름을 입력하세요", text: $text)
                 .focused($isSearchFocused)
                 .textFieldStyle(PlainTextFieldStyle())
                 .font(.system(size: 16))
-            
+
             if !text.isEmpty {
                 Button(action: {
                     text = ""
                 }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
-                        .font(.system(size: 16))
+
                 }
             }
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(Color(.systemGray6))
+        //        .background(Color(.systemGray6))
         .cornerRadius(10)
         .frame(maxWidth: .infinity)
     }
