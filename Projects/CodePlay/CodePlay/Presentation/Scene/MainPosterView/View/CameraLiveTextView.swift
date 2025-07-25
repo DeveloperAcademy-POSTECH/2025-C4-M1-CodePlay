@@ -159,8 +159,11 @@ class CameraLiveTextViewController: UIViewController {
             }
         }
         
-        textRecognitionRequest.recognitionLanguages = ["ko", "en"]
+        textRecognitionRequest.recognitionLanguages = ["en", "ko"]
         textRecognitionRequest.usesLanguageCorrection = true
+        textRecognitionRequest.recognitionLevel = .accurate
+        textRecognitionRequest.minimumTextHeight = 0.03 // 작은 텍스트도 인식하도록 설정
+        textRecognitionRequest.automaticallyDetectsLanguage = true
     }
     
     private func setupRegionSelection() {
@@ -187,9 +190,9 @@ class CameraLiveTextViewController: UIViewController {
             closeButton.heightAnchor.constraint(equalToConstant: 40)
         ])
         
-        // 하단 안내 텍스트
+        // TODO: 하단 안내 텍스트 - 폰트 사이즈 작게 하기
         let instructionLabel = UILabel()
-        instructionLabel.text = "원하는 영역을 드래그해서 선택하세요"
+        instructionLabel.text = "텍스트를 드래그하는 동안 움직이지 마세요."
         instructionLabel.textColor = .white
         instructionLabel.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         instructionLabel.textAlignment = .center
@@ -200,7 +203,7 @@ class CameraLiveTextViewController: UIViewController {
         view.addSubview(instructionLabel)
         
         NSLayoutConstraint.activate([
-            instructionLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -32),
+            instructionLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 70),
             instructionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             instructionLabel.heightAnchor.constraint(equalToConstant: 32),
             instructionLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 200)
@@ -231,7 +234,7 @@ class CameraLiveTextViewController: UIViewController {
             
             // 텍스트 전달
             delegate?.didSelectRegion(with: combinedText)
-            print(":\(combinedText)")
+            print("combinedText:\(combinedText)")
         }
     }
     
