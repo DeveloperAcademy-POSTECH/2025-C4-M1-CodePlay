@@ -176,7 +176,6 @@ final class MusicViewModelWrapper: ObservableObject {
         appleMusicConnectViewModel.canPlayMusic.observe(on: self) { [weak self] canPlay in
             DispatchQueue.main.async {
                 self?.canPlayMusic = canPlay
-                print("[viewModelWrapper]:\(self?.canPlayMusic)")
             }
         }
         

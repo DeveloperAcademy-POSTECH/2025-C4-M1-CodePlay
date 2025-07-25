@@ -18,38 +18,24 @@ struct ExportSuccessView: View {
                 Color.clear
                     .backgroundWithBlur()
                     .ignoresSafeArea()
-                
                 VStack(spacing: 0) {
-                    
-                    
-                    Spacer().frame(height: 80)
-                    
-                    
                     Image("Playlist")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 320, height: 320)
+                        .padding(.top, 80)
+                        .padding(.bottom, 96)
                     
-                    
-                    Spacer().frame(height: 96)
-                    
-                    
-                    Text("Apple Music에\n플레이리스트를 생성했어요!")
-                        .font(.KoddiUDOnGothic(.Bold, size: 24))
-                        .multilineTextAlignment(.center)
-                        .lineLimit(nil)
-                        .fixedSize(horizontal: false, vertical: true)
-                    
-                    
-                    Spacer().frame(height: 12)
-                    
-                    
-                    Text("애플뮤직에서 생성된 플레이리스트를 확인해보세요.")
-                        .font(.KoddiUDOnGothic(.regular, size: 14))
-                        .multilineTextAlignment(.center)
-                    
-                    
-                    Spacer().frame(height: 80)
+                    VStack(spacing: 12) {
+                        Text("Apple Music에\n플레이리스트를 생성했어요!")
+                            .font(.HlgBold)                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                        
+                        Text("애플뮤직에서 생성된 플레이리스트를 확인해보세요.")
+                            .font(.BmdRegular)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding(.bottom, 80)
                     
                     BottomButton(title: "Apple Music으로 가기", kind: .line) {
                         if let url = URL(string: "music://") {
@@ -80,7 +66,13 @@ struct ExportSuccessView: View {
     }
 }
 
-#Preview {
-    ExportSuccessView()
+struct LoginView_Preview: PreviewProvider {
+    static var devices = ["iPhone 11", "iPhone 16 Pro Max"]
+    static var previews: some View {
+        ForEach(devices, id: \.self) { device in
+            ExportSuccessView()
+                .previewDevice(PreviewDevice(rawValue: device))
+                .previewDisplayName(device)
+        }
+    }
 }
-
