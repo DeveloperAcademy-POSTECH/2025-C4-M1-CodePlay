@@ -23,7 +23,7 @@ struct OverlappingCardsView: View {
                 
                 ScrollViewReader { proxy in
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: -10) {
+                        HStack(spacing: -16) {
                             ForEach(
                                 Array(festivals.enumerated()),
                                 id: \.element.id
@@ -57,14 +57,21 @@ struct OverlappingCardsView: View {
                                         value: normalizedDistance
                                     )
                                     .onChange(of: minX) { _ in
-                                        updateCurrentIndex(
-                                            cardGeometry: cardGeometry,
-                                            index: index,
-                                            cardWidth: cardWidth
-                                        )
+                                        let globalFrame = cardGeometry.frame(in: .global)
+                                        let screenCenter = UIScreen.main.bounds.width / 2
+                                        let cardCenter = globalFrame.midX
+                                        
+                                        if abs(cardCenter - screenCenter) < cardWidth / 3 && currentIndex != index {
+                                            currentIndex = index
+                                        }
                                     }
                                 }
                                 .frame(width: cardWidth, height: 420)
+                                .scrollTransition { content, phase in
+                                    content
+                                        .scaleEffect(phase.isIdentity ? 1.0 : 0.95)
+                                        .opacity(phase.isIdentity ? 1.0 : 0.7)
+                                }
                                 .id(index)
                                 .onTapGesture {
                                     withAnimation(.easeInOut(duration: 0.5)) {
@@ -82,6 +89,8 @@ struct OverlappingCardsView: View {
                         }
                         .padding(.horizontal, geometry.size.width * 0.1)
                     }
+                    .scrollTargetBehavior(.viewAligned)
+                    .scrollTargetLayout()
                     .padding(.bottom, 20)
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -98,7 +107,6 @@ struct OverlappingCardsView: View {
             }
             .frame(height: 420)
             
-            /// 인디케이터 컴포넌트
             HStack {
                 ForEach(0..<festivals.count, id: \.self) { index in
                     Capsule()
