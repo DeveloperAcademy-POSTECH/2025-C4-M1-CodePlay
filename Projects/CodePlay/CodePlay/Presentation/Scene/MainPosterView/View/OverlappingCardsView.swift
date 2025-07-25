@@ -79,9 +79,6 @@ struct OverlappingCardsView: View {
                                         if currentIndex != index {
                                             currentIndex = index
                                             proxy.scrollTo(index, anchor: .center)
-                                        } else {
-                                            
-                                            changeImageForCard(at: index)
                                         }
                                     }
                                 }
