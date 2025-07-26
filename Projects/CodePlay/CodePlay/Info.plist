@@ -4,6 +4,11 @@
 <dict>
 	<key>BASE_URL</key>
 	<string>$(BASE_URL)</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>KoddiUDOnGothic-Bold.otf</string>
+		<string>KoddiUDOnGothic-Regular.otf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

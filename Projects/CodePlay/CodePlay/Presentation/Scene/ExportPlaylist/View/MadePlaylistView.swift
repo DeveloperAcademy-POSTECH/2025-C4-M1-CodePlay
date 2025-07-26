@@ -22,7 +22,7 @@ struct MadePlaylistView: View {
             Color.clear
                 .backgroundWithBlur()
                 .ignoresSafeArea()
-
+            
             VStack(spacing: 0) {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 8) {
@@ -35,7 +35,7 @@ struct MadePlaylistView: View {
                     .padding(.bottom, 142)
                 }
 
-                BottomButton(title: "Apple Music으로 전송") {
+                BottomButton(title: "Apple Music으로 전송", kind: .colorFill) {
                     wrapper.exportToAppleMusic()
                 }
                 .padding(.bottom, 50)
