@@ -22,7 +22,15 @@ struct MainPosterView: View {
             VStack(spacing: 0) {
                 Spacer().frame(height: 60)
         
-                if wrapper.festivalInfo.isEmpty {
+                if let scanned = wrapper.scannedText {
+                    VStack(alignment: .center) {
+                        Text(scanned.text)
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(maxHeight: 420)
+                    .padding(.horizontal, 72)
+                    .liquidGlass(style: .card)
+                } else {
                     VStack(alignment: .center) {
                         Text("아직 인식한 페스티벌 라인업이 없습니다.")
                             .multilineTextAlignment(.center)
@@ -30,13 +38,6 @@ struct MainPosterView: View {
                     .frame(maxHeight: 420)
                     .padding(.horizontal, 72)
                     .liquidGlass(style: .card)
-
-                } else {
-                    VStack {
-                        OverlappingCardsView(festivals: wrapper.festivalInfo)
-                        
-                        Spacer().frame(height: 12)
-                    }
                 }
                 
                 Spacer().frame(height: 56)
@@ -97,7 +98,6 @@ struct MainPosterView: View {
 
 // MARK: PosterViewModelWrapper
 final class PosterViewModelWrapper: ObservableObject {
-    @Published var festivalInfo: [PosterItemModel] = PosterItemModel.mock
     @Published var shouldNavigateToFestivalCheck: Bool = false
     @Published var shouldNavigateToMakePlaylist: Bool = false
     @Published var scannedText: RawText? = nil
@@ -107,13 +107,6 @@ final class PosterViewModelWrapper: ObservableObject {
     
     init(viewModel: any PosterViewModel) {
         self.viewModel = viewModel
-        
-        // Observable을 통해 festivalInfo 변화를 감지하고 업데이트 함
-        viewModel.festivalData.observe(on: self) { [weak self] items in
-            if !items.isEmpty {
-                self?.festivalInfo = items
-            }
-        }
         
         viewModel.shouldNavigateToFestivalCheck.observe(on: self) { [weak self] newData in
             self?.shouldNavigateToFestivalCheck = newData
