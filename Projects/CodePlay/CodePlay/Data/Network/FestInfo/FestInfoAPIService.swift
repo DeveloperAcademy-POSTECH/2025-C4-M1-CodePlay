@@ -9,15 +9,15 @@ import Foundation
 import Moya
 
 // MARK: NotificationAPIService
-protocol PostInfoAPIServiceProtocol {
+protocol FestInfoAPIServiceProtocol {
     func postFestInfoText(model: PostFestInfoTextRequestDTO) async throws -> PostFestInfoResponseDTO
     func postFestInfoVision(model: PostFestInfoVisionRequestDTO) async throws -> PostFestInfoResponseDTO
 }
 
 // MARK: DefaultNotificationAPIService
-final class PostInfoAPIService: BaseAPIService<PostInfoTargetType>, PostInfoAPIServiceProtocol {
+final class FestInfoAPIService: BaseAPIService<FestInfoTargetType>, FestInfoAPIServiceProtocol {
     
-    private let provider = MoyaProvider<PostInfoTargetType>(plugins: [MoyaLoggerPlugin()])
+    private let provider = MoyaProvider<FestInfoTargetType>(plugins: [MoyaLoggerPlugin()])
     
     func postFestInfoText(model: PostFestInfoTextRequestDTO) async throws -> PostFestInfoResponseDTO {
         let response = try await provider.request(.postFestInfoText(model: model))

@@ -9,12 +9,12 @@ import Foundation
 import Moya
 internal import Alamofire
 
-enum PostInfoTargetType {
+enum FestInfoTargetType {
     case postFestInfoText(model: PostFestInfoTextRequestDTO)
     case postFestInfoVision(model: PostFestInfoVisionRequestDTO)
 }
 
-extension PostInfoTargetType: BaseTargetType {
+extension FestInfoTargetType: BaseTargetType {
     var utilPath: UtilPath { return .notification }
     var pathParameter: String? { return .none }
     var queryParameter: [String: Any]? { return .none }

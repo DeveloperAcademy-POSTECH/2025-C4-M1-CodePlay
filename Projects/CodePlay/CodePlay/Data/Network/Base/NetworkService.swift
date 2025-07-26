@@ -14,5 +14,5 @@ final class NetworkService {
     private init() {}
     
     let notificationService: NotificationAPIServiceProtocol = NotificationAPIService()
-//    let festivalinfoService: FestivalInfoAPIServiceProtocol = FestivalAPIService()
+    let festivalinfoService: FestInfoAPIServiceProtocol = FestInfoAPIService()
 }
