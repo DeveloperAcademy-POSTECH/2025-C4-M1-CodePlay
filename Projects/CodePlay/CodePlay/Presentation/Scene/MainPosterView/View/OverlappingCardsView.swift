@@ -42,28 +42,28 @@ struct OverlappingCardsView: View {
                                         1.0
                                     )
                                     
-                                    ArtistCard(
-                                        imageUrl: info.currentImageURL?.absoluteString,
-                                        date: info.date,
-                                        title: info.title,
-                                        subTitle: info.subtitle
-                                    )
-                                    .frame(width: cardWidth, height: 420)
-                                    .scaleEffect(
-                                        1.0)
-                                    .animation(
-                                        .easeOut(duration: 0.2),
-                                        value: normalizedDistance
-                                    )
-                                    .onChange(of: minX) { _ in
-                                        let globalFrame = cardGeometry.frame(in: .global)
-                                        let screenCenter = UIScreen.main.bounds.width / 2
-                                        let cardCenter = globalFrame.midX
-                                        
-                                        if abs(cardCenter - screenCenter) < cardWidth / 3 && currentIndex != index {
-                                            currentIndex = index
-                                        }
-                                    }
+//                                    ArtistCard(
+//                                        imageUrl: info.currentImageURL?.absoluteString,
+//                                        date: info.date,
+//                                        title: info.title,
+//                                        subTitle: info.subtitle
+//                                    )
+//                                    .frame(width: cardWidth, height: 420)
+//                                    .scaleEffect(
+//                                        1.0)
+//                                    .animation(
+//                                        .easeOut(duration: 0.2),
+//                                        value: normalizedDistance
+//                                    )
+//                                    .onChange(of: minX) { _ in
+//                                        let globalFrame = cardGeometry.frame(in: .global)
+//                                        let screenCenter = UIScreen.main.bounds.width / 2
+//                                        let cardCenter = globalFrame.midX
+//                                        
+//                                        if abs(cardCenter - screenCenter) < cardWidth / 3 && currentIndex != index {
+//                                            currentIndex = index
+//                                        }
+//                                    }
                                 }
                                 .frame(width: cardWidth, height: 420)
                                 .scrollTransition { content, phase in

@@ -65,20 +65,20 @@ struct SelectArtistView: View {
         VStack(alignment: .leading, spacing: 4) {
             
             VStack(alignment: .leading) {
-                Text(festival.title)
-                    .font(.HmdBold())
-                    .foregroundColor(.black)
-                    .lineSpacing(2)
-                    
-                Text(festival.subtitle)
-                    .font(.BsmRegular())
-                    .foregroundColor(Color.neutral700)
-                    .lineSpacing(2)
-                
-                Text(festival.date)
-                    .font(.BsmRegular())
-                    .foregroundColor(Color.neutral700)
-                    .lineSpacing(2)
+//                Text(festival.title)
+//                    .font(.HmdBold())
+//                    .foregroundColor(.black)
+//                    .lineSpacing(2)
+//                    
+//                Text(festival.subtitle)
+//                    .font(.BsmRegular())
+//                    .foregroundColor(Color.neutral700)
+//                    .lineSpacing(2)
+//                
+//                Text(festival.date)
+//                    .font(.BsmRegular())
+//                    .foregroundColor(Color.neutral700)
+//                    .lineSpacing(2)
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 15)
