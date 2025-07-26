@@ -24,39 +24,12 @@ struct ExportPlaylistView: View {
         VStack(spacing: 20) {
             Spacer(minLength: 0)
             
-            Image("Artistloading")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 320, height: 320)
+            GIFImage(gifName: "ArtistLoadLight", width: 280, height: 280)
+                            .frame(width: 280, height: 280)
             
-//            ProgressView(value: Double(wrapper.progressStep), total: 3)
-//                .progressViewStyle(LinearProgressViewStyle())
-//                .padding(.horizontal)
             
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    // 배경
-                    Capsule()
-                        .frame(height: 6)
-                        .foregroundColor(Color.gray.opacity(0.2))
-                    
-                    // 그라디언트 프로그래스
-                    Capsule()
-                        .fill(
-                            LinearGradient(
-                                colors: [Color("Secondary"), Color("Primary")],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
-                        .frame(width: geometry.size.width * CGFloat(Double(wrapper.progressStep)), height: 6)
-                }
-            }
-            .frame(height: 6)
-            .padding(.horizontal, 48)
+            GradientProgressBar(progress: progress)
             
-//            Text(progressMessage(for: wrapper.progressStep))
-//                .font(.subheadline)
             
             Text("아티스트 라인업을 통해\n플레이리스트를 만드는 중...")
                 .multilineTextAlignment(.center)
@@ -95,4 +68,3 @@ struct ExportPlaylistView: View {
 //        }
 //    }
 }
-
