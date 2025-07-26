@@ -9,7 +9,8 @@ import SwiftUI
 internal import Combine
 import MusicKit
 
-// MARK: 애플뮤직 플레이리스트로 전송하는 뷰 (hifi 05_1부분)
+
+// MARK: 아티스트별 인기곡을 가져오는 뷰 (hifi 04_1부분)
 struct ExportPlaylistView: View {
     @EnvironmentObject var wrapper: MusicViewModelWrapper
     @State private var progress : Double = 0.0
@@ -59,15 +60,14 @@ struct ExportPlaylistView: View {
             
             Text("아티스트 라인업을 통해\n플레이리스트를 만드는 중...")
                 .multilineTextAlignment(.center)
-                .font(.HlgBold)
+                .font(.HlgBold())
                 .foregroundColor(.neutral900)
             
             Spacer().frame(height : 12)
             
             Text("잠시만 기다려 주세요")
-                .font(.BmdRegular)
+                .font(.BmdRegular())
                 .foregroundColor(.neutral700)
-                
 
             Spacer()
 

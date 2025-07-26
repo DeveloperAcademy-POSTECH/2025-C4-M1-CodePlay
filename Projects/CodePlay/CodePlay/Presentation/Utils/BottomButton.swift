@@ -30,8 +30,8 @@ struct BottomButton: View {
     private var mainGradient: LinearGradient {
         LinearGradient(
             gradient: Gradient(colors: [
-                Color("Secondary"),
-                Color("Primary")//왜 Color.primary 가 안되는?
+                Color("Primary"),
+                Color("Secondary")
             ]),
             startPoint: .leading,
             endPoint: .trailing
@@ -62,7 +62,7 @@ struct BottomButton: View {
 
             Button(action: action) {
                 Text(title)
-                    .font(.BlgBold)
+                    .font(.BlgBold())
                     .fontWeight(.bold)
                     .foregroundStyle(kind == .colorFill ? Color.white : Color("Primary"))
                     .padding(.horizontal, 20)

@@ -14,6 +14,7 @@ struct MainPosterView: View {
     @EnvironmentObject var musicWrapper: MusicViewModelWrapper
     @State private var recognizedText: String = ""
     @State private var isNavigateToScanPoster = false
+    @State private var isNavigateToExmapleView = false // 예시뷰
     @Environment(\.modelContext) var modelContext
     
     var body: some View {
@@ -33,7 +34,7 @@ struct MainPosterView: View {
                                 .scaledToFit()
                             Text("아직 인식한 페스티벌\n라인업이 없습니다")
                                 .multilineTextAlignment(.center)
-                                .font(.BlgRegular)
+                                .font(.BlgRegular())
                                 .foregroundColor(.neutral700)
                         }
                         .frame(maxHeight: 420)
@@ -52,13 +53,13 @@ struct MainPosterView: View {
                     
                     Text("페스티벌에 가기 전\n노래를 미리 예습해 보세요!")
                         .multilineTextAlignment(.center)
-                        .font(.HlgBold)
+                        .font(.HlgBold())
                         .foregroundColor(.neutral900)
                     
                     Spacer().frame(height: 12)
                     
                     Text("포스터 인식으로 플레이리스트를 만들 수 있어요")
-                        .font(.BmdRegular)
+                        .font(.BmdRegular())
                         .foregroundColor(.neutral700)
                     
                     Spacer().frame(height: 35)
@@ -81,11 +82,32 @@ struct MainPosterView: View {
                         EmptyView()
                     }
                 }
+                
+                // TODO: UI확인을 위해 임시로 첫번째 공연 포스터를 들고오도록 설정 -> 추후 수정
+                NavigationLink(
+                    destination: FestivalCheckView(festival: wrapper.festivalInfo.first!),
+                    isActive: $isNavigateToExmapleView
+                ) {
+                    EmptyView()
+                }
             }
 //            Spacer().frame(height: 25)
             .fullScreenCover(isPresented: $isNavigateToScanPoster) {
-                ScanPosterView(recognizedText: $recognizedText, isPresented: $isNavigateToScanPoster)
-                    .environmentObject(wrapper)
+                CameraLiveTextView(
+                    recognizedText: $recognizedText,
+                    isPresented: $isNavigateToScanPoster
+                )
+                .ignoresSafeArea()
+                .environmentObject(wrapper)
+            }
+            .toolbar { // 임시뷰
+                ToolbarItem {
+                    Button(action: {
+                        isNavigateToExmapleView = true
+                    }, label: {
+                        Text("버튼")
+                    })
+                }
             }
             .ignoresSafeArea()
         }

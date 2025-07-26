@@ -49,16 +49,16 @@ struct ExportLoadingView: View {
             .padding(.horizontal, 48)
             
             Text("Apple Music으로\n플레이리스트를 보내는 중...")
-                .font(.HlgBold)
+                .font(.HlgBold())
                 .multilineTextAlignment(.center)
                 .foregroundColor(.neutral900)
             
             //            Spacer().frame(height: 5)
             
             Text("잠시만 기다려 주세요")
-                .font(.BmdRegular)
+                .font(.BmdRegular())
                 .foregroundColor(.neutral700)
-            
+    
             Spacer()
         }
         .navigationBarBackButtonHidden(true)

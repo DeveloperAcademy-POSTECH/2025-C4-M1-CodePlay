@@ -34,20 +34,18 @@ struct AppleMusicConnectView: View {
             Spacer().frame(height: 32)
 
             // 2. 큰 제목 텍스트
-            Text("Apple Music을 연결해 주세요")
-                .font(.HlgBold)
-                .foregroundColor(.neutral900)
-
-            // 제목과 설명 사이 간격
-//            Spacer().frame(height: 4)
-
-            // 3. 설명 텍스트
-            Text("페스티벌 플레이리스트 생성을 위해\nApple Music을 연결해 주세요")
+            Text("Apple Music을\n연결해주세요")
+                .font(.HlgBold())
                 .multilineTextAlignment(.center)
-                .font(.BmdRegular)
-                .foregroundColor(.neutral700)
+                .foregroundColor(Color.neutral900)
+                .frame(maxWidth: .infinity, alignment: .center)
 
-            // 설명과 버튼 사이 간격
+            Text("페스티벌 플레이리스트 생성을 위해\nApple Music을 연결해주세요.")
+                .font(.BmdRegular())
+                .multilineTextAlignment(.center)
+                .foregroundColor(Color.neutral700)
+                .padding(.horizontal, 32)
+
             Spacer()
 
             // 4. 연결 버튼 또는 설정 안내 (하단에서 적절한 위치에 배치)
@@ -81,7 +79,7 @@ struct AppleMusicConnectView: View {
             // 에러 메시지 표시
             if let errorMessage = viewModelWrapper.errorMessage {
                 Text(errorMessage)
-                    .font(.BmdRegular)
+                    .font(.BmdRegular())
                     .foregroundColor(.red)
                     .padding(.horizontal, 16)
                     .padding(.top, 16)

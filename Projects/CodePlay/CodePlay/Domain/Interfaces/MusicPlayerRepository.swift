@@ -101,16 +101,10 @@ final class DefaultMusicPlayerRepository: MusicPlayerRepository {
         do {
             try await playTrack(trackId: trackId)
             playbackStartTime = Date()
-            startProgressTimer()
+            startProgressTimer() // 이 타이머가 30초 후 자동 정지까지 처리
             notifyStateChange()
-            
-            // 30초 후 자동 정지
-            Task {
-                try? await Task.sleep(nanoseconds: 30_000_000_000)
-                await stopPreview()
-            }
         } catch {
-         
+            print("❌ 미리듣기 재생 실패: \(trackId)")
             notifyStateChange()
         }
     }
@@ -125,6 +119,7 @@ final class DefaultMusicPlayerRepository: MusicPlayerRepository {
     func stopPreview() async {
         withNotifyStateChange {
             self.stopProgressTimer()
+            self.playbackStartTime = nil  // 시작 시간 초기화
             self.resetProgress()
             try? await self.stopTrack()
         }
@@ -159,7 +154,10 @@ final class DefaultMusicPlayerRepository: MusicPlayerRepository {
     }
     
     private func updateProgress() {
-        guard let startTime = playbackStartTime else { return }
+        guard let startTime = playbackStartTime else { 
+            stopProgressTimer()
+            return 
+        }
         
         let elapsed = Date().timeIntervalSince(startTime)
         let progress = min(elapsed / totalDuration, 1.0)
@@ -167,8 +165,11 @@ final class DefaultMusicPlayerRepository: MusicPlayerRepository {
         _playbackProgress = progress
         onProgressChanged?(progress)
         
+        // 30초 완료 시 자동 정지
         if progress >= 1.0 {
-            Task { await stopPreview() }
+            Task { 
+                await stopPreview()
+            }
         }
     }
     

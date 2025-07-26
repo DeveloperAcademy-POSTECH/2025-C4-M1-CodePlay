@@ -23,13 +23,13 @@ struct ExportSuccessView: View {
                 
                 
                 Text("Apple Music에\n플레이리스트를 생성했어요!")
-                    .font(.HlgBold)
+                    .font(.HlgBold())
                     .multilineTextAlignment(.center)
                     .foregroundColor(.neutral900)
                 
                 
                 Text("애플 뮤직에서 생성된 플레이리스트를 확인해 보세요")
-                    .font(.BmdRegular)
+                    .font(.BmdRegular())
                     .foregroundColor(.neutral700)
                 
                 Spacer()
