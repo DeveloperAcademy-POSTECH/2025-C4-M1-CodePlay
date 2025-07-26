@@ -28,12 +28,15 @@ struct ExportSuccessView: View {
                     
                     VStack(spacing: 12) {
                         Text("Apple Music에\n플레이리스트를 생성했어요!")
-                            .font(.HlgBold())                           .multilineTextAlignment(.center)
+                            .font(.HlgBold())
+                            .multilineTextAlignment(.center)
                             .fixedSize(horizontal: false, vertical: true)
+                            .foregroundColor(.neu900)
                         
                         Text("애플뮤직에서 생성된 플레이리스트를 확인해보세요.")
                             .font(.BmdRegular())
                             .multilineTextAlignment(.center)
+                            .foregroundColor(.neu700)
                     }
                     .padding(.bottom, 80)
                     
@@ -64,8 +67,8 @@ struct ExportSuccessView: View {
         }
     }
 }
-
-
-#Preview {
-    ExportSuccessView()
-}
+//
+//
+//#Preview {
+//    ExportSuccessView()
+//}

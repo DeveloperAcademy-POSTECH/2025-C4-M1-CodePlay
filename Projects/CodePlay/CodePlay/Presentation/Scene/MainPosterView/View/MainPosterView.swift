@@ -17,6 +17,7 @@ struct MainPosterView: View {
     @State private var isNavigateToExmapleView = false // 예시뷰
     @Environment(\.modelContext) var modelContext
     
+    
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom) {
@@ -35,11 +36,11 @@ struct MainPosterView: View {
                             Text("아직 인식한 페스티벌\n라인업이 없습니다")
                                 .multilineTextAlignment(.center)
                                 .font(.BlgRegular())
-                                .foregroundColor(.neutral700)
+                                .foregroundColor(.neu900)
                         }
                         .frame(maxHeight: 420)
                         .padding(.horizontal, 72)
-//                        .liquidGlass(style: .card)
+                        .liquidGlass(style: .card)
 
                     } else {
                         VStack {
@@ -54,13 +55,13 @@ struct MainPosterView: View {
                     Text("페스티벌에 가기 전\n노래를 미리 예습해 보세요!")
                         .multilineTextAlignment(.center)
                         .font(.HlgBold())
-                        .foregroundColor(.neutral900)
+                        .foregroundColor(.neu900)
                     
                     Spacer().frame(height: 12)
                     
                     Text("포스터 인식으로 플레이리스트를 만들 수 있어요")
                         .font(.BmdRegular())
-                        .foregroundColor(.neutral700)
+                        .foregroundColor(.neu700)
                     
                     Spacer().frame(height: 35)
                     
@@ -142,3 +143,7 @@ final class PosterViewModelWrapper: ObservableObject {
         }
     }
 }
+
+
+
+

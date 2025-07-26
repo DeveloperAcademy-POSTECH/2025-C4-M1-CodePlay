@@ -38,7 +38,6 @@ struct MadePlaylistView: View {
                 BottomButton(title: "Apple Music으로 전송", kind: .colorFill) {
                     wrapper.exportToAppleMusic()
                 }
-//                .liquidGlass(style: .listbutton)
                 .padding(.bottom, 50)
                 .padding(.top, 15)
                 .liquidGlass(style: .listbutton)

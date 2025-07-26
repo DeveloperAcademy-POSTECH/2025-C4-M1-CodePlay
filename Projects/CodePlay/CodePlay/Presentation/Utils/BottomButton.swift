@@ -39,11 +39,6 @@ struct BottomButton: View {
         )
     }
     
-    // TODO: HI-FI 컬러 확정 후 수정 예정
-    private var backgroundColor: Color {
-        colorScheme == .dark ? .black : .blue
-    }
-   
     var body: some View {
         ZStack {
             let capsuleShape = RoundedRectangle(cornerRadius: 999)

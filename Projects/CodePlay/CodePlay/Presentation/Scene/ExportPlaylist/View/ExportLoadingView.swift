@@ -26,11 +26,11 @@ struct ExportLoadingView: View {
                 Text("Apple Music으로\n플레이리스트를 보내는 중...")
                     .font(.HlgBold())
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.neutral900)
+                    .foregroundColor(.neu900)
                 
                 Text("잠시만 기다려 주세요")
                     .font(.BmdRegular())
-                    .foregroundColor(.neutral700)
+                    .foregroundColor(.neu700)
             }
             .frame(maxWidth: 321)
             

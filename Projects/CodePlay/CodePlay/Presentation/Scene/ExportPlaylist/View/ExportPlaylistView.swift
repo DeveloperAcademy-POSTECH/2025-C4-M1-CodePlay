@@ -34,11 +34,11 @@ struct ExportPlaylistView: View {
                 Text("라인업의 아티스트별\n인기곡을 가져오는 중...")
                     .multilineTextAlignment(.center)
                     .font(.HlgBold())
-                    .foregroundColor(.neutral900)
+                    .foregroundColor(.neu900)
                 
                 Text("잠시만 기다려 주세요")
                     .font(.BlgRegular())
-                    .foregroundColor(.neutral700)
+                    .foregroundColor(.neu700)
             }
 
             Spacer()

@@ -37,13 +37,13 @@ struct AppleMusicConnectView: View {
             Text("Apple Music을\n연결해주세요")
                 .font(.HlgBold())
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color.neutral900)
+                .foregroundColor(Color.neu900)
                 .frame(maxWidth: .infinity, alignment: .center)
 
             Text("페스티벌 플레이리스트 생성을 위해\nApple Music을 연결해주세요.")
                 .font(.BmdRegular())
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color.neutral700)
+                .foregroundColor(Color.neu700)
                 .padding(.horizontal, 32)
 
             Spacer()

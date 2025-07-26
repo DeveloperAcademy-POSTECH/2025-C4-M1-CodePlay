@@ -72,12 +72,12 @@ struct SelectArtistView: View {
                     
                 Text(festival.subtitle)
                     .font(.BsmRegular())
-                    .foregroundColor(Color.neutral700)
+                    .foregroundColor(Color.neu700)
                     .lineSpacing(2)
                 
                 Text(festival.date)
                     .font(.BsmRegular())
-                    .foregroundColor(Color.neutral700)
+                    .foregroundColor(Color.neu700)
                     .lineSpacing(2)
             }
             .padding(.horizontal, 12)
