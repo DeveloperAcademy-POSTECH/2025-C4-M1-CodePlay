@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct FestivalSearchView: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) private var modelContext
     @State private var searchText = ""
     @State private var showSearchResults = false
     @State private var isNavigate: Bool = false
+    @State private var searchResults: [String] = []
+    @State private var selectedPlaylist: Playlist?
+    @State private var savedPlaylist: Playlist?
     @FocusState private var isSearchFocused: Bool
     let suggestTitles: SuggestTitlesModel
 
@@ -27,12 +32,12 @@ struct FestivalSearchView: View {
                 searchBeforeView
             }
             
-//            NavigationLink(
-//                destination: SelectArtistView(festival: festival),
-//                isActive: $isNavigate
-//            ) {
-//                EmptyView()
-//            }.hidden()
+            NavigationLink(
+                destination: selectedPlaylist != nil ? AnyView(SelectArtistView(playlist: selectedPlaylist!)) : AnyView(EmptyView()),
+                isActive: $isNavigate
+            ) {
+                EmptyView()
+            }.hidden()
         }
         .safeAreaInset(edge: .top) {
             Divider()
@@ -147,9 +152,14 @@ struct FestivalSearchView: View {
             Spacer().frame(height: 26)
 
             LazyVStack(spacing: 12) {
-                ForEach(filteredResults, id: \.self) { result in
+                ForEach(searchResults, id: \.self) { result in
                     Button(action: {
-                        isNavigate = true
+                        Task {
+                            await fetchAndSavePlaylist(for: result)
+                            if selectedPlaylist != nil {
+                                isNavigate = true
+                            }
+                        }
                     }, label: {
                         HStack {
                             Text(result)
@@ -176,23 +186,55 @@ struct FestivalSearchView: View {
             Spacer()
         }
     }
-    
-    private var filteredResults: [String] {
-        suggestTitles.titles.filter { $0.contains(searchText) }
-    }
-    
     /// 검색어와 일치하는 결과가 있는지 확인하는 함수
     private func performSearch() {
         if !searchText.isEmpty {
-            let hasResults = suggestTitles.titles.contains {
-                $0.contains(searchText)
-            }
-            if hasResults {
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    showSearchResults = true
-                    isSearchFocused = false
+            Task {
+                do {
+                    let request = PostFestInfoTextRequestDTO(rawText: searchText)
+                    let response = try await NetworkService.shared.festivalinfoService.postFestInfoText(model: request)
+                    
+                    searchResults = response.top5.map { $0.title }
+                    
+                    if !searchResults.isEmpty {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            showSearchResults = true
+                            isSearchFocused = false
+                        }
+                    }
+                } catch {
+                    print("Search API Error: \(error.localizedDescription)")
                 }
             }
+        }
+    }
+    
+    private func fetchAndSavePlaylist(for title: String) async {
+        do {
+            let request = PostFestInfoTextRequestDTO(rawText: title)
+            let response = try await NetworkService.shared.festivalinfoService.postFestInfoText(model: request)
+            
+            if let data = response.dynamoData.first {
+                let playlist = Playlist(
+                    title: data.title,
+                    period: data.period,
+                    cast: data.cast,
+                    festivalId: data.festivalId,
+                    place: data.place
+                )
+                
+                modelContext.insert(playlist)
+                
+                do {
+                    try modelContext.save()
+                    selectedPlaylist = playlist
+                    print("Playlist saved successfully for \(title)")
+                } catch {
+                    print("Error saving playlist: \(error.localizedDescription)")
+                }
+            }
+        } catch {
+            print("API Error for \(title): \(error.localizedDescription)")
         }
     }
 }
