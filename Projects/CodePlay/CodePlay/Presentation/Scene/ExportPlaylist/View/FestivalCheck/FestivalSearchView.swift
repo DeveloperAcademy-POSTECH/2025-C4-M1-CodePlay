@@ -13,27 +13,7 @@ struct FestivalSearchView: View {
     @State private var showSearchResults = false
     @State private var isNavigate: Bool = false
     @FocusState private var isSearchFocused: Bool
-    let festival: PosterItemModel
-    let playlist: Playlist
-
-    // 더미데이터
-    let recommendedSearches = [
-        "2025 부산국제록페스티벌",
-        "2025 펜츠락페스티벌",
-        "그랜드 민트 페스티벌 2...",
-        "JUMF 2025 전주얼티밋...",
-        "22회 자라섬재즈페스티벌",
-        "집콕보 2025 밤밤밤페...",
-        "경기인디뮤직페스티벌 2...",
-        "2025 사운드 플래닛 페...",
-    ]
-
-    // 검색 결과 더미 데이터
-    let searchResults = [
-        "2025 부산국제록페스티벌",
-        "2025 펜츠락페스티벌",
-        "22회 자라섬재즈페스티벌"
-    ]
+    let suggestTitles: SuggestTitlesModel
 
     var body: some View {
         ZStack {
@@ -48,7 +28,7 @@ struct FestivalSearchView: View {
             }
             
 //            NavigationLink(
-//                destination: SelectArtistView(playlist: Playlist),
+//                destination: SelectArtistView(festival: festival),
 //                isActive: $isNavigate
 //            ) {
 //                EmptyView()
@@ -140,7 +120,7 @@ struct FestivalSearchView: View {
                     ],
                     spacing: 12
                 ) {
-                    ForEach(recommendedSearches, id: \.self) { searchTerm in
+                    ForEach(suggestTitles.titles, id: \.self) { searchTerm in
                         FestivalBox(title: searchTerm)
                             .onTapGesture {
                                 searchText = searchTerm
@@ -167,7 +147,7 @@ struct FestivalSearchView: View {
             Spacer().frame(height: 26)
 
             LazyVStack(spacing: 12) {
-                ForEach(searchResults, id: \.self) { result in
+                ForEach(filteredResults, id: \.self) { result in
                     Button(action: {
                         isNavigate = true
                     }, label: {
@@ -196,10 +176,15 @@ struct FestivalSearchView: View {
             Spacer()
         }
     }
+    
+    private var filteredResults: [String] {
+        suggestTitles.titles.filter { $0.contains(searchText) }
+    }
+    
     /// 검색어와 일치하는 결과가 있는지 확인하는 함수
     private func performSearch() {
         if !searchText.isEmpty {
-            let hasResults = recommendedSearches.contains {
+            let hasResults = suggestTitles.titles.contains {
                 $0.contains(searchText)
             }
             if hasResults {

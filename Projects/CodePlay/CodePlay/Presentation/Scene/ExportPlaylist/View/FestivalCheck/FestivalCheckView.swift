@@ -10,7 +10,10 @@ import SwiftData
 
 struct FestivalCheckView: View {
     @State private var isNavigate: Bool = false
+    @State private var isNavigateToSearch: Bool = false
     @State private var festivalData: DynamoDataItem?  // API 응답 저장 (dynamoData[0])
+    @State private var apiResponse: PostFestInfoResponseDTO?
+    @State private var suggestTitles: SuggestTitlesModel?
     @State private var isLoading: Bool = true  // 로딩 상태 추가
     @State private var savedPlaylist: Playlist?
     @EnvironmentObject var wrapper: MusicViewModelWrapper
@@ -69,6 +72,7 @@ struct FestivalCheckView: View {
                         do {
                             let request = PostFestInfoTextRequestDTO(rawText: text)
                             let response = try await NetworkService.shared.festivalinfoService.postFestInfoText(model: request)
+                            apiResponse = response
                             
                             // dynamoData[0] 추출 (안전하게 옵셔널 처리)
                             if let firstDynamo = response.dynamoData.first {
@@ -95,6 +99,13 @@ struct FestivalCheckView: View {
             ) {
                 EmptyView()
             }
+            
+            NavigationLink(
+                destination: suggestTitles != nil ? AnyView(FestivalSearchView(suggestTitles: suggestTitles!)) : AnyView(EmptyView()),
+                isActive: $isNavigateToSearch
+            ) {
+                EmptyView()
+            }
         }
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarBackButtonHidden(true)
@@ -105,7 +116,11 @@ struct FestivalCheckView: View {
         HStack(spacing: 16) {
             Button(
                 action: {
-                    // "아니요" 버튼: 기존 로직
+                    if let response = apiResponse {
+                        let titles = response.top5.map { $0.title }
+                        suggestTitles = SuggestTitlesModel(titles: titles)
+                        isNavigateToSearch = true
+                    }
                 },
                 label: {
                     ZStack {
