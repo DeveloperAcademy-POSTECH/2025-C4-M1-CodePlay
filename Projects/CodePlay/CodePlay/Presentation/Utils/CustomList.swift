@@ -104,7 +104,7 @@ struct CustomList: View {
              .liquidGlass(style: .list) // 밑에 말고 여기 넣어야 적용
         }
         .buttonStyle(PlainButtonStyle())
-        .padding(.horizontal, 16)
+//        .padding(.horizontal, 16)
         .padding(.vertical, 4)
        
     }

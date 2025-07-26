@@ -48,7 +48,7 @@ struct ExportPlaylistView: View {
                                 endPoint: .trailing
                             )
                         )
-                        .frame(width: geometry.size.width * CGFloat(progress), height: 6)
+                        .frame(width: geometry.size.width * CGFloat(Double(wrapper.progressStep)), height: 6)
                 }
             }
             .frame(height: 6)

@@ -69,6 +69,8 @@ struct MainPosterView: View {
                     })
                     .padding(.bottom, 16)
                     
+                    Spacer().frame(height: 25)
+                    
                     NavigationLink(
                         isActive: $wrapper.shouldNavigateToMakePlaylist,
                         destination: {
@@ -80,10 +82,12 @@ struct MainPosterView: View {
                     }
                 }
             }
+//            Spacer().frame(height: 25)
             .fullScreenCover(isPresented: $isNavigateToScanPoster) {
                 ScanPosterView(recognizedText: $recognizedText, isPresented: $isNavigateToScanPoster)
                     .environmentObject(wrapper)
             }
+            .ignoresSafeArea()
         }
     }
 }

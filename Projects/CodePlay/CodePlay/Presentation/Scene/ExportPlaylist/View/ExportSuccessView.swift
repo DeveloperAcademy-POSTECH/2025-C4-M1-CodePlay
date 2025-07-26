@@ -52,10 +52,12 @@ struct ExportSuccessView: View {
                         Image(systemName: "xmark")
                             .imageScale(.large)
                             .foregroundColor(.neutral900)
+                            
                     }
                 }
             }
             .backgroundWithBlur()
+            .ignoresSafeArea(.all)
             NavigationLink(
                 destination: MainPosterView()
                     .navigationBarBackButtonHidden(true),
