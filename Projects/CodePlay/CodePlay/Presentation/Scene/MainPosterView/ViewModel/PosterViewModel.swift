@@ -20,6 +20,7 @@ protocol PosterViewModelInput {
 protocol PosterViewModelOutput {
     var festivalData: Observable<[PosterItemModel]> { get }
     var scannedText: Observable<RawText?> { get set }
+    var shouldNavigateToFestivalCheck: Observable<Bool> { get set }
     var shouldNavigateToMakePlaylist: Observable<Bool> { get set }
 }
 
@@ -31,6 +32,7 @@ protocol PosterViewModel: PosterViewModelInput, PosterViewModelOutput,
 // MARK: DefaultMainViewModel
 class DefaultPosterViewModel: PosterViewModel {
     @Published var scannedText: Observable<RawText?> = Observable(nil)
+    @Published var shouldNavigateToFestivalCheck = Observable<Bool>(false)
     @Published var shouldNavigateToMakePlaylist = Observable<Bool>(false)
     var festivalData: Observable<[PosterItemModel]>
     
@@ -56,7 +58,7 @@ class DefaultPosterViewModel: PosterViewModel {
                     newItems.append(item)
                     
                     await MainActor.run {
-                        self.shouldNavigateToMakePlaylist.value = true
+                        self.shouldNavigateToFestivalCheck.value = true
                         self.scannedText.value = RawText(text: newItems.first?.title ?? "")
                     }
                 } catch {
@@ -73,6 +75,6 @@ class DefaultPosterViewModel: PosterViewModel {
     func clearText() {
         festivalData.value = []
         scannedText.value = nil
-        shouldNavigateToMakePlaylist.value = false
+        shouldNavigateToFestivalCheck.value = false
     }
 }

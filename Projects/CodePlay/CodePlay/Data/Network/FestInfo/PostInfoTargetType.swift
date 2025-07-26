@@ -15,7 +15,7 @@ enum FestInfoTargetType {
 }
 
 extension FestInfoTargetType: BaseTargetType {
-    var utilPath: UtilPath { return .notification }
+    var utilPath: UtilPath { return .festivalinfo }
     var pathParameter: String? { return .none }
     var queryParameter: [String: Any]? { return .none }
     var requestBodyParameter: Codable? { return .none }
@@ -32,8 +32,8 @@ extension FestInfoTargetType: BaseTargetType {
     
     var path: String {
         switch self {
-        case .postFestInfoText: return utilPath.rawValue
-        case .postFestInfoVision: return utilPath.rawValue
+        case .postFestInfoText: return utilPath.rawValue + "/search"
+        case .postFestInfoVision: return utilPath.rawValue + "/search"
         }
     }
     

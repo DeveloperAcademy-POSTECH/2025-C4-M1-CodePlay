@@ -56,9 +56,9 @@ struct MainPosterView: View {
                 .padding(.bottom, 16)
                 
                 NavigationLink(
-                    isActive: $wrapper.shouldNavigateToMakePlaylist,
+                    isActive: $wrapper.shouldNavigateToFestivalCheck,
                     destination: {
-                        ExportPlaylistView(rawText: wrapper.scannedText)
+                        FestivalCheckView(rawText: wrapper.scannedText)
                             .environmentObject(musicWrapper)
                     }
                 ) {
@@ -67,7 +67,7 @@ struct MainPosterView: View {
                 
                 // TODO: UI확인을 위해 임시로 첫번째 공연 포스터를 들고오도록 설정 -> 추후 수정
                 NavigationLink(
-                    destination: FestivalCheckView(festival: wrapper.festivalInfo.first!),
+                    destination: FestivalCheckView(rawText: wrapper.scannedText),
                     isActive: $isNavigateToExmapleView
                 ) {
                     EmptyView()
@@ -98,6 +98,7 @@ struct MainPosterView: View {
 // MARK: PosterViewModelWrapper
 final class PosterViewModelWrapper: ObservableObject {
     @Published var festivalInfo: [PosterItemModel] = PosterItemModel.mock
+    @Published var shouldNavigateToFestivalCheck: Bool = false
     @Published var shouldNavigateToMakePlaylist: Bool = false
     @Published var scannedText: RawText? = nil
     var viewModel: any PosterViewModel
@@ -112,6 +113,10 @@ final class PosterViewModelWrapper: ObservableObject {
             if !items.isEmpty {
                 self?.festivalInfo = items
             }
+        }
+        
+        viewModel.shouldNavigateToFestivalCheck.observe(on: self) { [weak self] newData in
+            self?.shouldNavigateToFestivalCheck = newData
         }
         
         viewModel.shouldNavigateToMakePlaylist.observe(on: self) { [weak self] newData in
