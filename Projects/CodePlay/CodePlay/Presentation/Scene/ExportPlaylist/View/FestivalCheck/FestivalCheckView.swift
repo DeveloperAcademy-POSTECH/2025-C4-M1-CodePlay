@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct FestivalCheckView: View {
     @State private var isNavigate: Bool = false
     @State private var festivalData: DynamoDataItem?  // API 응답 저장 (dynamoData[0])
     @State private var isLoading: Bool = true  // 로딩 상태 추가
+    @State private var savedPlaylist: Playlist?
     @EnvironmentObject var wrapper: MusicViewModelWrapper
+    @Environment(\.modelContext) private var modelContext
     let rawText: RawText?
 
     init(rawText: RawText?) {
@@ -44,7 +47,7 @@ struct FestivalCheckView: View {
                         imageUrl: "https://example.com/festival-poster.jpg",  // 하드코딩
                         date: data.period,
                         title: data.title,
-                        subTitle: data.place  // 또는 필요 시 data.cast 등으로 변경
+                        subTitle: data.place
                     )
                 } else {
                     // 로딩 인디케이터
@@ -86,12 +89,12 @@ struct FestivalCheckView: View {
                 }
             }
 
-//            NavigationLink(
-//                destination: FestivalSearchView(festival: festival),  // festival 정의 필요 (기존 코드 가정)
-//                isActive: $isNavigate
-//            ) {
-//                EmptyView()
-//            }
+            NavigationLink(
+                destination: savedPlaylist != nil ? AnyView(SelectArtistView(playlist: savedPlaylist!)) : AnyView(EmptyView()),
+                isActive: $isNavigate
+            ) {
+                EmptyView()
+            }
         }
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarBackButtonHidden(true)
@@ -143,7 +146,10 @@ struct FestivalCheckView: View {
 
             Button(
                 action: {
-                    isNavigate = true
+                    savePlaylist()
+                    if savedPlaylist != nil {
+                        isNavigate = true
+                    }
                 },
                 label: {
                     ZStack {
@@ -195,5 +201,30 @@ struct FestivalCheckView: View {
             )
         }
         .padding(.horizontal, 16)
+    }
+    
+    private func savePlaylist() {
+        guard let data = festivalData else {
+            print("No festival data to save")
+            return
+        }
+        
+        let playlist = Playlist(
+            title: data.title,
+            period: data.period,
+            cast: data.cast,
+            festivalId: data.festivalId,
+            place: data.place
+        )
+        
+        modelContext.insert(playlist)
+        
+        do {
+            try modelContext.save()
+            savedPlaylist = playlist
+            print("Playlist saved successfully")
+        } catch {
+            print("Error saving playlist: \(error.localizedDescription)")
+        }
     }
 }

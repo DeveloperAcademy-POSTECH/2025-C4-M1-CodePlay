@@ -1,4 +1,3 @@
-//
 //  Playlist.swift
 //  CodePlay
 //
@@ -14,11 +13,24 @@ final class Playlist {
     var title: String
     var createdAt: Date
     var entries: [PlaylistEntry] = []
+    var period: String?
+    var cast: String?
+    var festivalId: String?
+    var place: String?
 
-    init(id: UUID = UUID(), title: String, createdAt: Date = .now) {
+    init(id: UUID = UUID(), title: String, createdAt: Date = .now, period: String? = nil, cast: String? = nil, festivalId: String? = nil, place: String? = nil) {
         self.id = id
         self.title = title
         self.createdAt = createdAt
+        self.period = period
+        self.cast = cast
+        self.festivalId = festivalId
+        self.place = place
+    }
+    
+    // Optional: Computed property to get artists from cast
+    var artists: [String] {
+        guard let cast = cast else { return [] }
+        return cast.components(separatedBy: ", ").map { $0.trimmingCharacters(in: .whitespaces) }
     }
 }
-

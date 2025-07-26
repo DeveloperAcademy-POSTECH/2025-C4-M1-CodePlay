@@ -14,6 +14,7 @@ struct FestivalSearchView: View {
     @State private var isNavigate: Bool = false
     @FocusState private var isSearchFocused: Bool
     let festival: PosterItemModel
+    let playlist: Playlist
 
     // 더미데이터
     let recommendedSearches = [
@@ -46,12 +47,12 @@ struct FestivalSearchView: View {
                 searchBeforeView
             }
             
-            NavigationLink(
-                destination: SelectArtistView(festival: festival),
-                isActive: $isNavigate
-            ) {
-                EmptyView()
-            }.hidden()
+//            NavigationLink(
+//                destination: SelectArtistView(playlist: Playlist),
+//                isActive: $isNavigate
+//            ) {
+//                EmptyView()
+//            }.hidden()
         }
         .safeAreaInset(edge: .top) {
             Divider()
