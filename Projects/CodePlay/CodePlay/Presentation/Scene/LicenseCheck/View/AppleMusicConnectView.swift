@@ -189,25 +189,36 @@ final class MusicViewModelWrapper: ObservableObject {
 
         // 1단계: 텍스트 전처리 (후보 아티스트 추출)
         exportViewModelWrapper.preProcessRawText(rawText)
-        progressStep = 1
+        withAnimation(.easeInOut(duration: 0.5)) {
+            progressStep = 1
+        }
 
         Task {
             // 2단계: 아티스트 검색
             let matches = await exportViewModelWrapper.searchArtists(from: rawText)
             DispatchQueue.main.async {
-                self.progressStep = 2
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    self.progressStep = 2
+                }
                 matches.forEach { print("✅ \( $0.artistName ) (\($0.appleMusicId))") }
             }
 
             // 3단계: 아티스트별 상위 곡 검색
             let songs = await exportViewModelWrapper.searchTopSongs(from: rawText, artistMatches: matches)
             DispatchQueue.main.async {
-                self.progressStep = 3
+                withAnimation(.easeInOut(duration: 1.2)) {
+                    self.progressStep = 3
+                }
+                
                 self.playlistEntries = songs
                 for entry in songs {
                     print("🎵 \(entry.artistName) - \(entry.trackTitle)")
                 }
-                self.navigateToMadePlaylist = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        self.navigateToMadePlaylist = true
+                    }
+                }
             }
         }
     }
