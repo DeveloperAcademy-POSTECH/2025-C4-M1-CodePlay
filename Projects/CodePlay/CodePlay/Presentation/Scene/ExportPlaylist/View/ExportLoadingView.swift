@@ -20,7 +20,7 @@ struct ExportLoadingView: View {
                     .scaledToFit()
                     .frame(width: 320, height: 320)
             } else {
-                GIFImage(gifName: "APlaylistLoadDark", width: 320, height: 320)
+                GIFImage(gifName: "PlaylistLoadDark", width: 320, height: 320)
                     .scaledToFit()
                     .frame(width: 320, height: 320)
             }
