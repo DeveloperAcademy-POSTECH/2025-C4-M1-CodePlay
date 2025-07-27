@@ -10,14 +10,21 @@ import SwiftUI
 // MARK: 애플뮤직 플레이리스트로 전송하는 뷰 (hifi 06_1부분)
 struct ExportLoadingView: View {
     @State private var progress: Double = 0.0
-    
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         VStack(spacing: 0) {
             
-            GIFImage(gifName: "PlaylistLoadLight", width: 400, height: 400)
-                .frame(width: 400, height: 400)
-                .padding(.top, 106)
-                .padding(.bottom, 36)
+            if colorScheme == .light {
+                GIFImage(gifName: "PlaylistLoadLight", width: 320, height: 320)
+                    .scaledToFit()
+                    .frame(width: 320, height: 320)
+            } else {
+                GIFImage(gifName: "APlaylistLoadDark", width: 320, height: 320)
+                    .scaledToFit()
+                    .frame(width: 320, height: 320)
+            }
+            
             
             GradientProgressBar(progress: progress)
                 .padding(.bottom, 60)

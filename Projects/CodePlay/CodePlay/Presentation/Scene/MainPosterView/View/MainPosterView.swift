@@ -108,7 +108,10 @@ struct MainPosterView: View {
                         isNavigateToExmapleView = true
                     }, label: {
                         Text("버튼")
+                            .foregroundColor(Color("Primary"))
+                            
                     })
+                    .background(.clear)
                 }
             }
             .ignoresSafeArea()

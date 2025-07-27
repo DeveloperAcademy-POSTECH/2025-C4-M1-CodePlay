@@ -59,7 +59,7 @@ struct ExportSuccessView: View {
                         dismiss()
                     }) {
                         Image(systemName: "xmark")
-                            .foregroundColor(.black)
+                            .foregroundColor(.neu50)
                             .font(.system(size: 16, weight: .medium))
                     }
                 }
