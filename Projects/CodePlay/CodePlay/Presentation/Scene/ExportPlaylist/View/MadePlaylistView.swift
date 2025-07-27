@@ -49,12 +49,18 @@ struct MadePlaylistView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("플레이리스트")
+                    .font(.BlgBold())
+                    .foregroundColor(.neu900)
+            }
+            
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: {
                     dismiss()
                 }) {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
+                        .foregroundColor(.neu900)
                 }
             }
 
@@ -63,7 +69,7 @@ struct MadePlaylistView: View {
                     posterWrapper.shouldNavigateToMakePlaylist = false
                 }) {
                     Image(systemName: "xmark")
-                        .foregroundColor(.black)
+                        .foregroundColor(.neu900)
                 }
             }
         }

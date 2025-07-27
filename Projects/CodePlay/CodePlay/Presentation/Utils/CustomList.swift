@@ -82,12 +82,12 @@ struct CustomList: View {
             // 제목 + 앨범명
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.black)
+                    .font(.BlgBold())
+                    .foregroundColor(.neu50)
                 
                 Text(albumName)
-                    .font(.system(size: 12))
-                    .foregroundColor(.gray)
+                    .font(.BsmRegular())
+                    .foregroundColor(.new200)
             }
             
             Spacer()
