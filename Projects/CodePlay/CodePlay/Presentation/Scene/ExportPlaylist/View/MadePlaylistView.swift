@@ -22,6 +22,7 @@ struct MadePlaylistView: View {
             Color.clear
                 .backgroundWithBlur()
                 .ignoresSafeArea()
+//            Color.red
             
             VStack(spacing: 0) {
                 ScrollView {
@@ -39,6 +40,7 @@ struct MadePlaylistView: View {
                     wrapper.exportToAppleMusic()
                 }
                 .padding(.bottom, 50)
+                .padding(.horizontal, 20)
                 .padding(.top, 15)
                 .liquidGlass(style: .listbutton)
             }

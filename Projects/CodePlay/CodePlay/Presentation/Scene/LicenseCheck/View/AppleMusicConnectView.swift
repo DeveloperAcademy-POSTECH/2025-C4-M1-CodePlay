@@ -60,6 +60,7 @@ struct AppleMusicConnectView: View {
                     BottomButton(title: "설정으로 이동", kind: .line) {
                         viewModelWrapper.appleMusicConnectViewModel.shouldOpenSettings.value = true
                     }
+                    .padding(.horizontal, 20)
                     .padding(.horizontal, 16)
                 }
             } else {

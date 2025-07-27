@@ -9,6 +9,8 @@ import SwiftUI
 
 struct FestivalCheckView: View {
     @State private var isNavigate: Bool = false
+    @Environment(\.dismiss) var dismiss
+    
     let festival: PosterItemModel
 
     var body: some View {
@@ -41,8 +43,9 @@ struct FestivalCheckView: View {
 
                 Spacer()
                 
-                HStack(spacing :2) {
+                HStack (spacing : 4){
                     BottomButton(title : "아니요", kind: .line ) {
+                        dismiss()
                     }
                     
                     Spacer()
@@ -50,9 +53,8 @@ struct FestivalCheckView: View {
                     BottomButton(title : "맞아요", kind: .colorFill){
                         isNavigate = true
                     }
-                    
                 }
-//                .padding(.horizontal, 16)
+                .padding(.horizontal, 16)
             }
             .padding(.bottom, 50)
 

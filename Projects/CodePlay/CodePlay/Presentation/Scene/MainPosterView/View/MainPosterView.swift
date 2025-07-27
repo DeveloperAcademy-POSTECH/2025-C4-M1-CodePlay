@@ -70,6 +70,7 @@ struct MainPosterView: View {
                         isNavigateToScanPoster = true
                     })
                     .padding(.bottom, 16)
+                    .padding(.horizontal, 20)
                     
                     Spacer().frame(height: 25)
                     

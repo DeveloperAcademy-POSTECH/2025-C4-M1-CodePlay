@@ -69,7 +69,7 @@ struct BottomButton: View {
         }
         .contentShape(RoundedRectangle(cornerRadius: 999))
         .frame(maxWidth: .infinity, maxHeight: 60)
-        .padding(.horizontal, 20)
+//        .padding(.horizontal, 20)
     }
 }
 

@@ -45,6 +45,7 @@ struct ExportSuccessView: View {
                             UIApplication.shared.open(url)
                         }
                     }
+                    .padding(.horizontal, 20)
                     .padding(.bottom, 16)
                 }
             }
@@ -69,6 +70,6 @@ struct ExportSuccessView: View {
 }
 //
 //
-//#Preview {
-//    ExportSuccessView()
-//}
+#Preview {
+    ExportSuccessView()
+}
