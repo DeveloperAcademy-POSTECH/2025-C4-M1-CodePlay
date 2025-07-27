@@ -202,8 +202,12 @@ final class MusicViewModelWrapper: ObservableObject {
                 matches.forEach { print("✅ \( $0.artistName ) (\($0.appleMusicId))") }
             }
 
-            // 3단계: 아티스트별 상위 곡 검색
-            let songs = await exportViewModelWrapper.searchTopSongs(from: rawText, artistMatches: matches)
+            // 3단계: 아티스트별 상위 곡 검색 (Song 캐싱 포함)
+            let songs = await exportViewModelWrapper.searchTopSongsWithCaching(
+                from: rawText,
+                artistMatches: matches,
+                musicPlayerUseCase: musicPlayerUseCase
+            )
             DispatchQueue.main.async {
                 self.progressStep = 3
                 self.playlistEntries = songs
@@ -245,11 +249,21 @@ final class MusicViewModelWrapper: ObservableObject {
         }
     }
     
-    /// 30초 미리듣기 재생/일시정지 토글
+    /// 30초 미리듣기 재생/일시정지 토글 (캐시 우선 + 일시정지/재개 지원)
     func togglePreview(for trackId: String) {
-        
         Task {
-            await musicPlayerUseCase.musicRepository.togglePreview(for: trackId)
+            let wasInstant = await musicPlayerUseCase.playPreviewInstantly(trackId: trackId)
+            let status = musicPlayerUseCase.musicRepository.getCurrentPlayingStatus()
+            
+            if wasInstant {
+                if status.isPlaying {
+                    print("🚀 즉시 재생됨: \(trackId)")
+                } else {
+                    print("⏸️ 즉시 일시정지됨: \(trackId)")
+                }
+            } else {
+                print("⏳ 네트워크에서 재생됨: \(trackId)")
+            }
         }
     }
 }

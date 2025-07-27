@@ -14,6 +14,19 @@ protocol ExportPlaylistViewModel {
     func searchTopSongs(from rawText: RawText, artistMatches: [ArtistMatch])
         async -> [PlaylistEntry]  // ArtistMatch에서 노래를 검색하고, PlaylistEntry로 저장
     func exportLatestPlaylistToAppleMusic() async  // 애플뮤직으로 플레이리스트 전송
+    
+    // MARK: - Enhanced Methods
+    /// Song 객체 캐싱을 포함한 인기곡 검색
+    /// - Parameters:
+    ///   - rawText: 원본 텍스트
+    ///   - artistMatches: 아티스트 매칭 결과
+    ///   - musicPlayerUseCase: Song 캐싱을 위한 UseCase
+    /// - Returns: PlaylistEntry 배열
+    func searchTopSongsWithCaching(
+        from rawText: RawText,
+        artistMatches: [ArtistMatch],
+        musicPlayerUseCase: MusicPlayerUseCase
+    ) async -> [PlaylistEntry]
 }
 
 final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {
@@ -75,5 +88,18 @@ final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {
                 print("❌ 전송 실패: \(error.localizedDescription)")
             }
         }
+    }
+    
+    // MARK: - Enhanced Implementation
+    func searchTopSongsWithCaching(
+        from rawText: RawText,
+        artistMatches: [ArtistMatch],
+        musicPlayerUseCase: MusicPlayerUseCase
+    ) async -> [PlaylistEntry] {
+        return (try? await useCase.searchTopSongsWithCaching(
+            from: rawText,
+            artistMatches: artistMatches,
+            musicPlayerUseCase: musicPlayerUseCase
+        )) ?? []
     }
 }
