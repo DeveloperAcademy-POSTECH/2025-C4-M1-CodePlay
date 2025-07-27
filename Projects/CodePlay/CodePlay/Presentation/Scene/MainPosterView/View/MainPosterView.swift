@@ -93,7 +93,7 @@ struct MainPosterView: View {
                     EmptyView()
                 }
             }
-//            Spacer().frame(height: 25)
+
             .fullScreenCover(isPresented: $isNavigateToScanPoster) {
                 CameraLiveTextView(
                     recognizedText: $recognizedText,
@@ -102,7 +102,7 @@ struct MainPosterView: View {
                 .ignoresSafeArea()
                 .environmentObject(wrapper)
             }
-            .toolbar { // 임시뷰
+            .toolbar {
                 ToolbarItem {
                     Button(action: {
                         isNavigateToExmapleView = true

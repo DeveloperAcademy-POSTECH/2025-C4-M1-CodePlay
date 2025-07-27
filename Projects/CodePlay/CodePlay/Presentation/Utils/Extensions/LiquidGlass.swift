@@ -18,7 +18,7 @@ extension View {
     func liquidGlass(
         style: LiquidGlassStyle,
         cornerRadius: CGFloat = 16,
-        opacity: Double = 0.6
+        opacity: Double = 0.3
     ) -> some View {
         self.modifier(LiquidGlassModifier(style: style, cornerRadius: cornerRadius, opacity: opacity))
     }
@@ -40,7 +40,7 @@ struct LiquidGlassModifier: ViewModifier {
                         .fill(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .neu900.opacity(0.3), .neu900.opacity(0.1),
+                                    .neutral50.opacity(0.3), .neutral50.opacity(0.1),
                                 ]),
                                 startPoint: UnitPoint(x: 0.0, y: 0.0),
                                 endPoint: UnitPoint(x: 0.1, y: 1.0)
@@ -49,7 +49,7 @@ struct LiquidGlassModifier: ViewModifier {
                         .stroke(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .neu900.opacity(0.4),
+                                    .neu50.opacity(0.4),
                                     .clear,
                                 ]),
                                 startPoint: UnitPoint(x: 0.0, y: 0.0),
@@ -59,7 +59,7 @@ struct LiquidGlassModifier: ViewModifier {
                         .stroke(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .clear, .neu900.opacity(0.2),
+                                    .clear, .neu50.opacity(0.2),
                                 ]),
                                 startPoint: UnitPoint(x: 0.0, y: 0.0),
                                 endPoint: UnitPoint(x: 1.0, y: 0.0)
@@ -67,7 +67,7 @@ struct LiquidGlassModifier: ViewModifier {
                         )
                 )
                 .cornerRadius(cornerRadius)
-                .shadow(color: .neu50.opacity(0.15), radius: 5, x: 0, y: 5)
+//                .shadow(color: .neu700.opacity(0.15), radius: 5, x: 0, y: 5)
 
         case .list:
             content
@@ -77,7 +77,7 @@ struct LiquidGlassModifier: ViewModifier {
                         .fill(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .neu900.opacity(0.3), .neu900.opacity(0.2),
+                                    .neu50.opacity(0.3), .neu50.opacity(0.2),
                                 ]),
                                 startPoint: UnitPoint(x: 0.0, y: 0.0),
                                 endPoint: UnitPoint(x: 0.1, y: 1.0)
@@ -86,7 +86,7 @@ struct LiquidGlassModifier: ViewModifier {
                         .stroke(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .neu900.opacity(0.2),
+                                    .neu50.opacity(0.2),
                                     .clear,
                                 ]),
                                 startPoint: UnitPoint(x: 0.0, y: 0.0),
@@ -96,7 +96,7 @@ struct LiquidGlassModifier: ViewModifier {
                         .stroke(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .clear, .neu900.opacity(0.3),
+                                    .clear, .neu50.opacity(0.3),
                                 ]),
                                 startPoint: UnitPoint(x: 0.0, y: 0.0),
                                 endPoint: UnitPoint(x: 1.0, y: 0.0)
@@ -104,27 +104,14 @@ struct LiquidGlassModifier: ViewModifier {
                         )
                 )
                 .cornerRadius(cornerRadius)
-                .shadow(color: .neu50.opacity(0.1), radius: 4, x: 0, y: 1)
-            
-//        case .listbutton:
-//            content
-//                .background(
-//                    ZStack {
-//                        Rectangle()
-//                            .fill(.ultraThinMaterial)
-//
-//                        Rectangle()
-//                            .fill(Color.white.opacity(0.1))
-//                    }
-//                )
-//                .ignoresSafeArea()
+//                .shadow(color: .neu700.opacity(0.1), radius: 2, x: 0, y: 1)
             
         case .listbutton:
             content
                 .background(
                     ZStack {
                         Rectangle().fill(.ultraThinMaterial)
-                        Rectangle().fill(Color.neu900.opacity(0.05)) // 최소한의 빛 반사 효과
+                        Rectangle().fill(Color.neu50.opacity(0.05)) // 최소한의 빛 반사 효과
                     }
                 )
                 .ignoresSafeArea()

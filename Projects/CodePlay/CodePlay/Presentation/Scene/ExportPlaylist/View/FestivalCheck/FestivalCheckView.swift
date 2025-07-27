@@ -67,7 +67,7 @@ struct FestivalCheckView: View {
                 EmptyView()
             }
         }
-//        .edgesIgnoringSafeArea(.bottom)
+        .edgesIgnoringSafeArea(.bottom)
         .navigationBarBackButtonHidden(true)
 
     }
