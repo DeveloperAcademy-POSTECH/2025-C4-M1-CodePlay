@@ -15,6 +15,7 @@ struct MainPosterView: View {
     @State private var recognizedText: String = ""
     @State private var isNavigateToScanPoster = false
     @Environment(\.modelContext) var modelContext
+    @Query(sort: \Playlist.createdAt, order: .reverse) private var playlists: [Playlist]
     
     var body: some View {
 //        NavigationStack(path: $navigationPath) {
@@ -26,7 +27,7 @@ struct MainPosterView: View {
                 VStack(spacing: 0) {
                     Spacer().frame(height: 60)
             
-                    if wrapper.playlist.isEmpty {
+                    if playlists.isEmpty {
                         VStack(alignment: .center) {
                             Image("Mainempty")
                                 .resizable()
@@ -42,9 +43,8 @@ struct MainPosterView: View {
 
                     } else {
                         VStack {
-                            OverlappingCardsView(playlists: [wrapper.playlist])
-                            
-                            Spacer().frame(height: 12)
+                            OverlappingCardsView(playlists: playlists)
+                            .padding(.bottom, 12)
                         }
                     }
                     

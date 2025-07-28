@@ -42,7 +42,7 @@ struct OverlappingCardsView: View {
                                         imageUrl: currentImageURL(for: playlist, at: index),
                                         date: playlist.period ?? "",
                                         title: playlist.title,
-                                        subTitle: playlist.cast ?? playlist.place ?? ""
+                                        subTitle: playlist.place ?? ""
                                     )
                                     .frame(width: cardWidth, height: 420)
                                     .scaleEffect(1.0)

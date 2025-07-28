@@ -28,7 +28,6 @@ protocol FestivalCheckViewModel: FestivalCheckViewModelInput,
 {}
 
 // MARK: - Implementation
-@MainActor
 final class DefaultFestivalCheckViewModel: FestivalCheckViewModel {
     @Published private(set) var festivalData = Observable<DynamoDataItem?>(nil)
     @Published var suggestTitles = Observable<[String]>([])
