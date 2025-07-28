@@ -10,21 +10,37 @@ import SwiftUI
 // MARK: 애플뮤직 플레이리스트로 전송하는 뷰 (hifi 06_1부분)
 struct ExportLoadingView: View {
     @State private var progress: Double = 0.0
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        VStack(spacing: 24) {
-            Spacer()
-
-            GIFImage(gifName: "PlaylistLoadLight", width: 360, height: 400)
-                .frame(width: 360, height: 400)
+        VStack(spacing: 0) {
             
-            Text("Apple Music으로 전송 중...")
-                .font(.title3)
-
-            ProgressView(value: progress)
-                .progressViewStyle(.linear)
-                .padding(.horizontal, 32)
-
+            if colorScheme == .light {
+                GIFImage(gifName: "PlaylistLoadLight", width: 320, height: 320)
+                    .scaledToFit()
+                    .frame(width: 320, height: 320)
+            } else {
+                GIFImage(gifName: "PlaylistLoadDark", width: 320, height: 320)
+                    .scaledToFit()
+                    .frame(width: 320, height: 320)
+            }
+            
+            
+            GradientProgressBar(progress: progress)
+                .padding(.bottom, 60)
+            
+            VStack(spacing: 12) {
+                Text("Apple Music으로\n플레이리스트를 보내는 중...")
+                    .font(.HlgBold())
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.neu900)
+                
+                Text("잠시만 기다려 주세요")
+                    .font(.BmdRegular())
+                    .foregroundColor(.neu700)
+            }
+            .frame(maxWidth: 321)
+            
             Spacer()
         }
         .navigationBarBackButtonHidden(true)
@@ -36,6 +52,7 @@ struct ExportLoadingView: View {
         .backgroundWithBlur()
     }
 }
+
 
 #Preview {
     ExportLoadingView()
