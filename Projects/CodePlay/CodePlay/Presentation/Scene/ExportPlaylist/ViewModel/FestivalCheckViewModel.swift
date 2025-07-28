@@ -10,7 +10,6 @@ import Foundation
 
 // MARK: - Input
 protocol FestivalCheckViewModelInput {
-//    func onAppear(with rawText: String?, completion: @escaping (Bool) -> Void)
     func loadFestivalInfo(from rawText: String) async -> Bool
 }
 
@@ -50,9 +49,6 @@ final class DefaultFestivalCheckViewModel: FestivalCheckViewModel {
     func loadFestivalInfo(from rawText: String) async -> Bool {
         isLoading = true
         defer { isLoading = false }
-
-        print("[FestivalCheckViewModel] festivalData: \(String(describing: festivalData))")
-        print("[FestivalCheckViewModel] isLoading: \(isLoading)")
         
         do {
             print("[FestivalCheckViewModel] 🔄 fetchFestivalInfoUseCase 시작")

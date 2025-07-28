@@ -12,10 +12,8 @@ import SwiftUI
 struct FestivalCheckView: View {
     @State private var isNavigate: Bool = false
     @State private var isNavigateToSearch: Bool = false
-    //    @State private var festivalData: DynamoDataItem?  // API 응답 저장 (dynamoData[0])
     @State private var apiResponse: PostFestInfoResponseDTO?
     @State private var suggestTitles: SuggestTitlesModel?
-    //    @State private var isLoading: Bool = true  // 로딩 상태 추가
     @State private var savedPlaylist: Playlist?
     @EnvironmentObject var wrapper: MusicViewModelWrapper
     @Environment(\.modelContext) private var modelContext
@@ -46,25 +44,6 @@ struct FestivalCheckView: View {
                     .foregroundColor(Color.neu700)
 
                 Spacer().frame(height: 36)
-
-                //                                if let data = wrapper.festivalCheckViewModel.festivalData,
-                //                                    !wrapper.festivalCheckViewModel.isLoading
-                //                                {
-                //                                    ArtistCard(
-                //                                        imageUrl: "https://example.com/festival-poster.jpg",  // 하드코딩
-                //                                        date: data.period,
-                //                                        title: data.title,
-                //                                        subTitle: data.place
-                //                                    )
-                //                                } else {
-                //                                    // 로딩 인디케이터
-                //                                    ProgressView("페스티벌 정보 로딩 중...")
-                //                                        .progressViewStyle(
-                //                                            CircularProgressViewStyle(tint: Color.blue)
-                //                                        )
-                //                                        .font(.BmdRegular())
-                //                                        .foregroundColor(Color.neutral700)
-                //                                }
 
                 if wrapper.festivalCheckViewModel.isLoading {
                     // 1. 로딩 상태를 가장 먼저 체크
@@ -142,15 +121,7 @@ struct FestivalCheckView: View {
         HStack(spacing: 16) {
             Button(
                 action: {
-                    //                    if let response = apiResponse {
-                    //                        let titles = response.top5.map { $0.title }
-                    //                        suggestTitles = SuggestTitlesModel(titles: titles)
-                    //                        isNavigateToSearch = true
-                    //                    }
                     self.isNavigateToSearch = true
-
-                    // suggestTitles를 SuggestTitlesModel로 변환하여 네비게이션
-
                 },
                 label: {
                     ZStack {
