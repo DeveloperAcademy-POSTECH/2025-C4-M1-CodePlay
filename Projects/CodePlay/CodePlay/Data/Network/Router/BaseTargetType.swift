@@ -10,7 +10,7 @@ import Moya
 
 enum UtilPath: String {
     case notification = "SNSToken/register"
-    case festivalinfo = "festivalinfos"
+    case festivalinfo = "festinfo"
 }
 
 protocol BaseTargetType: TargetType {

@@ -47,7 +47,7 @@ struct CameraLiveTextView: UIViewControllerRepresentable {
 
                 // 선택 완료 후 자동으로 다음 화면으로
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.parent.wrapper.viewModel.shouldNavigateToMakePlaylist
+                    self.parent.wrapper.viewModel.shouldNavigateToFestivalCheck
                         .value = true
                     self.parent.isPresented = false
                 }
@@ -241,8 +241,6 @@ class CameraLiveTextViewController: UIViewController {
                 greaterThanOrEqualToConstant: 200
             ),
         ])
-
-
     }
 
     private func showTextInSelectedRegion() {

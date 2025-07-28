@@ -83,11 +83,11 @@ struct CustomList: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.BlgBold())
-                    .foregroundColor(.neu50)
+                    .foregroundColor(.neu900)
                 
                 Text(albumName)
                     .font(.BsmRegular())
-                    .foregroundColor(.new200)
+                    .foregroundColor(.neu700)
             }
             
             Spacer()

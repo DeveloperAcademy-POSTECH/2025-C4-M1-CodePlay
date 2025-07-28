@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum ButtonKind{
+enum ButtonKind {
     case colorFill
     case line
 }
@@ -19,7 +19,6 @@ struct BottomButton: View {
     let title: String
     let kind: ButtonKind
     let action: () -> Void
-    
     
     init(title: String, kind: ButtonKind, action: @escaping () -> Void) {
         self.title = title
