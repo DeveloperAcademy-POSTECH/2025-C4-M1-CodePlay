@@ -48,13 +48,12 @@ struct FestivalCheckView: View {
 
                 if let data = festivalData, !isLoading {
                     ArtistCard(
-                        imageUrl: "https://example.com/festival-poster.jpg",  // 하드코딩
+                        imageUrl: "https://example.com/festival-poster.jpg",
                         date: data.period,
                         title: data.title,
                         subTitle: data.place
                     )
                 } else {
-                    // 로딩 인디케이터
                     ProgressView("페스티벌 정보 로딩 중...")
                         .progressViewStyle(CircularProgressViewStyle(tint: Color("Primary")))
                         .font(.BmdRegular())
@@ -111,6 +110,18 @@ struct FestivalCheckView: View {
         }
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarBackButtonHidden(true)
+        .toolbar{
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(
+                    action: {
+                    },
+                    label: {
+                        Image(systemName: "xmark")
+                            .foregroundColor(.neu900)
+                    }
+                )
+            }
+        }
     }
 
     @ViewBuilder

@@ -76,6 +76,7 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
             do {
                 var request = MusicCatalogSearchRequest(term: name, types: [Artist.self])
                 request.limit = 1
+                
                 let response = try await request.response()
 
                 if let artist = response.artists.first {

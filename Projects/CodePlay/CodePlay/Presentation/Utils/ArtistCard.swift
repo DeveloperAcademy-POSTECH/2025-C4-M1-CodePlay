@@ -47,13 +47,13 @@ struct ArtistCard: View {
                         }
                     )
                     .cornerRadius(16)
-                    .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+                    .shadow(color: .neu1000.opacity(0.2), radius: 8, x: 0, y: 4)
                 
                 Spacer().frame(height: 4)
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(date)
-                        .font(.BmdRegular())
+                        .font(.BsmRegular())
                         .foregroundColor(.neu700)
                     
                     Text(title)
@@ -61,7 +61,7 @@ struct ArtistCard: View {
                         .foregroundColor(.neu900)
                     
                     Text(subTitle)
-                        .font(.BsmBold())
+                        .font(.BsmRegular())
                         .foregroundColor(.neu700)
                 }
                 .padding(.leading, 12)
