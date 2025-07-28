@@ -65,7 +65,6 @@ struct FestivalCheckView: View {
                 bottombutton
                     .padding(.bottom, 50)
             }
-//            .padding(.bottom, 50)
             .onAppear {
                 // 뷰 렌더링 시작 시 API 호출
                 if let text = rawText?.text {

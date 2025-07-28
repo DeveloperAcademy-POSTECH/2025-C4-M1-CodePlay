@@ -94,6 +94,7 @@ struct SelectArtistView: View {
                     },
                     label: {
                         Text("취소")
+                            .font(.BlgRegular())
                             .foregroundColor(.neu900)
                     }
                 )
@@ -228,15 +229,15 @@ struct SelectArtistView: View {
     }
 }
 
-#Preview {
-    let mockPlaylist = Playlist(
-        id: UUID(),
-        title: "Mock Festival",
-        createdAt: .now,
-        period: "2025.08.15 - 08.17",
-        cast: "TAEYANG, NEWJEANS, G-DRAGON, JAY PARK, LISA, THE BOYZ, ATEEZ, ZICO, LE SSERAFIM",
-        festivalId: nil,
-        place: "Seoul"
-    )
-    SelectArtistView(playlist: mockPlaylist)
-}
+//#Preview {
+//    let mockPlaylist = Playlist(
+//        id: UUID(),
+//        title: "Mock Festival",
+//        createdAt: .now,
+//        period: "2025.08.15 - 08.17",
+//        cast: "TAEYANG, NEWJEANS, G-DRAGON, JAY PARK, LISA, THE BOYZ, ATEEZ, ZICO, LE SSERAFIM",
+//        festivalId: nil,
+//        place: "Seoul"
+//    )
+//    SelectArtistView(playlist: mockPlaylist)
+//}

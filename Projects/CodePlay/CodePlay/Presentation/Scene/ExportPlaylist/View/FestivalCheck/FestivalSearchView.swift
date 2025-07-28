@@ -73,13 +73,17 @@ struct FestivalSearchView: View {
             }
 
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("취소") {
+                Button(action: {
                     if showSearchResults {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             showSearchResults = false
                         }
                     }
                     searchText = ""
+                }) {
+                    Text("취소")
+                        .font(.BlgRegular())
+                        .foregroundColor(.neu900)
                 }
             }
         }
