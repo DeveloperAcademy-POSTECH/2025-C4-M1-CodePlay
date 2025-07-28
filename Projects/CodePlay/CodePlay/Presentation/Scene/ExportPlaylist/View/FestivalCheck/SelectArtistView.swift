@@ -28,10 +28,30 @@ struct SelectArtistView: View {
 
                 festivalInfoBox
                 
-                Text("플레이리스트에 추가할 아티스트를 선택하세요")
-                    .font(.BmdRegular())
-                    .foregroundColor(.neu900)
-                
+                HStack (alignment : .center ){
+                    Text("플레이리스트에 추가")
+                        .font(.BlgRegular())
+                        .foregroundColor(.neu900)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    Button(action: {
+                        if selectedArtists.count < playlist.artists.count {
+                            selectedArtists = Set(playlist.artists)
+                        } else {
+                            selectedArtists.removeAll()
+                        }
+                    }) {
+                        HStack(spacing: 2) {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 14, weight: selectedArtists.count < playlist.artists.count ? .regular : .bold))
+                                .foregroundColor(selectedArtists.count < playlist.artists.count ? .neu700 : Color("Primary"))
+                            Text("전체선택")
+                                .font(selectedArtists.count < playlist.artists.count ? .BmdRegular() : .BmdBold())
+                                .foregroundColor(selectedArtists.count < playlist.artists.count ? .neu700 : Color("Primary"))
+                        }
+                    }
+                }
+      
                 ArtistGridView
                 
                 Spacer()
