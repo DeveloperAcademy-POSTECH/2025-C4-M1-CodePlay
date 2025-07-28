@@ -72,12 +72,3 @@ struct ArtistCard: View {
         .frame(maxWidth: 320, maxHeight: 420)
     }
 }
-
-#Preview {
-    ZStack {
-        Color.clear
-            .backgroundWithBlur()
-            .ignoresSafeArea()
-        ArtistCard(imageUrl: nil, date: "2025.09.26.(금) ~ 2025.09.28(일)", title: "2025 부산국제록페스티벌", subTitle: "86 Songs")
-    }
-}
