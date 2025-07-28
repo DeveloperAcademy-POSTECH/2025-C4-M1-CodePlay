@@ -122,6 +122,7 @@ final class MusicViewModelWrapper: ObservableObject {
     @Published var playbackProgress: Double = 0.0
     @Published var isLoading: Bool = true  // 로딩 상태 추가
     @Published var festivalData: DynamoDataItem? = nil
+    @Published var suggestTitles: [String] = []
 
 
     var appleMusicConnectViewModel: any AppleMusicConnectViewModel
@@ -163,6 +164,11 @@ final class MusicViewModelWrapper: ObservableObject {
             self?.festivalData = newData
         }
 
+        festivalCheckViewModel.suggestTitles.observe(on: self) { [weak self] newData in
+            print("🎯 suggestTitles 업데이트 감지: \(newData)")
+            self?.suggestTitles = newData
+        }
+        
         appleMusicConnectViewModel.authorizationStatus.observe(on: self) { [weak self] status in
             DispatchQueue.main.async {
                 self?.authorizationStatus = status

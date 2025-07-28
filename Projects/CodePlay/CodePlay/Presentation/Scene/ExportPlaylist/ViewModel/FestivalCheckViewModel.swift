@@ -16,7 +16,7 @@ protocol FestivalCheckViewModelInput {
 // MARK: - Output
 protocol FestivalCheckViewModelOutput {
     var festivalData: Observable<DynamoDataItem?> { get }
-    var suggestTitles: [String] { get }
+    var suggestTitles: Observable<[String]> { get set }
     var isLoading: Observable<Bool> { get set }
     var errorMessage: String? { get }
 }
@@ -31,7 +31,7 @@ protocol FestivalCheckViewModel: FestivalCheckViewModelInput,
 @MainActor
 final class DefaultFestivalCheckViewModel: FestivalCheckViewModel {
     @Published private(set) var festivalData = Observable<DynamoDataItem?>(nil)
-    @Published private(set) var suggestTitles: [String] = []
+    @Published var suggestTitles = Observable<[String]>([])
     @Published var isLoading = Observable<Bool>(true)
     @Published private(set) var errorMessage: String? = nil
 
@@ -56,7 +56,7 @@ final class DefaultFestivalCheckViewModel: FestivalCheckViewModel {
             }
 
             self.festivalData.value = first
-            self.suggestTitles = response.top5.map { $0.title }
+            self.suggestTitles.value = response.top5.map { $0.title }
             print("[FestivalCheckViewModel] ✅ festivalData 업데이트 완료")
             return true
         } catch {

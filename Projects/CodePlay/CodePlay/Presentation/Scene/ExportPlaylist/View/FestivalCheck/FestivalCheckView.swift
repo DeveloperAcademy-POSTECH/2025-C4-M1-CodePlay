@@ -81,6 +81,11 @@ struct FestivalCheckView: View {
                     let success = await wrapper.festivalCheckViewModel
                         .loadFestivalInfo(from: rawText?.text ?? "")
 
+                    if let first = wrapper.suggestTitles.first {
+                        
+                        self.suggestTitles = SuggestTitlesModel(titles: wrapper.suggestTitles)
+                    }
+
                     print("loadFestivalInfo 완료: \(success)")
                     print(
                         "festivalData after load: \(String(describing: wrapper.festivalCheckViewModel.festivalData))"
@@ -88,6 +93,8 @@ struct FestivalCheckView: View {
                     print(
                         "isLoading after load: \(wrapper.festivalCheckViewModel.isLoading)"
                     )
+                    print("[suggestTitles]:\(suggestTitles)")
+                    print("[savedPlaylist]:\(savedPlaylist)")
                 }
             }
 
@@ -100,14 +107,15 @@ struct FestivalCheckView: View {
                 EmptyView()
             }
 
-            NavigationLink(
-                destination: suggestTitles != nil
-                    ? AnyView(FestivalSearchView(suggestTitles: suggestTitles!))
-                    : AnyView(EmptyView()),
-                isActive: $isNavigateToSearch
-            ) {
-                EmptyView()
-            }
+
+                NavigationLink(
+                    destination: suggestTitles != nil ? AnyView(FestivalSearchView(suggestTitles: suggestTitles!)) : AnyView(EmptyView()),
+                    isActive: $isNavigateToSearch
+                ) {
+                    EmptyView()
+                }
+            
+
         }
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarBackButtonHidden(true)
