@@ -56,7 +56,7 @@ struct FestivalCheckView: View {
                 } else {
                     // 로딩 인디케이터
                     ProgressView("페스티벌 정보 로딩 중...")
-                        .progressViewStyle(CircularProgressViewStyle(tint: Color.blue))
+                        .progressViewStyle(CircularProgressViewStyle(tint: Color("Primary")))
                         .font(.BmdRegular())
                         .foregroundColor(Color.neutral700)
                 }
@@ -64,8 +64,9 @@ struct FestivalCheckView: View {
                 Spacer()
                 
                 bottombutton
+                    .padding(.bottom, 50)
             }
-            .padding(.bottom, 50)
+//            .padding(.bottom, 50)
             .onAppear {
                 // 뷰 렌더링 시작 시 API 호출
                 if let text = rawText?.text {
@@ -113,111 +114,26 @@ struct FestivalCheckView: View {
     }
 
     @ViewBuilder
-    private var bottombutton: some View {
-        HStack(spacing: 16) {
-            Button(
-                action: {
-                    if let response = apiResponse {
-                        let titles = response.top5.map { $0.title }
-                        suggestTitles = SuggestTitlesModel(titles: titles)
-                        isNavigateToSearch = true
-                    }
-                },
-                label: {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 999)
-                            .fill(Color.clear)
-                            .frame(height: 60)
-                            .shadow(
-                                color: Color(
-                                    red: 0,
-                                    green: 0.65,
-                                    blue: 1
-                                ).opacity(0.16),
-                                radius: 6,
-                                x: 0,
-                                y: 2
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 999)
-                                    .inset(by: 1)
-                                    .stroke(
-                                        Color(
-                                            red: 0.91,
-                                            green: 0.45,
-                                            blue: 0.93
-                                        ),
-                                        lineWidth: 2
-                                    )
-                            )
-
-                        Text("아니요")
-                            .font(.BlgBold())
-                            .foregroundColor(Color.blue)
-                            .padding(.vertical, 18)
-                            .zIndex(1)
-                    }
+    private var bottombutton: some View{
+        HStack(spacing : 16){
+            BottomButton(title: "아니요", kind: .line) {
+                if let response = apiResponse {
+                    let titles = response.top5.map { $0.title }
+                    suggestTitles = SuggestTitlesModel(titles: titles)
+                    isNavigateToSearch = true
                 }
-            )
-
-            Button(
-                action: {
-                    savePlaylist()
-                    if savedPlaylist != nil {
-                        isNavigate = true
-                    }
-                },
-                label: {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 999)
-                            .fill(Color.clear)
-                            .frame(height: 60)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 999)
-                                    .inset(by: 1)
-                                    .fill(
-                                        LinearGradient(
-                                            stops: [
-                                                Gradient.Stop(
-                                                    color: Color(
-                                                        red: 0.91,
-                                                        green: 0.45,
-                                                        blue: 0.93
-                                                    ),
-                                                    location: 0.00
-                                                ),
-                                                Gradient.Stop(
-                                                    color: Color(
-                                                        red: 0,
-                                                        green: 0.65,
-                                                        blue: 1
-                                                    ),
-                                                    location: 1.00
-                                                ),
-                                            ],
-                                            startPoint: UnitPoint(
-                                                x: 0,
-                                                y: 0.5
-                                            ),
-                                            endPoint: UnitPoint(
-                                                x: 1,
-                                                y: 0.5
-                                            )
-                                        )
-                                    )
-                            )
-
-                        Text("맞아요")
-                            .foregroundColor(Color.white)
-                            .font(.BlgBold())
-                            .padding(.vertical, 18)
-                            .zIndex(1)
-                    }
+            }
+            
+            BottomButton(title: "맞아요", kind: .colorFill) {
+                savePlaylist()
+                if savedPlaylist != nil {
+                    isNavigate = true
                 }
-            )
+            }
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 20)
     }
+    
     
     private func savePlaylist() {
         guard let data = festivalData else {
