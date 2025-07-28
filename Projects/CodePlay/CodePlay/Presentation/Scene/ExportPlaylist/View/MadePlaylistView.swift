@@ -34,15 +34,14 @@ struct MadePlaylistView: View {
                     .padding(.horizontal, 15)
                     .padding(.bottom, 142)
                 }
-
-                BottomButton(title: "Apple Music으로 전송", kind: .colorFill) {
-                    wrapper.exportToAppleMusic()
-                }
-                .padding(.bottom, 50)
-                .padding(.horizontal, 20)
-                .padding(.top, 15)
-                .liquidGlass(style: .listbutton)
             }
+            BottomButton(title: "Apple Music으로 전송", kind: .colorFill) {
+                wrapper.exportToAppleMusic()
+            }
+            .padding(.bottom, 50)
+            .padding(.horizontal, 20)
+            .padding(.top, 15)
+            .liquidGlass(style: .listbutton)
         }
         .edgesIgnoringSafeArea(.bottom)
         .navigationTitle("플레이리스트")
