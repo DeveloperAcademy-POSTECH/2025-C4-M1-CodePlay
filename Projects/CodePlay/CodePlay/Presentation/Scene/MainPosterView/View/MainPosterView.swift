@@ -13,7 +13,7 @@ struct MainPosterView: View {
     @EnvironmentObject var wrapper: PosterViewModelWrapper
     @EnvironmentObject var musicWrapper: MusicViewModelWrapper
     @State private var recognizedText: String = ""
-    @State private var isNavigateToScanPoster = false
+    @State private var isNavigateToScanPoster = false//ㅂ
     @Environment(\.modelContext) var modelContext
     @Query(sort: \Playlist.createdAt, order: .reverse) private var playlists: [Playlist]
     

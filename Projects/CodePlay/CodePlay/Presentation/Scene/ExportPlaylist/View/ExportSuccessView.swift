@@ -11,6 +11,12 @@ import SwiftUI
 struct ExportSuccessView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var posterWrapper: PosterViewModelWrapper
+    @EnvironmentObject var musicWrapper: MusicViewModelWrapper
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.modelContext) private var modelContext
+    @State private var isFullScreenToMainPoster = false
+
     
     var body: some View {
         NavigationStack {
@@ -49,6 +55,11 @@ struct ExportSuccessView: View {
                     .padding(.bottom, 16)
                 }
             }
+            .fullScreenCover(isPresented: $isFullScreenToMainPoster) {
+                MainPosterView()
+                    .environmentObject(posterWrapper)
+                    .environmentObject(musicWrapper)
+            }
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(false)
             .toolbar {
@@ -56,12 +67,13 @@ struct ExportSuccessView: View {
                     Button(action: {
                         posterWrapper.shouldNavigateToMakePlaylist = false
                         posterWrapper.viewModel.clearText()
-                        dismiss()
-                    }) {
+
+                        isFullScreenToMainPoster = true // ✅ fullScreenCover 트리거
+                    }, label: {
                         Image(systemName: "xmark")
                             .foregroundColor(.neu900)
                             .font(.system(size: 16, weight: .medium))
-                    }
+                    })
                 }
             }
             .toolbarBackground(.hidden, for: .navigationBar)
