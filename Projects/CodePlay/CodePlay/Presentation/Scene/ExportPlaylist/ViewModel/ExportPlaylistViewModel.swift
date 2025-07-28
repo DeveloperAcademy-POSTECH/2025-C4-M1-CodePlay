@@ -63,7 +63,6 @@ final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {
                         FetchDescriptor<Playlist>()
                     ).last
                 else {
-                    print("❌ Playlist 없음")
                     return
                 }
 
@@ -79,16 +78,14 @@ final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {
                         playlist: latest,
                         entries: entries
                     )
-                    print("✅ Apple Music 전송 완료")
+            
                 }
             } catch {
-                print("❌ 전송 실패: \(error.localizedDescription)")
             }
         }
     }
     
     func deletePlaylistEntry(trackId: String) async {
         await useCase.deletePlaylistEntry(trackId: trackId)
-        print("✅ ViewModel: 삭제 요청 전달 완료 - \(trackId)")
     }
 }

@@ -140,10 +140,8 @@ final class MusicViewModelWrapper: ObservableObject {
                 }
             },
             onProgressChanged: { [weak self] progress in
-                print("🎯 [MusicViewModelWrapper] 진행률 받음: \(progress)")
                 DispatchQueue.main.async {
                     self?.playbackProgress = progress
-                    print("🎯 [MusicViewModelWrapper] UI 진행률 업데이트 완료: \(self?.playbackProgress ?? 0)")
                 }
             }
         )
@@ -242,6 +240,11 @@ final class MusicViewModelWrapper: ObservableObject {
     /// 플레이리스트에서 특정 곡 삭제
     func deletePlaylistEntry(trackId: String) {
         Task {
+            // 현재 재생 중인 곡이라면 먼저 음악 정지
+            if currentlyPlayingTrackId == trackId {
+                await musicPlayerUseCase.stopPreview()
+            }
+            
             await exportViewModelWrapper.deletePlaylistEntry(trackId: trackId)
             await MainActor.run {
                 if currentlyPlayingTrackId == trackId {

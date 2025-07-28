@@ -60,7 +60,6 @@ class DefaultPosterViewModel: PosterViewModel {
                         self.scannedText.value = RawText(text: newItems.first?.title ?? "")
                     }
                 } catch {
-                    print("[PosterViewModel] - 포스터 인식 실패:\(error)")
                     continue
                 }
             }

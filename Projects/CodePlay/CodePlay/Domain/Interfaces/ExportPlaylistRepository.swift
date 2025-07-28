@@ -91,7 +91,6 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                     results.append(match)
                 }
             } catch {
-                print("❌ 검색 실패: \(name) → \(error)")
             }
         }
 
@@ -140,7 +139,6 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                     allEntries.append(entry)
                 }
             } catch {
-                print("❌ \(artist.artistName) 인기곡 검색 실패: \(error)")
             }
         }
 
@@ -192,7 +190,6 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                     }
                 }
             } catch {
-                print("❌ \(artist.artistName) 인기곡 검색 실패: \(error)")
             }
         }
 

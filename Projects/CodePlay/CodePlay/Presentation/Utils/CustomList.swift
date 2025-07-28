@@ -142,10 +142,8 @@ extension CustomList {
                 isPlaying: true,
                 playbackProgress: 0.3,
                 onAlbumCoverTap: {
-                    print("Album cover tapped")
                 },
                 onDeleteTap: {
-                    print("Delete tapped")
                 }
             )
             CustomList(
@@ -157,10 +155,8 @@ extension CustomList {
                 isPlaying: false,
                 playbackProgress: 0.0,
                 onAlbumCoverTap: {
-                    print("Album cover tapped")
                 },
                 onDeleteTap: {
-                    print("Delete tapped 2")
                 }
             )
         }

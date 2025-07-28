@@ -57,8 +57,6 @@ struct PlaylistSectionView: View {
     
     // MARK: - Private Methods
     private func deleteEntry(_ entry: PlaylistEntry) {
-        print("삭제 실행: \(entry.trackTitle)")
-        
         wrapper.deletePlaylistEntry(trackId: entry.trackId)
     }
 }

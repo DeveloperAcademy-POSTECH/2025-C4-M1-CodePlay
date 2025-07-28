@@ -106,7 +106,6 @@ final class DefaultMusicPlayerRepository: MusicPlayerRepository {
             startProgressTimer() // 이 타이머가 30초 후 자동 정지까지 처리
             notifyStateChange()
         } catch {
-            print("❌ 미리듣기 재생 실패: \(trackId)")
             notifyStateChange()
         }
     }
