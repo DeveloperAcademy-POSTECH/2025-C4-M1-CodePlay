@@ -40,12 +40,13 @@ struct OverlappingCardsView: View {
                                     let cardCenter = minX + cardWidth / 2
                                     let distance = abs(cardCenter - screenCenter)
                                     let normalizedDistance = min(distance / (cardWidth / 2), 1.0)
+                                    let matchingEntries = allEntries.filter { $0.playlistId == playlist.id }
                                     
                                     ArtistCard(
                                         imageUrl: currentImageURL(for: playlist, at: index),
                                         date: playlist.period ?? "",
                                         title: playlist.title,
-                                        subTitle: playlist.cast ?? playlist.place ?? ""
+                                        subTitle: "\(matchingEntries.count)곡"
                                     )
                                     .frame(width: cardWidth, height: 420)
                                     .scaleEffect(1.0)
