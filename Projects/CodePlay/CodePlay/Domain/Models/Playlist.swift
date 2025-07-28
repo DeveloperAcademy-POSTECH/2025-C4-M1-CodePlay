@@ -33,4 +33,8 @@ final class Playlist {
         guard let cast = cast else { return [] }
         return cast.components(separatedBy: ", ").map { $0.trimmingCharacters(in: .whitespaces) }
     }
+    
+    var isEmpty: Bool {
+        return title.isEmpty == nil
+    }
 }

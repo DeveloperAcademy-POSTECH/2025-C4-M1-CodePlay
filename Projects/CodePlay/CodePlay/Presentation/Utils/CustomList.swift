@@ -82,12 +82,12 @@ struct CustomList: View {
             // 제목 + 앨범명
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.black)
+                    .font(.BlgBold())
+                    .foregroundColor(.neu50)
                 
                 Text(albumName)
-                    .font(.system(size: 12))
-                    .foregroundColor(.gray)
+                    .font(.BsmRegular())
+                    .foregroundColor(.new200)
             }
             
             Spacer()
@@ -115,16 +115,35 @@ extension CustomList {
 }
 
 #Preview {
-    CustomList(
-        imageUrl: "https://example.com/album.jpg",
-        title: "Sample Song",
-        albumName: "Sample Album",
-        trackId: "sample123",
-        isCurrentlyPlaying: true,
-        isPlaying: true,
-        playbackProgress: 0.3,
-        onAlbumCoverTap: {
-            print("Album cover tapped")
+    ZStack {
+        Color.blue
+            .ignoresSafeArea()
+
+        VStack {
+            CustomList(
+                imageUrl: "https://example.com/album.jpg",
+                title: "Sample Song",
+                albumName: "Sample Album",
+                trackId: "sample123",
+                isCurrentlyPlaying: true,
+                isPlaying: true,
+                playbackProgress: 0.3,
+                onAlbumCoverTap: {
+                    print("Album cover tapped")
+                }
+            )
+            CustomList(
+                imageUrl: "https://example.com/album.jpg",
+                title: "Sample Song 2",
+                albumName: "Sample Album 2",
+                trackId: "sample456",
+                isCurrentlyPlaying: false,
+                isPlaying: false,
+                playbackProgress: 0.0,
+                onAlbumCoverTap: {
+                    print("Album cover tapped")
+                }
+            )
         }
-    )
+    }
 }

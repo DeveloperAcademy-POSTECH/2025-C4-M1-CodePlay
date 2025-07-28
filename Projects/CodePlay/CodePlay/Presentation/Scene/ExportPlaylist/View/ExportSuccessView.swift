@@ -31,10 +31,12 @@ struct ExportSuccessView: View {
                             .font(.HlgBold())
                             .multilineTextAlignment(.center)
                             .fixedSize(horizontal: false, vertical: true)
+                            .foregroundColor(.neu900)
                         
                         Text("애플뮤직에서 생성된 플레이리스트를 확인해보세요.")
                             .font(.BmdRegular())
                             .multilineTextAlignment(.center)
+                            .foregroundColor(.neu700)
                     }
                     .padding(.bottom, 80)
                     
@@ -43,6 +45,7 @@ struct ExportSuccessView: View {
                             UIApplication.shared.open(url)
                         }
                     }
+                    .padding(.horizontal, 20)
                     .padding(.bottom, 16)
                 }
             }
@@ -51,13 +54,12 @@ struct ExportSuccessView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        // MainView로 돌아가기 위해 모든 네비게이션 상태 초기화
                         posterWrapper.shouldNavigateToMakePlaylist = false
                         posterWrapper.viewModel.clearText()
                         dismiss()
                     }) {
                         Image(systemName: "xmark")
-                            .foregroundColor(.black)
+                            .foregroundColor(.neu900)
                             .font(.system(size: 16, weight: .medium))
                     }
                 }
@@ -66,5 +68,4 @@ struct ExportSuccessView: View {
         }
     }
 }
-
 

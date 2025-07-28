@@ -45,8 +45,13 @@ struct SelectArtistView: View {
             .padding(.horizontal, 20)
         }
         .navigationBarBackButtonHidden()
-        .navigationTitle(Text("아티스트 선택"))
         .toolbar {
+            ToolbarItem(placement: .principal){
+                Text("아티스트 선택")
+                    .font(.BlgBold())
+                    .foregroundColor(.neu50)
+            }
+            
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(
                     action: {
@@ -54,7 +59,7 @@ struct SelectArtistView: View {
                     },
                     label: {
                         Image(systemName: "chevron.left")
-                            .foregroundColor(.black)
+                            .foregroundColor(.neu50)
                     }
                 )
             }
@@ -65,7 +70,7 @@ struct SelectArtistView: View {
                     },
                     label: {
                         Text("취소")
-                            .foregroundColor(.black)
+                            .foregroundColor(.neu50)
                     }
                 )
             }
@@ -91,12 +96,12 @@ struct SelectArtistView: View {
                     
                 Text(playlist.place ?? "")
                     .font(.BsmRegular())
-                    .foregroundColor(Color.neutral700)
+                    .foregroundColor(Color.neu700)
                     .lineSpacing(2)
                 
                 Text(playlist.period ?? "")
                     .font(.BsmRegular())
-                    .foregroundColor(Color.neutral700)
+                    .foregroundColor(Color.neu700)
                     .lineSpacing(2)
             }
             .padding(.horizontal, 12)
@@ -109,7 +114,7 @@ struct SelectArtistView: View {
                 .stroke(.white.opacity(0.9), lineWidth: 2)
             
         )
-        .background(.white.opacity(0.3))
+        .background(.neu50.opacity(0.3))
         .cornerRadius(12)
     }
     

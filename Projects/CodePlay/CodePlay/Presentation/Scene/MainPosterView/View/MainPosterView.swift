@@ -14,66 +14,76 @@ struct MainPosterView: View {
     @EnvironmentObject var musicWrapper: MusicViewModelWrapper
     @State private var recognizedText: String = ""
     @State private var isNavigateToScanPoster = false
-    @State private var isNavigateToExmapleView = false // 예시뷰
     @Environment(\.modelContext) var modelContext
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                Spacer().frame(height: 60)
-        
-                if let scanned = wrapper.scannedText {
-                    VStack(alignment: .center) {
-                        Text(scanned.text)
-                            .multilineTextAlignment(.center)
+            ZStack(alignment: .bottom) {
+                Color.clear
+                    .backgroundWithBlur()
+                    .ignoresSafeArea()
+                
+                VStack(spacing: 0) {
+                    Spacer().frame(height: 60)
+            
+                    if wrapper.playlist.isEmpty {
+                        VStack(alignment: .center) {
+                            Image("Mainempty")
+                                .resizable()
+                                .scaledToFit()
+                            Text("아직 인식한 페스티벌\n라인업이 없습니다")
+                                .multilineTextAlignment(.center)
+                                .font(.BlgRegular())
+                                .foregroundColor(.neu900)
+                        }
+                        .frame(maxHeight: 420)
+                        .padding(.horizontal, 72)
+                        .liquidGlass(style: .card)
+
+                    } else {
+                        VStack {
+                            OverlappingCardsView(playlists: [wrapper.playlist])
+                            
+                            Spacer().frame(height: 12)
+                        }
                     }
-                    .frame(maxHeight: 420)
-                    .padding(.horizontal, 72)
-                    .liquidGlass(style: .card)
-                } else {
-                    VStack(alignment: .center) {
-                        Text("아직 인식한 페스티벌 라인업이 없습니다.")
-                            .multilineTextAlignment(.center)
+                    
+                    Spacer().frame(height: 25)
+                    
+                    Text("페스티벌에 가기 전\n노래를 미리 예습해 보세요!")
+                        .multilineTextAlignment(.center)
+                        .font(.HlgBold())
+                        .foregroundColor(.neu900)
+                    
+                    Spacer().frame(height: 12)
+                    
+                    Text("포스터 인식으로 플레이리스트를 만들 수 있어요")
+                        .font(.BmdRegular())
+                        .foregroundColor(.neu700)
+                    
+                    Spacer().frame(height: 35)
+                    
+                    BottomButton(title: "페스티벌 라인업 인식", kind: .colorFill, action: {
+                        recognizedText = ""
+                        isNavigateToScanPoster = true
+                    })
+                    .padding(.bottom, 16)
+                    .padding(.horizontal, 20)
+                    
+                    Spacer().frame(height: 25)
+                    
+                    NavigationLink(
+                        isActive: $wrapper.shouldNavigateToFestivalCheck,
+                        destination: {
+                            FestivalCheckView(rawText: wrapper.scannedText)
+                                .environmentObject(musicWrapper)
+                        }
+                    ) {
+                        EmptyView()
                     }
-                    .frame(maxHeight: 420)
-                    .padding(.horizontal, 72)
-                    .liquidGlass(style: .card)
-                }
-                
-                Spacer().frame(height: 56)
-                
-                Text("페스티벌 포스터로 미리 예습해보세요!")
-                
-                Spacer().frame(height: 12)
-                
-                Text("인식해 애플뮤직 플레이리스트로 만들어보세요")
-                
-                Spacer()
-                
-                BottomButton(title: "페스티벌 라인업 인식", kind: .colorFill, action: {
-                    recognizedText = ""
-                    isNavigateToScanPoster = true
-                })
-                .padding(.bottom, 16)
-                
-                NavigationLink(
-                    isActive: $wrapper.shouldNavigateToFestivalCheck,
-                    destination: {
-                        FestivalCheckView(rawText: wrapper.scannedText)
-                            .environmentObject(musicWrapper)
-                    }
-                ) {
-                    EmptyView()
-                }
-                
-                // TODO: UI확인을 위해 임시로 첫번째 공연 포스터를 들고오도록 설정 -> 추후 수정
-                NavigationLink(
-                    destination: FestivalCheckView(rawText: wrapper.scannedText),
-                    isActive: $isNavigateToExmapleView
-                ) {
-                    EmptyView()
                 }
             }
+
             .fullScreenCover(isPresented: $isNavigateToScanPoster) {
                 CameraLiveTextView(
                     recognizedText: $recognizedText,
@@ -82,16 +92,7 @@ struct MainPosterView: View {
                 .ignoresSafeArea()
                 .environmentObject(wrapper)
             }
-            .toolbar { // 임시뷰
-                ToolbarItem {
-                    Button(action: {
-                        isNavigateToExmapleView = true
-                    }, label: {
-                        Text("버튼")
-                    })
-                }
-            }
-            .backgroundWithBlur()
+            .ignoresSafeArea()
         }
     }
 }
@@ -102,11 +103,12 @@ final class PosterViewModelWrapper: ObservableObject {
     @Published var shouldNavigateToMakePlaylist: Bool = false
     @Published var scannedText: RawText? = nil
     var viewModel: any PosterViewModel
-    
+    var playlist: Playlist
     private var cancellables = Set<AnyCancellable>()
     
-    init(viewModel: any PosterViewModel) {
+    init(viewModel: any PosterViewModel, playlist: Playlist) {
         self.viewModel = viewModel
+        self.playlist = playlist
         
         viewModel.shouldNavigateToFestivalCheck.observe(on: self) { [weak self] newData in
             self?.shouldNavigateToFestivalCheck = newData

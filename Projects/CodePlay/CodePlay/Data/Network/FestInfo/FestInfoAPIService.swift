@@ -35,4 +35,3 @@ final class FestInfoAPIService: BaseAPIService<FestInfoTargetType>, FestInfoAPIS
         }
     }
 }
-

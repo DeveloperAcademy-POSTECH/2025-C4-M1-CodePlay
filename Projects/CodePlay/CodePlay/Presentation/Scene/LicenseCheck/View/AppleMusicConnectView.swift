@@ -16,39 +16,37 @@ struct AppleMusicConnectView: View {
     var body: some View {
         VStack(spacing: 0) {
             // 상단 여백 (Safe Area 고려하여 조정)
-            Spacer().frame(height: 106)
+            Spacer().frame(height: 96)
 
-            ZStack {
-                // 이미지 들어갈 자리
-                Image(systemName: "music.note")
-                    .font(.system(size: 80, weight: .light))
-                    .foregroundColor(.gray)
+            if viewModelWrapper.authorizationStatus?.status == .denied {
+                Image("Linkfail")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 320, height: 320)
+            } else {
+                Image("Linkapplemusic")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 320, height: 320)
             }
-            .frame(width: 280, height: 280)
-            .background(Color(red: 0.86, green: 0.86, blue: 0.86))
-            .cornerRadius(20)
 
             // 사각형과 제목 사이 간격
             Spacer().frame(height: 32)
 
-            // 2. 큰 제목 텍스트
-            Text("Apple Music을\n연결해주세요")
-                .font(.HlgBold())
-                .multilineTextAlignment(.center)
-                .foregroundColor(Color.neutral900)
-                .frame(maxWidth: .infinity, alignment: .center)
+            VStack(spacing : 12){
+                Text("Apple Music을\n연결해주세요")
+                    .font(.HlgBold())
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(Color.neu900)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                
+                Text("페스티벌 플레이리스트 생성을 위해\nApple Music을 연결해주세요.")
+                    .font(.BmdRegular())
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(Color.neu700)
+                    .padding(.horizontal, 32)
+            }
 
-            // 제목과 설명 사이 간격
-            Spacer().frame(height: 4)
-
-            // 3. 설명 텍스트
-            Text("페스티벌 플레이리스트 생성을 위해\nApple Music을 연결해주세요.")
-                .font(.BmdRegular())
-                .multilineTextAlignment(.center)
-                .foregroundColor(Color.neutral700)
-                .padding(.horizontal, 32)
-
-            // 설명과 버튼 사이 간격
             Spacer()
 
             // 4. 연결 버튼 또는 설정 안내 (하단에서 적절한 위치에 배치)
@@ -63,6 +61,7 @@ struct AppleMusicConnectView: View {
                     BottomButton(title: "설정으로 이동", kind: .line) {
                         viewModelWrapper.appleMusicConnectViewModel.shouldOpenSettings.value = true
                     }
+                    .padding(.horizontal, 20)
                     .padding(.horizontal, 16)
                 }
             } else {
@@ -82,7 +81,7 @@ struct AppleMusicConnectView: View {
             // 에러 메시지 표시
             if let errorMessage = viewModelWrapper.errorMessage {
                 Text(errorMessage)
-                    .font(Font.custom("KoddiUD OnGothic", size: 14))
+                    .font(.BmdRegular())
                     .foregroundColor(.red)
                     .padding(.horizontal, 16)
                     .padding(.top, 16)
@@ -192,25 +191,36 @@ final class MusicViewModelWrapper: ObservableObject {
 
         // 1단계: 텍스트 전처리 (후보 아티스트 추출)
         exportViewModelWrapper.preProcessRawText(rawText)
-        progressStep = 1
+        withAnimation(.easeInOut(duration: 0.5)) {
+            progressStep = 1
+        }
 
         Task {
             // 2단계: 아티스트 검색
             let matches = await exportViewModelWrapper.searchArtists(from: rawText)
             DispatchQueue.main.async {
-                self.progressStep = 2
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    self.progressStep = 2
+                }
                 matches.forEach { print("✅ \( $0.artistName ) (\($0.appleMusicId))") }
             }
 
             // 3단계: 아티스트별 상위 곡 검색
             let songs = await exportViewModelWrapper.searchTopSongs(from: rawText, artistMatches: matches)
             DispatchQueue.main.async {
-                self.progressStep = 3
+                withAnimation(.easeInOut(duration: 1.2)) {
+                    self.progressStep = 3
+                }
+                
                 self.playlistEntries = songs
                 for entry in songs {
                     print("🎵 \(entry.artistName) - \(entry.trackTitle)")
                 }
-                self.navigateToMadePlaylist = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        self.navigateToMadePlaylist = true
+                    }
+                }
             }
         }
     }
@@ -253,4 +263,3 @@ final class MusicViewModelWrapper: ObservableObject {
         }
     }
 }
-

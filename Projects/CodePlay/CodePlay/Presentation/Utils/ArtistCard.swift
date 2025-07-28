@@ -21,6 +21,7 @@ struct ArtistCard: View {
     
     var body: some View {
         ZStack {
+          
             VStack(alignment: .leading) {
                 Rectangle()
                     .foregroundColor(.clear)
@@ -52,23 +53,31 @@ struct ArtistCard: View {
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(date)
-                        .foregroundStyle(fontColor)
+                        .font(.BmdRegular())
+                        .foregroundColor(.neu700)
                     
                     Text(title)
-                        .foregroundStyle(fontColor)
+                        .font(.BlgBold())
+                        .foregroundColor(.neu900)
                     
                     Text(subTitle)
-                        .foregroundStyle(fontColor)
+                        .font(.BsmBold())
+                        .foregroundColor(.neu700)
                 }
                 .padding(.leading, 12)
                 .padding(.bottom, 18)
             }
+            .liquidGlass(style: .card)
         }
-        .liquidGlass(style: .card)
         .frame(maxWidth: 320, maxHeight: 420)
     }
 }
 
 #Preview {
-    ArtistCard(imageUrl: nil, date: "2025.09.26.(금) ~ 2025.09.28(일)", title: "2025 부산국제록페스티벌", subTitle: "86 Songs")
+    ZStack {
+        Color.clear
+            .backgroundWithBlur()
+            .ignoresSafeArea()
+        ArtistCard(imageUrl: nil, date: "2025.09.26.(금) ~ 2025.09.28(일)", title: "2025 부산국제록페스티벌", subTitle: "86 Songs")
+    }
 }

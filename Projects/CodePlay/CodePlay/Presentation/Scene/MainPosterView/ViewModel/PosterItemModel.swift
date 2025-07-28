@@ -56,14 +56,14 @@ extension PosterItemModel {
         self.image = image
         self.text = rawText.text
     }
-
+    
     init(rawText: RawText, imageURL: URL?, image: UIImage?) {
         self.id = rawText.id
         self.imageURLs = [imageURL]
         self.image = image
         self.text = rawText.text
     }
-
+    
     static var empty: PosterItemModel {
         PosterItemModel(id: UUID(), imageURLs: [], text: "")
     }

@@ -100,7 +100,7 @@ struct FestivalSearchView: View {
             VStack(alignment: .leading, spacing: 20) {
                 HStack {
                     Text("추천 검색어")
-                        .foregroundColor(Color.neutral900)
+                        .foregroundColor(Color.neu900)
                         .font(.BmdBold())
 
                     Spacer()
@@ -111,7 +111,7 @@ struct FestivalSearchView: View {
                         label: {
                             Text("전체 삭제")
                                 .font(.BmdRegular())
-                                .foregroundColor(Color.neutral700)
+                                .foregroundColor(Color.neu700)
                         }
                     )
                 }
@@ -164,7 +164,7 @@ struct FestivalSearchView: View {
                         HStack {
                             Text(result)
                                 .font(.BlgBold())
-                                .foregroundColor(Color.neutral700)
+                                .foregroundColor(Color.neu700)
                                 .lineSpacing(2)
                                 .padding(.leading, 12)
                                 .padding(.vertical, 13)

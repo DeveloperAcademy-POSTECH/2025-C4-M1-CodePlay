@@ -241,8 +241,6 @@ class CameraLiveTextViewController: UIViewController {
                 greaterThanOrEqualToConstant: 200
             ),
         ])
-
-
     }
 
     private func showTextInSelectedRegion() {

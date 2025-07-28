@@ -39,11 +39,6 @@ struct BottomButton: View {
         )
     }
     
-    // TODO: HI-FI 컬러 확정 후 수정 예정
-    private var backgroundColor: Color {
-        colorScheme == .dark ? .black : .blue
-    }
-   
     var body: some View {
         ZStack {
             let capsuleShape = RoundedRectangle(cornerRadius: 999)
@@ -57,7 +52,7 @@ struct BottomButton: View {
                     .fill(Color.clear)
                     .overlay(
                         capsuleShape
-                            .stroke(mainGradient, lineWidth: 1)
+                            .stroke(mainGradient, lineWidth: 2)
                     )
             }
 
@@ -74,7 +69,7 @@ struct BottomButton: View {
         }
         .contentShape(RoundedRectangle(cornerRadius: 999))
         .frame(maxWidth: .infinity, maxHeight: 60)
-        .padding(.horizontal, 20)
+//        .padding(.horizontal, 20)
     }
 }
 

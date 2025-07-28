@@ -23,6 +23,7 @@ struct FestivalCheckView: View {
     init(rawText: RawText?) {
         self.rawText = rawText
     }
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
         ZStack {
@@ -35,13 +36,13 @@ struct FestivalCheckView: View {
 
                 Text("인식한 페스티벌 정보가 맞나요?")
                     .font(.HlgBold())
-                    .foregroundColor(Color.neutral900)
+                    .foregroundColor(Color.neu900)
 
                 Spacer().frame(height: 6)
 
                 Text("아니오를 하면 수기로 입력하게 됩니다.")
                     .font(.BmdRegular())
-                    .foregroundColor(Color.neutral700)
+                    .foregroundColor(Color.neu700)
 
                 Spacer().frame(height: 36)
 
@@ -61,7 +62,7 @@ struct FestivalCheckView: View {
                 }
 
                 Spacer()
-
+                
                 bottombutton
             }
             .padding(.bottom, 50)
