@@ -15,12 +15,17 @@ struct OverlappingCardsView: View {
     @State private var imageTimer: Timer?
     @State private var imageIndices: [Int] // 각 플레이리스트의 현재 이미지 인덱스를 추적하기 위한 배열
     @Query var allEntries: [PlaylistEntry]
+    @State private var selectedPlaylist: Playlist?
+    @State private var isNavigateToDetail = false //임시입니다
+    
+    let wrapper: MusicViewModelWrapper //임시입니다.
 
     
-    init(playlists: [Playlist]) {
-        self._playlists = State(initialValue: playlists)
-        self._imageIndices = State(initialValue: Array(repeating: 0, count: playlists.count))
-    }
+    init(playlists: [Playlist], wrapper: MusicViewModelWrapper) {
+           self._playlists = State(initialValue: playlists)
+           self._imageIndices = State(initialValue: Array(repeating: 0, count: playlists.count))
+           self.wrapper = wrapper //임시입니다.
+   }
     
     var body: some View {
         VStack {
@@ -73,11 +78,12 @@ struct OverlappingCardsView: View {
                                 .id(index)
                                 .onTapGesture {
                                     if currentIndex != index {
-                                                currentIndex = index
-                                                proxy.scrollTo(index, anchor: .center)
-                                            } else {
-                                                printPlaylistInfo(playlists[index])
-                                            }
+                                        currentIndex = index
+                                        proxy.scrollTo(index, anchor: .center)
+                                    } else {
+                                        selectedPlaylist = playlist
+                                        isNavigateToDetail = true
+                                    }
                                 }
                             }
                         }
@@ -115,6 +121,21 @@ struct OverlappingCardsView: View {
                         )
                 }
             }
+            NavigationLink( //임시입니다진짜로
+                isActive: $isNavigateToDetail,
+                destination: {
+                    if let selected = selectedPlaylist {
+                        PlaylistDetailView(playlist: selected)
+                            .environmentObject(wrapper)
+                    } else {
+                        EmptyView()
+                    }
+                },
+                label: {
+                    EmptyView()
+                }
+            )
+            .hidden()
         }
     }
     private func printPlaylistInfo(_ playlist: Playlist) {

@@ -45,7 +45,7 @@ struct MainPosterView: View {
 
                     } else {
                         VStack {
-                            OverlappingCardsView(playlists: playlists)
+                            OverlappingCardsView(playlists: playlists, wrapper: musicWrapper) //임시입니다
                             .padding(.bottom, 12)
                         }
                     }
