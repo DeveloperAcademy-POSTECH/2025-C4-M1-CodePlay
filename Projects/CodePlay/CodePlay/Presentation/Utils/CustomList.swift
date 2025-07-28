@@ -16,6 +16,7 @@ struct CustomList: View {
     let isPlaying: Bool              // 재생 상태
     let playbackProgress: Double     // 재생 진행률 (0.0 ~ 1.0)
     let onAlbumCoverTap: () -> Void // 앨범 커버 탭 액션
+    let onDeleteTap: (() -> Void)?   // 삭제 버튼 탭 액션 (옵셔널)
 
     var body: some View {
         HStack(spacing: 12) {
@@ -83,14 +84,25 @@ struct CustomList: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.BlgBold())
-                    .foregroundColor(.neu50)
+                    .foregroundColor(.neu900)
                 
                 Text(albumName)
                     .font(.BsmRegular())
-                    .foregroundColor(.new200)
+                    .foregroundColor(.neu700)
             }
             
             Spacer()
+            
+            // 휴지통 아이콘 (삭제 기능용)
+            if let onDeleteTap = onDeleteTap {
+                Button(action: onDeleteTap) {
+                    Image(systemName: "trash")
+                        .foregroundColor(.neu700)
+                        .font(.system(size: 18))
+                        .frame(width: 28, height: 28)
+                }
+                .buttonStyle(PlainButtonStyle())
+            }
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
@@ -111,6 +123,7 @@ extension CustomList {
         self.isPlaying = false
         self.playbackProgress = 0.0
         self.onAlbumCoverTap = {}
+        self.onDeleteTap = nil
     }
 }
 
@@ -130,6 +143,9 @@ extension CustomList {
                 playbackProgress: 0.3,
                 onAlbumCoverTap: {
                     print("Album cover tapped")
+                },
+                onDeleteTap: {
+                    print("Delete tapped")
                 }
             )
             CustomList(
@@ -142,6 +158,9 @@ extension CustomList {
                 playbackProgress: 0.0,
                 onAlbumCoverTap: {
                     print("Album cover tapped")
+                },
+                onDeleteTap: {
+                    print("Delete tapped 2")
                 }
             )
         }
