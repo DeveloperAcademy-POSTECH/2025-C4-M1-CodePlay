@@ -143,7 +143,10 @@
 
         // MARK: - Binding Observables
         private func bind() {
-            festivalCheckViewModel.isLoading.observe(on: self) { [weak self] in self?.isLoading = $0 }
+            festivalCheckViewModel.isLoading.observe(on: self) { [weak self] value in
+                guard let self else { return }
+                self.isLoading = value
+            }
             festivalCheckViewModel.festivalData.observe(on: self) { [weak self] in self?.festivalData = $0 }
             festivalCheckViewModel.suggestTitles.observe(on: self) { [weak self] in self?.suggestTitles = $0 }
 
