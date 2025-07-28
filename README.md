@@ -33,8 +33,8 @@
 
 
 ## 📆 프로젝트 기간
-- 전체 기간: `YYYY.MM.DD - YYYY.MM.DD`
-- 개발 기간: `YYYY.MM.DD - YYYY.MM.DD`
+- 전체 기간: `2025.06.23 - 2025.08.01`
+- 개발 기간: `2025.07.04 - 2025.07.28`
 
 
 ## 🛠 기술 스택
@@ -93,8 +93,11 @@
 
 | 이름 | 역할 | GitHub |
 |------|------|--------|
-| 홍길동 | iOS Developer | [@hong](https://github.com/hong) |
-| 김개발 | PM | [@devkim](https://github.com/devkim) |
+| Cherry | iOS Developer | [@zz6cherry](https://github.com/zz6cherry) |
+| Elian | PM, Back-End | [@dangdang1ing15](https://github.com/dangdang1ing15) |
+| Kwangro | iOS Developer | [@hkwangro](https://github.com/hkwangro) |
+| Three | PM | [@iamseulee](https://github.com/iamseulee) |
+| Yan | iOS Lead | [@yanni13](https://github.com/yanni13) |
 
 [🔗 팀 블로그 / 미디엄 링크](https://medium.com/example)
 
