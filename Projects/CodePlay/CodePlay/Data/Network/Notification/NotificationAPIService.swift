@@ -6,44 +6,33 @@
 //
 
 import Foundation
+import Moya
 
 // MARK: NotificationAPIService
-protocol NotificationAPIService {
-    /// 디바이스 토큰 요청용 함수
-    func postDeviceToken(model: DeviceTokenRequestDTO) async throws -> DeviceTokenResponseDTO
+protocol NotificationAPIServiceProtocol {
+    func postDeviceToken(model: PostDeviceTokenRequestDTO) async throws -> [PostDeviceTokenResponseDTO]
 }
 
 // MARK: DefaultNotificationAPIService
-final class DefaultNotificationAPIService: NotificationAPIService {
-    private let session: URLSession
-    // TODO: API 사용하게 되면 baseURL, 라우터 분리 예정
-    private let baseURL = URL(string: "https://api.example.com/notification")
+final class NotificationAPIService: BaseAPIService<NotificationTargetType>, NotificationAPIServiceProtocol {
     
-    init(session: URLSession) {
-        self.session = session
-    }
+    private let provider = MoyaProvider<NotificationTargetType>(plugins: [MoyaLoggerPlugin()])
     
-    func postDeviceToken(model: DeviceTokenRequestDTO) async throws -> DeviceTokenResponseDTO {
-        var request = URLRequest(url: baseURL!)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONEncoder().encode(model)
+    func postDeviceToken(model: PostDeviceTokenRequestDTO) async throws -> [PostDeviceTokenResponseDTO] {
+        let response = try await provider.request(.postDeviceToken(model: model))
         
-        let (data, response) = try await session.data(for: request)
+        let result: NetworkResult<PostDeviceTokenResponseDTO> = fetchNetworkResult(
+            statusCode: response.statusCode,
+            data: response.data
+        )
         
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw URLError(.badServerResponse)
-        }
-        
-        guard (200..<300).contains(httpResponse.statusCode) else {
-            throw NetworkError.httpError(statusCode: httpResponse.statusCode)
-        }
-        
-        do {
-            let decoded = try JSONDecoder().decode(DeviceTokenResponseDTO.self, from: data)
-            return decoded
-        } catch {
-            throw NetworkError.decodingFailed(error)
+        switch result {
+        case .success(let data):
+            guard let data else { throw NetworkResult<Error>.decodeErr }
+            return [data]
+        default:
+            throw NetworkResult<Error>.networkFail
         }
     }
 }
+

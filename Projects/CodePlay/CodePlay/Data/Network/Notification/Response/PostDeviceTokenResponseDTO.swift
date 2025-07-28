@@ -7,6 +7,6 @@
 import Foundation
 
 /// 디바이스 토큰 전송 후  - 서버 응답용 DTO
-struct DeviceTokenResponseDTO: Decodable {
+struct PostDeviceTokenResponseDTO: Decodable {
     let endpointArn: String
 }
