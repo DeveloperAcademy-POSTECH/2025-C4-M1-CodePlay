@@ -28,11 +28,12 @@ struct ExportSuccessView: View {
                     
                     VStack(spacing: 12) {
                         Text("Apple Music에\n플레이리스트를 생성했어요!")
-                            .font(.HlgBold)                            .multilineTextAlignment(.center)
+                            .font(.HlgBold())
+                            .multilineTextAlignment(.center)
                             .fixedSize(horizontal: false, vertical: true)
                         
                         Text("애플뮤직에서 생성된 플레이리스트를 확인해보세요.")
-                            .font(.BmdRegular)
+                            .font(.BmdRegular())
                             .multilineTextAlignment(.center)
                     }
                     .padding(.bottom, 80)
@@ -66,13 +67,4 @@ struct ExportSuccessView: View {
     }
 }
 
-struct LoginView_Preview: PreviewProvider {
-    static var devices = ["iPhone 11", "iPhone 16 Pro Max"]
-    static var previews: some View {
-        ForEach(devices, id: \.self) { device in
-            ExportSuccessView()
-                .previewDevice(PreviewDevice(rawValue: device))
-                .previewDisplayName(device)
-        }
-    }
-}
+
