@@ -1,0 +1,11 @@
+//
+//  Config.xcconfig
+//  EKO-iOS
+//
+//  Created by mini on 5/29/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+BASE_URL = https:/$()/n3yuouxap5.execute-api.ap-northeast-2.amazonaws.com/prod
