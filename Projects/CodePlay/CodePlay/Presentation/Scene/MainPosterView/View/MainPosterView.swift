@@ -17,6 +17,8 @@ struct MainPosterView: View {
     @Environment(\.modelContext) var modelContext
     @Query(sort: \Playlist.createdAt, order: .reverse) private var playlists: [Playlist]
     
+    
+    
     var body: some View {
 //        NavigationStack(path: $navigationPath) {
             ZStack(alignment: .bottom) {
@@ -83,6 +85,12 @@ struct MainPosterView: View {
                     }
                 }
             }
+            .onAppear() {
+                print("🧾 현재 Playlist 수: \(playlists.count)")
+                for p in playlists {
+                    print("📀 \(p.title) / \(p.createdAt)")
+                }
+            }
 
             .fullScreenCover(isPresented: $isNavigateToScanPoster) {
                 CameraLiveTextView(
@@ -95,6 +103,7 @@ struct MainPosterView: View {
             .ignoresSafeArea()
 //        }
     }
+    
 }
 
 // MARK: PosterViewModelWrapper
@@ -103,21 +112,19 @@ final class PosterViewModelWrapper: ObservableObject {
     @Published var shouldNavigateToMakePlaylist: Bool = false
     @Published var scannedText: RawText? = nil
     var viewModel: any PosterViewModel
-    var playlist: Playlist
     private var cancellables = Set<AnyCancellable>()
-    
-    init(viewModel: any PosterViewModel, playlist: Playlist) {
+
+    init(viewModel: any PosterViewModel) {
         self.viewModel = viewModel
-        self.playlist = playlist
-        
+
         viewModel.shouldNavigateToFestivalCheck.observe(on: self) { [weak self] newData in
             self?.shouldNavigateToFestivalCheck = newData
         }
-        
+
         viewModel.shouldNavigateToMakePlaylist.observe(on: self) { [weak self] newData in
             self?.shouldNavigateToMakePlaylist = newData
         }
-    
+
         viewModel.scannedText.observe(on: self) { [weak self] newData in
             self?.scannedText = newData
         }

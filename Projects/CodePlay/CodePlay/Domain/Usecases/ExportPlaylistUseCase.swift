@@ -29,13 +29,7 @@ final class DefaultExportPlaylistUseCase: ExportPlaylistUseCase {
     }
 
     func searchTopSongs(from rawText: RawText, artistMatches: [ArtistMatch]) async throws -> [PlaylistEntry] {
-        let title = rawText.text.components(separatedBy: .newlines).first ?? "My Playlist"
-        let entries = await repository.searchTopSongs(for: artistMatches)
-
-        try await repository.savePlaylist(title: title, entries: entries)
-        repository.clearTemporaryData()
-
-        return entries
+        return await repository.searchTopSongs(for: artistMatches)
     }
     
     func exportToAppleMusic(playlist: Playlist, entries: [PlaylistEntry]) async throws {

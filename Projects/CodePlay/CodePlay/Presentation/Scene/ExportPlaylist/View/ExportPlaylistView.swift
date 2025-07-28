@@ -62,9 +62,10 @@ struct ExportPlaylistView: View {
         .backgroundWithBlur()
         .navigationBarBackButtonHidden(true)
         .onAppear {
-            let fakeRawText = RawText(text: selectedArtists.joined(separator: ", "))
-            wrapper.onAppear(with: fakeRawText)
+            Task {
+                let rawText = RawText(text: selectedArtists.joined(separator: ", "))
+                await wrapper.onAppear(with: rawText)
+            }
         }
     }
-
 }

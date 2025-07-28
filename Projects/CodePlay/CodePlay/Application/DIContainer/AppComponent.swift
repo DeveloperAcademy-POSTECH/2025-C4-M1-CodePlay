@@ -25,13 +25,12 @@ final class AppComponent {
         appDIContainer: appDIContainer, modelContext: modelContext
     )
 
-    func makeRootView() -> some View {
+    @MainActor func makeRootView() -> some View {
         let mainFactory = appFlowCoordinator.mainFlowStart()
         let licenseFactory = appFlowCoordinator.licenseFlowStart()
         let diContainer = appDIContainer.mainSceneDIContainer(modelContext: modelContext)
+        let musicWrapper = diContainer.appleMusicConnectViewModelWrapper()
 
-        let musicWrapper =
-            diContainer.appleMusicConnectViewModelWrapper()
         let posterWraper = diContainer.makePosterViewModelWrapper()
 
         let rootView = MainView(mainFactory: mainFactory, licenseFactory: licenseFactory)
