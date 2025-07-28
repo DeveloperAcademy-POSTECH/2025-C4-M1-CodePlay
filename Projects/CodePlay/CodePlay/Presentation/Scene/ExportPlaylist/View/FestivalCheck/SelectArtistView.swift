@@ -80,7 +80,10 @@ struct SelectArtistView: View {
             fetchArtistArtworks()
         }
         .navigationDestination(isPresented: $isNextActive) {
-            ExportPlaylistView(selectedArtists: Array(selectedArtists))
+            ExportPlaylistView(
+                selectedArtists: Array(selectedArtists),
+                playlist: playlist
+            )
         }
     }
     

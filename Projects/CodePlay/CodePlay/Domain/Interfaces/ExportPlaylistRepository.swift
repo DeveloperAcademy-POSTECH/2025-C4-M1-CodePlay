@@ -117,7 +117,7 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                 for song in topSongs {
                     let entry = PlaylistEntry(
                         id: UUID(),
-                        playlistId: UUID(), // 나중에 덮어씌움
+                        playlistId: UUID(), // 추후 ViewModel에서 덮어씌움
                         artistMatchId: artist.id,
                         artistName: artist.artistName,
                         appleMusicId: artist.appleMusicId,
@@ -141,6 +141,7 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
         print("✅ [searchTopSongs] 총 생성된 Entry 수: \(allEntries.count)")
         return allEntries
     }
+
 
 
     // 영구 저장소에 Playlist 및 해당 Entry 저장

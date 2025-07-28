@@ -16,12 +16,13 @@ struct ExportPlaylistView: View {
     let selectedArtists: [String]
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
+    let playlist: Playlist
 
-
-    init(selectedArtists: [String]) {
+    init(selectedArtists: [String], playlist: Playlist) {
         self.selectedArtists = selectedArtists
+        self.playlist = playlist
     }
-
+    
     var body: some View {
         VStack(spacing: 20) {
             Spacer(minLength: 0)
@@ -66,7 +67,7 @@ struct ExportPlaylistView: View {
         .onAppear {
             Task {
                 let rawText = RawText(text: selectedArtists.joined(separator: ", "))
-                await wrapper.onAppear(with: rawText, using: modelContext)
+                await wrapper.onAppear(with: rawText, for: playlist, using: modelContext)
             }
         }
     }

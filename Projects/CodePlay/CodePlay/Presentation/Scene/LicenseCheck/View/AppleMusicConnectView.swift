@@ -181,7 +181,7 @@
         }
 
         // MARK: - Main Flow (Refactored)
-        func onAppear(with rawText: RawText?, using context: ModelContext) async {
+        func onAppear(with rawText: RawText?, for playlist: Playlist, using context: ModelContext) async {
             guard let rawText else { return }
             print("🟠 [onAppear] rawText: \(rawText.text)")
 
@@ -204,7 +204,7 @@
             playlistEntries = songs
             print("📦 [playlistEntries 저장 완료] \(playlistEntries.count)곡")
 
-            await savePlaylistAfterTopSongs(title: "내가 고른 아티스트", context: context)
+            await savePlaylistAfterTopSongs(playlist: playlist, context: context)
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 withAnimation(.easeInOut(duration: 0.3)) {
@@ -215,23 +215,19 @@
 
 
         // MARK: - Save to SwiftData
-        func savePlaylistAfterTopSongs(title: String, context: ModelContext) async {
+        func savePlaylistAfterTopSongs(playlist: Playlist, context: ModelContext) async {
             guard !playlistEntries.isEmpty else {
                 print("❌ 저장 시도했지만 playlistEntries가 비어 있음")
                 return
             }
 
-            let playlistId = UUID()
-            let playlist = Playlist(id: playlistId, title: title, createdAt: .now)
-
-            context.insert(playlist)
+            let playlistId = playlist.id
 
             for entry in playlistEntries {
                 guard !entry.trackId.isEmpty else {
                     print("⚠️ 잘못된 Entry - trackId 없음: \(entry.artistName)")
                     continue
                 }
-
                 entry.playlistId = playlistId
                 context.insert(entry)
 
@@ -240,11 +236,12 @@
 
             do {
                 try context.save()
-                print("✅ ExportPlaylistView에서 Playlist 저장 완료")
+                print("✅ 기존 Playlist에 Entry 추가 완료")
             } catch {
                 print("❌ 저장 실패: \(error)")
             }
         }
+
 
         // MARK: - Export
         func exportToAppleMusic() {
