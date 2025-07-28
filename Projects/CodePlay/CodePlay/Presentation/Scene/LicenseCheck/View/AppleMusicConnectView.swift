@@ -121,6 +121,7 @@ final class MusicViewModelWrapper: ObservableObject {
     /// 재생 진행률 (0.0 ~ 1.0, 30초 기준)
     @Published var playbackProgress: Double = 0.0
     @Published var isLoading: Bool = true  // 로딩 상태 추가
+    @Published var festivalData: DynamoDataItem? = nil
 
 
     var appleMusicConnectViewModel: any AppleMusicConnectViewModel
@@ -153,6 +154,14 @@ final class MusicViewModelWrapper: ObservableObject {
                 }
             }
         )
+        
+        festivalCheckViewModel.isLoading.observe(on: self) { [weak self] newData in
+            self?.isLoading = newData
+        }
+        
+        festivalCheckViewModel.festivalData.observe(on: self) { [weak self] newData in
+            self?.festivalData = newData
+        }
 
         appleMusicConnectViewModel.authorizationStatus.observe(on: self) { [weak self] status in
             DispatchQueue.main.async {

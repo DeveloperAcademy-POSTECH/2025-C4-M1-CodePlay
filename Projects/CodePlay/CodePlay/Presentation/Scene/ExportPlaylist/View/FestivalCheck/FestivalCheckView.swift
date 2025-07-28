@@ -45,7 +45,7 @@ struct FestivalCheckView: View {
 
                 Spacer().frame(height: 36)
 
-                if wrapper.festivalCheckViewModel.isLoading {
+                if wrapper.isLoading {
                     // 1. 로딩 상태를 가장 먼저 체크
                     ProgressView("페스티벌 정보 로딩 중...")
                         .progressViewStyle(
@@ -54,7 +54,7 @@ struct FestivalCheckView: View {
                         .font(.BmdRegular())
                         .foregroundColor(Color.neutral700)
 
-                } else if let data = wrapper.festivalCheckViewModel.festivalData
+                } else if let data = wrapper.festivalData
                 {
                     // 2. 로딩이 끝났고 데이터가 있으면 카드 뷰 표시
                     ArtistCard(
@@ -80,10 +80,7 @@ struct FestivalCheckView: View {
                 Task {
                     let success = await wrapper.festivalCheckViewModel
                         .loadFestivalInfo(from: rawText?.text ?? "")
-                    DispatchQueue.main.async {
-                        print("🔄 강제 UI 업데이트")
-                        wrapper.objectWillChange.send()
-                    }
+
                     print("loadFestivalInfo 완료: \(success)")
                     print(
                         "festivalData after load: \(String(describing: wrapper.festivalCheckViewModel.festivalData))"
@@ -220,7 +217,7 @@ struct FestivalCheckView: View {
     }
 
     private func savePlaylist() {
-        guard let data = wrapper.festivalCheckViewModel.festivalData else {
+        guard let data = wrapper.festivalData else {
             print("No festival data to save")
             return
         }

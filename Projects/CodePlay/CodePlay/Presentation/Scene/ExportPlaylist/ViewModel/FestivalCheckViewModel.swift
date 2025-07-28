@@ -15,12 +15,10 @@ protocol FestivalCheckViewModelInput {
 
 // MARK: - Output
 protocol FestivalCheckViewModelOutput {
-    var festivalData: DynamoDataItem? { get }
+    var festivalData: Observable<DynamoDataItem?> { get }
     var suggestTitles: [String] { get }
-    var isLoading: Bool { get set }
+    var isLoading: Observable<Bool> { get set }
     var errorMessage: String? { get }
-    var navigateToSelectArtist: Bool { get set }
-    var navigateToFestivalSearch: Bool { get set }
 }
 
 // MARK: - ViewModel
@@ -32,12 +30,10 @@ protocol FestivalCheckViewModel: FestivalCheckViewModelInput,
 // MARK: - Implementation
 @MainActor
 final class DefaultFestivalCheckViewModel: FestivalCheckViewModel {
-    @Published private(set) var festivalData: DynamoDataItem?
+    @Published private(set) var festivalData = Observable<DynamoDataItem?>(nil)
     @Published private(set) var suggestTitles: [String] = []
-    @Published var isLoading: Bool = false
+    @Published var isLoading = Observable<Bool>(true)
     @Published private(set) var errorMessage: String? = nil
-    @Published var navigateToSelectArtist: Bool = false
-    @Published var navigateToFestivalSearch: Bool = false
 
     private let fetchFestivalInfoUseCase: FetchFestivalInfoUseCase
 
@@ -45,10 +41,9 @@ final class DefaultFestivalCheckViewModel: FestivalCheckViewModel {
         self.fetchFestivalInfoUseCase = fetchFestivalInfoUseCase
     }
     
-
     func loadFestivalInfo(from rawText: String) async -> Bool {
-        isLoading = true
-        defer { isLoading = false }
+        isLoading.value = true
+        defer { isLoading.value = false }
         
         do {
             print("[FestivalCheckViewModel] 🔄 fetchFestivalInfoUseCase 시작")
@@ -60,7 +55,7 @@ final class DefaultFestivalCheckViewModel: FestivalCheckViewModel {
                 return false
             }
 
-            self.festivalData = first
+            self.festivalData.value = first
             self.suggestTitles = response.top5.map { $0.title }
             print("[FestivalCheckViewModel] ✅ festivalData 업데이트 완료")
             return true
@@ -70,5 +65,4 @@ final class DefaultFestivalCheckViewModel: FestivalCheckViewModel {
             return false
         }
     }
-
 }
