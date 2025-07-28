@@ -259,6 +259,7 @@ struct SearchTextField: View {
                 .focused($isSearchFocused)
                 .textFieldStyle(PlainTextFieldStyle())
                 .font(.BmdRegular())
+                .submitLabel(.search)
                 .onSubmit {
                     onSearchSubmit()
                 }
