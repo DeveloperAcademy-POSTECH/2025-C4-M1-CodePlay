@@ -204,8 +204,11 @@
 
             withAnimation(.easeInOut(duration: 1.2)) { progressStep = 3 }
 
-            playlistEntries = songs
-            print("📦 [playlistEntries 저장 완료] \(playlistEntries.count)곡")
+            await MainActor.run {
+                self.playlistEntries = songs
+                print("📦 [playlistEntries 저장 완료] \(songs.count)곡")
+            }
+ 
 
             await savePlaylistAfterTopSongs(playlist: playlist, context: context)
 

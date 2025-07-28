@@ -15,7 +15,7 @@ struct ExportSuccessView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.modelContext) private var modelContext
-    @State private var isFullScreenToMainPoster = false
+    @State private var isNavigateToMainPoster = false
 
     
     var body: some View {
@@ -54,11 +54,16 @@ struct ExportSuccessView: View {
                     .padding(.horizontal, 20)
                     .padding(.bottom, 16)
                 }
-            }
-            .fullScreenCover(isPresented: $isFullScreenToMainPoster) {
-                MainPosterView()
-                    .environmentObject(posterWrapper)
-                    .environmentObject(musicWrapper)
+                NavigationLink(
+                    destination: MainPosterView()
+                        .environmentObject(posterWrapper)
+                        .environmentObject(musicWrapper),
+                    isActive: $isNavigateToMainPoster
+                ) {
+                    EmptyView()
+                }
+                .hidden()
+
             }
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(false)
@@ -68,7 +73,9 @@ struct ExportSuccessView: View {
                         posterWrapper.shouldNavigateToMakePlaylist = false
                         posterWrapper.viewModel.clearText()
 
-                        isFullScreenToMainPoster = true // ✅ fullScreenCover 트리거
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            isNavigateToMainPoster = true
+                        }
                     }, label: {
                         Image(systemName: "xmark")
                             .foregroundColor(.neu900)

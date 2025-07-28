@@ -13,14 +13,14 @@ struct MainPosterView: View {
     @EnvironmentObject var wrapper: PosterViewModelWrapper
     @EnvironmentObject var musicWrapper: MusicViewModelWrapper
     @State private var recognizedText: String = ""
-    @State private var isNavigateToScanPoster = false//ㅂ
+    @State private var isNavigateToScanPoster = false
     @Environment(\.modelContext) var modelContext
     @Query(sort: \Playlist.createdAt, order: .reverse) private var playlists: [Playlist]
     
     
     
     var body: some View {
-//        NavigationStack(path: $navigationPath) {
+        NavigationStack() {
             ZStack(alignment: .bottom) {
                 Color.clear
                     .backgroundWithBlur()
@@ -45,7 +45,7 @@ struct MainPosterView: View {
 
                     } else {
                         VStack {
-                            OverlappingCardsView(playlists: playlists, wrapper: musicWrapper) //임시입니다
+                            OverlappingCardsView(playlists: playlists, wrapper: musicWrapper) //임시입다
                             .padding(.bottom, 12)
                         }
                     }
@@ -85,6 +85,7 @@ struct MainPosterView: View {
                     }
                 }
             }
+            .navigationBarHidden(true)
             .onAppear() {
                 print("🧾 현재 Playlist 수: \(playlists.count)")
                 for p in playlists {
@@ -101,7 +102,7 @@ struct MainPosterView: View {
                 .environmentObject(wrapper)
             }
             .ignoresSafeArea()
-//        }
+        }
     }
     
 }
