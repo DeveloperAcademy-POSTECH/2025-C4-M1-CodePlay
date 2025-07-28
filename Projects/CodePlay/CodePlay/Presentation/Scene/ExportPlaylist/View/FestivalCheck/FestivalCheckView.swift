@@ -82,19 +82,8 @@ struct FestivalCheckView: View {
                         .loadFestivalInfo(from: rawText?.text ?? "")
 
                     if let first = wrapper.suggestTitles.first {
-                        
                         self.suggestTitles = SuggestTitlesModel(titles: wrapper.suggestTitles)
                     }
-
-                    print("loadFestivalInfo 완료: \(success)")
-                    print(
-                        "festivalData after load: \(String(describing: wrapper.festivalCheckViewModel.festivalData))"
-                    )
-                    print(
-                        "isLoading after load: \(wrapper.festivalCheckViewModel.isLoading)"
-                    )
-                    print("[suggestTitles]:\(suggestTitles)")
-                    print("[savedPlaylist]:\(savedPlaylist)")
                 }
             }
 

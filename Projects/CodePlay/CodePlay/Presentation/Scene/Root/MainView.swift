@@ -10,6 +10,7 @@ import SwiftUI
 struct MainView: View {
     @EnvironmentObject var wrapper: MusicViewModelWrapper
     @Environment(\.scenePhase) var scenePhase
+    @State private var navigationPath = NavigationPath()
     private let mainFactory: any MainFactory
     private let licenseFactory: any LicenseFactory
     
@@ -19,26 +20,28 @@ struct MainView: View {
     }
 
     var body: some View {
-        ZStack{
-            Group {
-                if wrapper.canPlayMusic {
-                    mainFactory.mainPosterView()
-                        .wrapAnyView()
-                } else {
-                    licenseFactory.mainLicenseView()
-                        .wrapAnyView()
+        NavigationStack(path: $navigationPath) {
+            ZStack{
+                Group {
+                    if wrapper.canPlayMusic {
+                        mainFactory.mainPosterView()
+                            .wrapAnyView()
+                    } else {
+                        licenseFactory.mainLicenseView()
+                            .wrapAnyView()
+                    }
                 }
-            }
-            .onAppear {
-                wrapper.appleMusicConnectViewModel.updateMusicAuthorizationStatus()
-            }
-            .onChange(of: scenePhase) { newPhase in
-                if newPhase == .active {
+                .onAppear {
                     wrapper.appleMusicConnectViewModel.updateMusicAuthorizationStatus()
                 }
-                
+                .onChange(of: scenePhase) { newPhase in
+                    if newPhase == .active {
+                        wrapper.appleMusicConnectViewModel.updateMusicAuthorizationStatus()
+                    }
+                    
+                }
             }
+            .ignoresSafeArea()
         }
-        .ignoresSafeArea()
     }
 }

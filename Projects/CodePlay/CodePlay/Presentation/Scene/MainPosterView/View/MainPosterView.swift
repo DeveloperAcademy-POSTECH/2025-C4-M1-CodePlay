@@ -17,7 +17,7 @@ struct MainPosterView: View {
     @Environment(\.modelContext) var modelContext
     
     var body: some View {
-        NavigationStack {
+//        NavigationStack(path: $navigationPath) {
             ZStack(alignment: .bottom) {
                 Color.clear
                     .backgroundWithBlur()
@@ -93,7 +93,7 @@ struct MainPosterView: View {
                 .environmentObject(wrapper)
             }
             .ignoresSafeArea()
-        }
+//        }
     }
 }
 
