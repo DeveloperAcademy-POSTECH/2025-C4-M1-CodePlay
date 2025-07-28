@@ -181,27 +181,30 @@
         }
 
         // MARK: - Main Flow (Refactored)
-        func onAppear(with rawText: RawText?) async {
+        func onAppear(with rawText: RawText?, using context: ModelContext) async {
             guard let rawText else { return }
-            print("🟠 Wrapper.onAppear - rawText: \(rawText.text)")
-            progressStep = 0
+            print("🟠 [onAppear] rawText: \(rawText.text)")
 
+            progressStep = 0
             exportViewModelWrapper.preProcessRawText(rawText)
             withAnimation(.easeInOut(duration: 0.5)) { progressStep = 1 }
 
             let matches = await exportViewModelWrapper.searchArtists(from: rawText)
+            print("🔍 [searchArtists] 매칭된 아티스트 수: \(matches.count)")
+            matches.forEach { print("🎤 \($0.artistName) (\($0.appleMusicId))") }
+
             withAnimation(.easeInOut(duration: 0.5)) { progressStep = 2 }
-            matches.forEach { print("✅ \($0.artistName) (\($0.appleMusicId))") }
 
             let songs = await exportViewModelWrapper.searchTopSongs(from: rawText, artistMatches: matches)
+            print("🎶 [searchTopSongs] 가져온 곡 수: \(songs.count)")
+            songs.forEach { print("🎵 \( $0.artistName ) - \( $0.trackTitle )") }
+
             withAnimation(.easeInOut(duration: 1.2)) { progressStep = 3 }
 
             playlistEntries = songs
-            for entry in songs {
-                print("🎵 \(entry.artistName) - \(entry.trackTitle)")
-            }
+            print("📦 [playlistEntries 저장 완료] \(playlistEntries.count)곡")
 
-            await savePlaylistAfterTopSongs(title: "내가 고른 아티스트")
+            await savePlaylistAfterTopSongs(title: "내가 고른 아티스트", context: context)
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 withAnimation(.easeInOut(duration: 0.3)) {
@@ -210,8 +213,9 @@
             }
         }
 
+
         // MARK: - Save to SwiftData
-        func savePlaylistAfterTopSongs(title: String) async {
+        func savePlaylistAfterTopSongs(title: String, context: ModelContext) async {
             guard !playlistEntries.isEmpty else {
                 print("❌ 저장 시도했지만 playlistEntries가 비어 있음")
                 return
@@ -219,20 +223,23 @@
 
             let playlistId = UUID()
             let playlist = Playlist(id: playlistId, title: title, createdAt: .now)
-            modelContext.insert(playlist)
+
+            context.insert(playlist)
 
             for entry in playlistEntries {
                 guard !entry.trackId.isEmpty else {
                     print("⚠️ 잘못된 Entry - trackId 없음: \(entry.artistName)")
                     continue
                 }
-                print("📦 저장할 Entry: \(entry.artistName) - \(entry.trackTitle) / \(entry.trackId)")
+
                 entry.playlistId = playlistId
-                modelContext.insert(entry)
+                context.insert(entry)
+
+                print("📦 저장할 Entry: \(entry.artistName) - \(entry.trackTitle) / \(entry.trackId)")
             }
 
             do {
-                try modelContext.save()
+                try context.save()
                 print("✅ ExportPlaylistView에서 Playlist 저장 완료")
             } catch {
                 print("❌ 저장 실패: \(error)")

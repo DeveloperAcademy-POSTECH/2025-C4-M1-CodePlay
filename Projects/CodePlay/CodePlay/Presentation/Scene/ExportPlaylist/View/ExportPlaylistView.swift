@@ -15,6 +15,8 @@ struct ExportPlaylistView: View {
     @EnvironmentObject var wrapper: MusicViewModelWrapper
     let selectedArtists: [String]
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.modelContext) private var modelContext
+
 
     init(selectedArtists: [String]) {
         self.selectedArtists = selectedArtists
@@ -64,7 +66,7 @@ struct ExportPlaylistView: View {
         .onAppear {
             Task {
                 let rawText = RawText(text: selectedArtists.joined(separator: ", "))
-                await wrapper.onAppear(with: rawText)
+                await wrapper.onAppear(with: rawText, using: modelContext)
             }
         }
     }

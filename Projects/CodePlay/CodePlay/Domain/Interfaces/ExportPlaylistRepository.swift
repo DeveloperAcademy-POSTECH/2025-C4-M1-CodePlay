@@ -112,38 +112,36 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                 let response = try await request.response()
                 let topSongs = response.songs.prefix(3)
 
+                print("🔍 [TopSongs] \(artist.artistName) - 검색된 곡 수: \(topSongs.count)")
+
                 for song in topSongs {
-                    let trackId = song.id.rawValue
-                    let trackTitle = song.title
-
-                    let trackPreviewUrl: String = song.previewAssets?.first?.url?.absoluteString ?? ""
-                    let albumArtworkUrl: String = song.artwork?.url(width: 300, height: 300)?.absoluteString ?? ""
-                    let albumName = song.albumTitle ?? "Unknown Album"
-
                     let entry = PlaylistEntry(
                         id: UUID(),
-                        playlistId: UUID(), // save 시 덮어씌움
+                        playlistId: UUID(), // 나중에 덮어씌움
                         artistMatchId: artist.id,
                         artistName: artist.artistName,
                         appleMusicId: artist.appleMusicId,
-                        trackTitle: trackTitle,
-                        trackId: trackId,
-                        trackPreviewUrl: trackPreviewUrl,
+                        trackTitle: song.title,
+                        trackId: song.id.rawValue,
+                        trackPreviewUrl: song.previewAssets?.first?.url?.absoluteString ?? "",
                         profileArtworkUrl: artist.profileArtworkUrl,
-                        albumArtworkUrl: albumArtworkUrl,
-                        albumName: albumName,
+                        albumArtworkUrl: song.artwork?.url(width: 300, height: 300)?.absoluteString ?? "",
+                        albumName: song.albumTitle ?? "Unknown Album",
                         createdAt: .now
                     )
 
+                    print("🎵 [Entry 생성됨] \(entry.artistName) - \(entry.trackTitle) (\(entry.trackId))")
                     allEntries.append(entry)
                 }
             } catch {
-                print("❌ \(artist.artistName) 인기곡 검색 실패: \(error)")
+                print("❌ [TopSongs 검색 실패] \(artist.artistName): \(error)")
             }
         }
 
+        print("✅ [searchTopSongs] 총 생성된 Entry 수: \(allEntries.count)")
         return allEntries
     }
+
 
     // 영구 저장소에 Playlist 및 해당 Entry 저장
     @MainActor
