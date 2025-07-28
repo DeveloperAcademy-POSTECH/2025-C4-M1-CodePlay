@@ -12,6 +12,7 @@ final class Playlist {
     @Attribute(.unique) var id: UUID
     var title: String
     var createdAt: Date
+    @Relationship(deleteRule: .cascade, inverse: \PlaylistEntry.playlist)
     var entries: [PlaylistEntry] = []
     var period: String?
     var cast: String?
