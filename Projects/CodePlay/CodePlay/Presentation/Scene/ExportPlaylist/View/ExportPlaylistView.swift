@@ -13,11 +13,11 @@ import MusicKit
 // MARK: 아티스트별 인기곡을 가져오는 뷰 (hifi 04_1부분)
 struct ExportPlaylistView: View {
     @EnvironmentObject var wrapper: MusicViewModelWrapper
+    let selectedArtists: [String]
     @Environment(\.colorScheme) private var colorScheme
-    let rawText: RawText?
 
-    init(rawText: RawText?) {
-        self.rawText = rawText
+    init(selectedArtists: [String]) {
+        self.selectedArtists = selectedArtists
     }
 
     var body: some View {
@@ -62,7 +62,8 @@ struct ExportPlaylistView: View {
         .backgroundWithBlur()
         .navigationBarBackButtonHidden(true)
         .onAppear {
-            wrapper.onAppear(with: rawText)
+            let fakeRawText = RawText(text: selectedArtists.joined(separator: ", "))
+            wrapper.onAppear(with: fakeRawText)
         }
     }
 

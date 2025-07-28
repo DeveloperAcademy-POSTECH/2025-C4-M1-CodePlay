@@ -5,55 +5,69 @@
 //  Created by 아우신얀 on 7/12/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 final class MainSceneDIContainer {
     private let modelContext: ModelContext
-    
+
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
     }
-    
+
     // MARK: Factory
     func makeMainFactory() -> any MainFactory {
-        return DefaultMainFactory(posterViewModelWrapper: makePosterViewModelWrapper(), musicViewModelWrapper: appleMusicConnectViewModelWrapper(), diContainer: self)
+        return DefaultMainFactory(
+            posterViewModelWrapper: makePosterViewModelWrapper(),
+            musicViewModelWrapper: appleMusicConnectViewModelWrapper(),
+            diContainer: self
+        )
     }
-    
-    func makeMainLicenseFactory(modelContext: ModelContext) -> any LicenseFactory {
+
+    func makeMainLicenseFactory(modelContext: ModelContext)
+        -> any LicenseFactory
+    {
         let viewModelWrapper = appleMusicConnectViewModelWrapper()
         return DefaultLicenseFactory(
             musicWrapper: viewModelWrapper,
             diContainer: self
         )
     }
-    
-    
+
     // MARK: UseCases
     private func makeScanPosterUseCase() -> ScanPosterUseCase {
         return DefaultScanPosterUseCase(repository: makeScanPosterRepository())
     }
-    
+
     private func makeCheckLicenseUseCase() -> CheckLicenseUseCase {
         return DefaultCheckLicenseUseCase(
             repository: makeCheckLicenseRepository()
         )
     }
-    
+
     private func makeExportPlaylistUseCase(repository: ExportPlaylistRepository)
-        -> ExportPlaylistUseCase {
+        -> ExportPlaylistUseCase
+    {
         return DefaultExportPlaylistUseCase(repository: repository)
     }
-    
+
     private func makeMusicPlayerUseCase() -> MusicPlayerUseCase {
-        return DefaultMusicPlayerUseCase(repository: makeMusicPlayerRepository())
+        return DefaultMusicPlayerUseCase(
+            repository: makeMusicPlayerRepository()
+        )
+    }
+
+    private func makeFestivalUseCase() -> FetchFestivalInfoUseCase {
+        return DefaultFetchFestivalInfoUseCase(
+            repository: makeFestivalRepository()
+        )
     }
 
     // MARK: Repository
     private func makeScanPosterRepository() -> ScanPosterRepository {
         DefaultScanPosterRepository()
     }
-    
+
     private func makeCheckLicenseRepository() -> CheckLicenseRepository {
         DefaultCheckLicenseRepository()
     }
@@ -61,16 +75,20 @@ final class MainSceneDIContainer {
     private func makeExportPlaylistRepository() -> ExportPlaylistRepository {
         return DefaultExportPlaylistRepository(modelContext: modelContext)
     }
-    
+
     private func makeMusicPlayerRepository() -> MusicPlayerRepository {
         return DefaultMusicPlayerRepository()
     }
-    
+
+    private func makeFestivalRepository() -> FestivalRepository {
+        return DefaultFestivalRepository()
+    }
+
     // MARK: ViewModel
     private func makePosterViewModel() -> any PosterViewModel {
         DefaultPosterViewModel(scanPosterUseCase: makeScanPosterUseCase())
     }
-    
+
     private func appleMusicConnectViewModel() -> any AppleMusicConnectViewModel
     {
         DefaultAppleMusicConnectViewModel(
@@ -78,27 +96,43 @@ final class MainSceneDIContainer {
         )
     }
 
-    private func makeExportViewModel(exportRepository: ExportPlaylistRepository) -> any ExportPlaylistViewModel {
-        let exportUseCase = makeExportPlaylistUseCase(repository: exportRepository)
-        return DefaultExportPlaylistViewModel(useCase: exportUseCase, modelContext: modelContext)
+    private func makeFestivalCheckViewModel() -> any FestivalCheckViewModel {
+        DefaultFestivalCheckViewModel(
+            fetchFestivalInfoUseCase: makeFestivalUseCase()
+        )
     }
-    
+    private func makeExportViewModel(exportRepository: ExportPlaylistRepository)
+        -> any ExportPlaylistViewModel
+    {
+        let exportUseCase = makeExportPlaylistUseCase(
+            repository: exportRepository
+        )
+        return DefaultExportPlaylistViewModel(
+            useCase: exportUseCase,
+            modelContext: modelContext
+        )
+    }
+
     // MARK: ViewModelWrapper
     func makePosterViewModelWrapper() -> PosterViewModelWrapper {
         return PosterViewModelWrapper(
-            viewModel: makePosterViewModel()
+            viewModel: makePosterViewModel(),
+            playlist: Playlist(title: "")
         )
     }
-    
-    func appleMusicConnectViewModelWrapper() -> MusicViewModelWrapper {
-           let exportRepository = makeExportPlaylistRepository()
-           let exportViewModel = makeExportViewModel(exportRepository: exportRepository)
-           let musicPlayerUseCase = makeMusicPlayerUseCase()
 
-           return MusicViewModelWrapper(
-               appleMusicConnectViewModel: appleMusicConnectViewModel(),
-               exportViewModelWrapper: exportViewModel,
-               musicPlayerUseCase: musicPlayerUseCase
-           )
-       }
+    func appleMusicConnectViewModelWrapper() -> MusicViewModelWrapper {
+        let exportRepository = makeExportPlaylistRepository()
+        let exportViewModel = makeExportViewModel(
+            exportRepository: exportRepository
+        )
+        let musicPlayerUseCase = makeMusicPlayerUseCase()
+
+        return MusicViewModelWrapper(
+            appleMusicConnectViewModel: appleMusicConnectViewModel(),
+            exportViewModelWrapper: exportViewModel,
+            festivalCheckViewModel: makeFestivalCheckViewModel(),
+            musicPlayerUseCase: musicPlayerUseCase
+        )
+    }
 }
