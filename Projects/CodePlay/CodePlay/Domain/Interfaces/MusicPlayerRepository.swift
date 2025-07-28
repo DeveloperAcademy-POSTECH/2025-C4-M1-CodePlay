@@ -35,6 +35,10 @@ protocol MusicPlayerRepository {
     
     /// 재생 상태 변경 콜백 설정
     var onPlaybackStateChanged: ((String?, Bool) -> Void)? { get set }
+    
+    /// 음악 캐싱 관련 메서드들
+    func cacheSong(_ song: Song, for trackId: String)
+    func preloadSongToMemory(_ song: Song, for trackId: String) async
 }
 
 // MARK: - Default Music Player Repository Implementation
@@ -187,5 +191,15 @@ final class DefaultMusicPlayerRepository: MusicPlayerRepository {
             notifyStateChange()
         }
     }
+    
+    // MARK: - 음악 캐싱 관련 메서드들
+    func cacheSong(_ song: Song, for trackId: String) {
+    }
+    
+    func preloadSongToMemory(_ song: Song, for trackId: String) async {
+        
+        if let previewURL = song.previewAssets?.first?.url {
+        } else {
+        }
+    }
 }
-  

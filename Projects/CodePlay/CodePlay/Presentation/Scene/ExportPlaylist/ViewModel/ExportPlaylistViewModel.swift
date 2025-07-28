@@ -13,7 +13,9 @@ protocol ExportPlaylistViewModel {
     func searchArtists(from rawText: RawText) async -> [ArtistMatch]  // RawText를 한줄한줄 검색해 매칭된 아티스트 저장
     func searchTopSongs(from rawText: RawText, artistMatches: [ArtistMatch])
         async -> [PlaylistEntry]  // ArtistMatch에서 노래를 검색하고, PlaylistEntry로 저장
+    func searchTopSongsWithCaching(from rawText: RawText, artistMatches: [ArtistMatch], musicPlayerUseCase: MusicPlayerUseCase) async -> [PlaylistEntry]  // 캐싱과 함께 인기곡 검색
     func exportLatestPlaylistToAppleMusic() async  // 애플뮤직으로 플레이리스트 전송
+    func deletePlaylistEntry(trackId: String) async  // 플레이리스트에서 특정 항목 삭제
 }
 
 final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {
@@ -42,6 +44,14 @@ final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {
         (try? await useCase.searchTopSongs(
             from: rawText,
             artistMatches: artistMatches
+        )) ?? []
+    }
+    
+    func searchTopSongsWithCaching(from rawText: RawText, artistMatches: [ArtistMatch], musicPlayerUseCase: MusicPlayerUseCase) async -> [PlaylistEntry] {
+        (try? await useCase.searchTopSongsWithCaching(
+            from: rawText,
+            artistMatches: artistMatches,
+            musicPlayerUseCase: musicPlayerUseCase
         )) ?? []
     }
 
@@ -75,5 +85,10 @@ final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {
                 print("❌ 전송 실패: \(error.localizedDescription)")
             }
         }
+    }
+    
+    func deletePlaylistEntry(trackId: String) async {
+        await useCase.deletePlaylistEntry(trackId: trackId)
+        print("✅ ViewModel: 삭제 요청 전달 완료 - \(trackId)")
     }
 }

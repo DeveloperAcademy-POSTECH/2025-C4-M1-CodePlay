@@ -224,7 +224,6 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
     }
-    
     /// Apple Music으로 플레이리스트를 내보내는 트리거 함수
     func exportToAppleMusic() {
         isExporting = true
@@ -241,20 +240,25 @@ final class MusicViewModelWrapper: ObservableObject {
     }
     
     /// 플레이리스트에서 특정 곡 삭제
-    func deleteEntry(at indexSet: IndexSet) {
-        playlistEntries.remove(atOffsets: indexSet)
-        
-        // 삭제된 곡이 현재 재생 중이었다면 재생 중지
-        if let playingTrackId = currentlyPlayingTrackId {
-            let remainingTrackIds = playlistEntries.map { $0.trackId }
-            if !remainingTrackIds.contains(playingTrackId) {
-                Task {
-                    await musicPlayerUseCase.musicRepository.stopPreview()
+    func deletePlaylistEntry(trackId: String) {
+        Task {
+            await exportViewModelWrapper.deletePlaylistEntry(trackId: trackId)
+            await MainActor.run {
+                if currentlyPlayingTrackId == trackId {
+                    currentlyPlayingTrackId = nil
+                    isPlaying = false
+                    playbackProgress = 0.0
                 }
+                playlistEntries.removeAll { $0.trackId == trackId }
             }
         }
     }
-    
+    func deleteEntry(at indexSet: IndexSet) {
+        for index in indexSet {
+            let trackId = playlistEntries[index].trackId
+            deletePlaylistEntry(trackId: trackId)
+        }
+    }
     /// 30초 미리듣기 재생/일시정지 토글
     func togglePreview(for trackId: String) {
         

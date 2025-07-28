@@ -35,7 +35,7 @@ struct PlaylistSectionView: View {
                         wrapper.togglePreview(for: entry.trackId)
                     },
                     onDeleteTap: {
-                        // 삭제할 항목 저장하고 Alert 표시
+                    
                         entryToDelete = entry
                         showDeleteAlert = true
                     }
@@ -57,16 +57,9 @@ struct PlaylistSectionView: View {
     
     // MARK: - Private Methods
     private func deleteEntry(_ entry: PlaylistEntry) {
-        // TODO: MusicViewModelWrapper에 삭제 메서드 구현 후 호출
         print("삭제 실행: \(entry.trackTitle)")
         
-        // 현재 재생 중인 곡이면 정지
-        if wrapper.currentlyPlayingTrackId == entry.trackId {
-            // TODO: wrapper.stopPreview() 구현 후 호출
-            print("재생 중인 곡 정지: \(entry.trackTitle)")
-        }
-        
-        // TODO: wrapper.deletePlaylistEntry(trackId: entry.trackId) 호출
+        wrapper.deletePlaylistEntry(trackId: entry.trackId)
     }
 }
 
