@@ -14,12 +14,10 @@ struct MainPosterView: View {
     @EnvironmentObject var musicWrapper: MusicViewModelWrapper
     @State private var recognizedText: String = ""
     @State private var isNavigateToScanPoster = false
-    @State private var isNavigateToExmapleView = false // 예시뷰
     @Environment(\.modelContext) var modelContext
     
-    
     var body: some View {
-        NavigationStack {
+//        NavigationStack(path: $navigationPath) {
             ZStack(alignment: .bottom) {
                 Color.clear
                     .backgroundWithBlur()
@@ -28,7 +26,7 @@ struct MainPosterView: View {
                 VStack(spacing: 0) {
                     Spacer().frame(height: 60)
             
-                    if wrapper.festivalInfo.isEmpty {
+                    if wrapper.playlist.isEmpty {
                         VStack(alignment: .center) {
                             Image("Mainempty")
                                 .resizable()
@@ -44,7 +42,7 @@ struct MainPosterView: View {
 
                     } else {
                         VStack {
-                            OverlappingCardsView(festivals: wrapper.festivalInfo)
+                            OverlappingCardsView(playlists: [wrapper.playlist])
                             
                             Spacer().frame(height: 12)
                         }
@@ -75,22 +73,14 @@ struct MainPosterView: View {
                     Spacer().frame(height: 25)
                     
                     NavigationLink(
-                        isActive: $wrapper.shouldNavigateToMakePlaylist,
+                        isActive: $wrapper.shouldNavigateToFestivalCheck,
                         destination: {
-                            ExportPlaylistView(rawText: wrapper.scannedText)
+                            FestivalCheckView(rawText: wrapper.scannedText)
                                 .environmentObject(musicWrapper)
                         }
                     ) {
                         EmptyView()
                     }
-                }
-                
-                // TODO: UI확인을 위해 임시로 첫번째 공연 포스터를 들고오도록 설정 -> 추후 수정
-                NavigationLink(
-                    destination: FestivalCheckView(festival: wrapper.festivalInfo.first!),
-                    isActive: $isNavigateToExmapleView
-                ) {
-                    EmptyView()
                 }
             }
 
@@ -102,40 +92,26 @@ struct MainPosterView: View {
                 .ignoresSafeArea()
                 .environmentObject(wrapper)
             }
-            .toolbar {
-                ToolbarItem {
-                    Button(action: {
-                        isNavigateToExmapleView = true
-                    }, label: {
-                        Text("버튼")
-                            .foregroundColor(Color("Primary"))
-                            
-                    })
-                    .background(.clear)
-                }
-            }
             .ignoresSafeArea()
-        }
+//        }
     }
 }
 
 // MARK: PosterViewModelWrapper
 final class PosterViewModelWrapper: ObservableObject {
-    @Published var festivalInfo: [PosterItemModel] = PosterItemModel.mock
+    @Published var shouldNavigateToFestivalCheck: Bool = false
     @Published var shouldNavigateToMakePlaylist: Bool = false
     @Published var scannedText: RawText? = nil
     var viewModel: any PosterViewModel
-    
+    var playlist: Playlist
     private var cancellables = Set<AnyCancellable>()
     
-    init(viewModel: any PosterViewModel) {
+    init(viewModel: any PosterViewModel, playlist: Playlist) {
         self.viewModel = viewModel
+        self.playlist = playlist
         
-        // Observable을 통해 festivalInfo 변화를 감지하고 업데이트 함
-        viewModel.festivalData.observe(on: self) { [weak self] items in
-            if !items.isEmpty {
-                self?.festivalInfo = items
-            }
+        viewModel.shouldNavigateToFestivalCheck.observe(on: self) { [weak self] newData in
+            self?.shouldNavigateToFestivalCheck = newData
         }
         
         viewModel.shouldNavigateToMakePlaylist.observe(on: self) { [weak self] newData in
@@ -147,7 +123,3 @@ final class PosterViewModelWrapper: ObservableObject {
         }
     }
 }
-
-
-
-

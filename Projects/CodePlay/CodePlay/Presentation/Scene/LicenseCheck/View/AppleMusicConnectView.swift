@@ -71,7 +71,7 @@ struct AppleMusicConnectView: View {
                     action: {
                         Task {
                             // 권한 요청
-                            viewModelWrapper.appleMusicConnectViewModel   .shouldRequestMusicAuthorization.value = true
+                            viewModelWrapper.appleMusicConnectViewModel.shouldRequestMusicAuthorization.value = true
                         }
                     }
                 )
@@ -120,16 +120,24 @@ final class MusicViewModelWrapper: ObservableObject {
     @Published var isPlaying: Bool = false
     /// 재생 진행률 (0.0 ~ 1.0, 30초 기준)
     @Published var playbackProgress: Double = 0.0
+    @Published var isLoading: Bool = true  // 로딩 상태 추가
+    @Published var festivalData: DynamoDataItem? = nil
+    @Published var suggestTitles: [String] = []
+
 
     var appleMusicConnectViewModel: any AppleMusicConnectViewModel
     var exportViewModelWrapper: any ExportPlaylistViewModel
+    var festivalCheckViewModel: any FestivalCheckViewModel
+
     /// MusicPlayer UseCase (Clean Architecture 적용)
     private var musicPlayerUseCase: MusicPlayerUseCase
 
-    init(appleMusicConnectViewModel: any AppleMusicConnectViewModel, exportViewModelWrapper: any ExportPlaylistViewModel, musicPlayerUseCase: MusicPlayerUseCase) {
+    init(appleMusicConnectViewModel: any AppleMusicConnectViewModel, exportViewModelWrapper: any ExportPlaylistViewModel, festivalCheckViewModel: any FestivalCheckViewModel, musicPlayerUseCase: MusicPlayerUseCase) {
         self.appleMusicConnectViewModel = appleMusicConnectViewModel
         self.exportViewModelWrapper = exportViewModelWrapper
+        self.festivalCheckViewModel = festivalCheckViewModel
         self.musicPlayerUseCase = musicPlayerUseCase
+        
 
         // UseCase를 통해 Repository 콜백 설정
         self.musicPlayerUseCase.setupRepositoryCallbacks(
@@ -145,7 +153,20 @@ final class MusicViewModelWrapper: ObservableObject {
                 }
             }
         )
+        
+        festivalCheckViewModel.isLoading.observe(on: self) { [weak self] newData in
+            self?.isLoading = newData
+        }
+        
+        festivalCheckViewModel.festivalData.observe(on: self) { [weak self] newData in
+            self?.festivalData = newData
+        }
 
+        festivalCheckViewModel.suggestTitles.observe(on: self) { [weak self] newData in
+            print("🎯 suggestTitles 업데이트 감지: \(newData)")
+            self?.suggestTitles = newData
+        }
+        
         appleMusicConnectViewModel.authorizationStatus.observe(on: self) { [weak self] status in
             DispatchQueue.main.async {
                 self?.authorizationStatus = status
@@ -264,10 +285,8 @@ final class MusicViewModelWrapper: ObservableObject {
     }
     /// 30초 미리듣기 재생/일시정지 토글
     func togglePreview(for trackId: String) {
-        
         Task {
             await musicPlayerUseCase.musicRepository.togglePreview(for: trackId)
         }
     }
 }
-

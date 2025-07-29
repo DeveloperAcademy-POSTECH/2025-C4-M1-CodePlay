@@ -200,7 +200,7 @@
 		D8391C492E1CC9C100A44C3F /* Debug configuration for PBXProject "CodePlay" */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = D8391C402E1CC9C000A44C3F /* CodePlay */;
-			baseConfigurationReferenceRelativePath = Data/Network/Config.xcconfig;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -266,7 +266,7 @@
 		D8391C4A2E1CC9C100A44C3F /* Release configuration for PBXProject "CodePlay" */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = D8391C402E1CC9C000A44C3F /* CodePlay */;
-			baseConfigurationReferenceRelativePath = Data/Network/Config.xcconfig;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -325,7 +325,8 @@
 		D8391C4C2E1CC9C100A44C3F /* Debug configuration for PBXNativeTarget "CodePlay" */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = D8391C402E1CC9C000A44C3F /* CodePlay */;
-			baseConfigurationReferenceRelativePath = Data/Network/Config.xcconfig;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
+
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -374,7 +375,8 @@
 		D8391C4D2E1CC9C100A44C3F /* Release configuration for PBXNativeTarget "CodePlay" */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = D8391C402E1CC9C000A44C3F /* CodePlay */;
-			baseConfigurationReferenceRelativePath = Data/Network/Config.xcconfig;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
+
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

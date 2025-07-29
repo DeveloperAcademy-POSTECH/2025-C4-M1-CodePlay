@@ -18,8 +18,8 @@ protocol PosterViewModelInput {
 
 // MARK: PosterViewModelOutput
 protocol PosterViewModelOutput {
-    var festivalData: Observable<[PosterItemModel]> { get }
     var scannedText: Observable<RawText?> { get set }
+    var shouldNavigateToFestivalCheck: Observable<Bool> { get set }
     var shouldNavigateToMakePlaylist: Observable<Bool> { get set }
 }
 
@@ -31,47 +31,31 @@ protocol PosterViewModel: PosterViewModelInput, PosterViewModelOutput,
 // MARK: DefaultMainViewModel
 class DefaultPosterViewModel: PosterViewModel {
     @Published var scannedText: Observable<RawText?> = Observable(nil)
+    @Published var shouldNavigateToFestivalCheck = Observable<Bool>(false)
     @Published var shouldNavigateToMakePlaylist = Observable<Bool>(false)
-    var festivalData: Observable<[PosterItemModel]>
     
     private let scanPosterUseCase: ScanPosterUseCase
 
     init(scanPosterUseCase: ScanPosterUseCase) {
         self.scanPosterUseCase = scanPosterUseCase
-        self.festivalData = Observable([])
     }
 
     func recongizeFestivalLineup(from images: [UIImage]) {
         Task {
-            var newItems: [PosterItemModel] = []
-
-            for image in images {
-                do {
-                    let info = try await scanPosterUseCase.execute(with: [image])
-                    let item = PosterItemModel(
-                        info: info,
-                        imageURL: nil,
-                        image: image
-                    )  // TODO: imageURL 수정 예정
-                    newItems.append(item)
-                    
-                    await MainActor.run {
-                        self.shouldNavigateToMakePlaylist.value = true
-                        self.scannedText.value = RawText(text: newItems.first?.title ?? "")
-                    }
-                } catch {
-                    continue
+            do {
+                let rawText = try await scanPosterUseCase.execute(with: images)
+                await MainActor.run {
+                    self.scannedText.value = rawText
+                    self.shouldNavigateToFestivalCheck.value = true
                 }
-            }
-            await MainActor.run {
-                self.festivalData.value = newItems
+            } catch {
+                print("[PosterViewModel] - 포스터 인식 실패:\(error)")
             }
         }
     }
 
     func clearText() {
-        festivalData.value = []
         scannedText.value = nil
-        shouldNavigateToMakePlaylist.value = false
+        shouldNavigateToFestivalCheck.value = false
     }
 }

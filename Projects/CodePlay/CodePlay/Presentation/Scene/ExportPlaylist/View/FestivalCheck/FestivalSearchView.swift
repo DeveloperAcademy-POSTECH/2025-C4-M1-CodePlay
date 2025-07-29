@@ -6,40 +6,27 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct FestivalSearchView: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) private var modelContext
     @State private var searchText = ""
     @State private var showSearchResults = false
     @State private var isNavigate: Bool = false
+    @State private var searchResults: [String] = []
+    @State private var selectedPlaylist: Playlist?
+    @State private var savedPlaylist: Playlist?
     @FocusState private var isSearchFocused: Bool
-    let festival: PosterItemModel
-
-    // 더미데이터
-    let recommendedSearches = [
-        "2025 부산국제록페스티벌",
-        "2025 펜츠락페스티벌",
-        "그랜드 민트 페스티벌 2...",
-        "JUMF 2025 전주얼티밋...",
-        "22회 자라섬재즈페스티벌",
-        "집콕보 2025 밤밤밤페...",
-        "경기인디뮤직페스티벌 2...",
-        "2025 사운드 플래닛 페...",
-    ]
-
-    // 검색 결과 더미 데이터
-    let searchResults = [
-        "2025 부산국제록페스티벌",
-        "2025 펜츠락페스티벌",
-        "22회 자라섬재즈페스티벌"
-    ]
+    @State private var isNavigateToMainPoster = false
+    let suggestTitles: SuggestTitlesModel
 
     var body: some View {
         ZStack {
             Color.clear
                 .backgroundWithBlur()
                 .ignoresSafeArea()
-
+            
             if showSearchResults {
                 searchResultView
             } else {
@@ -47,9 +34,15 @@ struct FestivalSearchView: View {
             }
             
             NavigationLink(
-                destination: SelectArtistView(festival: festival),
+                destination: selectedPlaylist != nil ? AnyView(SelectArtistView(playlist: selectedPlaylist!)) : AnyView(EmptyView()),
                 isActive: $isNavigate
             ) {
+                EmptyView()
+            }.hidden()
+            
+            NavigationLink(destination: MainPosterView()
+                            .navigationBarBackButtonHidden(true),
+                           isActive: $isNavigateToMainPoster) {
                 EmptyView()
             }.hidden()
         }
@@ -94,6 +87,7 @@ struct FestivalSearchView: View {
                         }
                     }
                     searchText = ""
+                    isNavigateToMainPoster = true
                 }
             }
         }
@@ -139,7 +133,7 @@ struct FestivalSearchView: View {
                     ],
                     spacing: 12
                 ) {
-                    ForEach(recommendedSearches, id: \.self) { searchTerm in
+                    ForEach(suggestTitles.titles, id: \.self) { searchTerm in
                         FestivalBox(title: searchTerm)
                             .onTapGesture {
                                 searchText = searchTerm
@@ -168,7 +162,12 @@ struct FestivalSearchView: View {
             LazyVStack(spacing: 12) {
                 ForEach(searchResults, id: \.self) { result in
                     Button(action: {
-                        isNavigate = true
+                        Task {
+                            await fetchAndSavePlaylist(for: result)
+                            if selectedPlaylist != nil {
+                                isNavigate = true
+                            }
+                        }
                     }, label: {
                         HStack {
                             Text(result)
@@ -198,15 +197,52 @@ struct FestivalSearchView: View {
     /// 검색어와 일치하는 결과가 있는지 확인하는 함수
     private func performSearch() {
         if !searchText.isEmpty {
-            let hasResults = recommendedSearches.contains {
-                $0.contains(searchText)
-            }
-            if hasResults {
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    showSearchResults = true
-                    isSearchFocused = false
+            Task {
+                do {
+                    let request = PostFestInfoTextRequestDTO(rawText: searchText)
+                    let response = try await NetworkService.shared.festivalinfoService.postFestInfoText(model: request)
+                    
+                    searchResults = response.top5.map { $0.title }
+                    
+                    if !searchResults.isEmpty {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            showSearchResults = true
+                            isSearchFocused = false
+                        }
+                    }
+                } catch {
+                    print("Search API Error: \(error.localizedDescription)")
                 }
             }
+        }
+    }
+    
+    private func fetchAndSavePlaylist(for title: String) async {
+        do {
+            let request = PostFestInfoTextRequestDTO(rawText: title)
+            let response = try await NetworkService.shared.festivalinfoService.postFestInfoText(model: request)
+            
+            if let data = response.dynamoData.first {
+                let playlist = Playlist(
+                    title: data.title,
+                    period: data.period,
+                    cast: data.cast,
+                    festivalId: data.festivalId,
+                    place: data.place
+                )
+                
+                modelContext.insert(playlist)
+                
+                do {
+                    try modelContext.save()
+                    selectedPlaylist = playlist
+                    print("Playlist saved successfully for \(title)")
+                } catch {
+                    print("Error saving playlist: \(error.localizedDescription)")
+                }
+            }
+        } catch {
+            print("API Error for \(title): \(error.localizedDescription)")
         }
     }
 }
