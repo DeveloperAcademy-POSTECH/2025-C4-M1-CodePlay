@@ -35,6 +35,10 @@ protocol MusicPlayerRepository {
     
     /// 재생 상태 변경 콜백 설정
     var onPlaybackStateChanged: ((String?, Bool) -> Void)? { get set }
+    
+    /// 음악 캐싱 관련 메서드들
+    func cacheSong(_ song: Song, for trackId: String)
+    func preloadSongToMemory(_ song: Song, for trackId: String) async
 }
 
 // MARK: - Default Music Player Repository Implementation
@@ -102,7 +106,6 @@ final class DefaultMusicPlayerRepository: MusicPlayerRepository {
             startProgressTimer() // 이 타이머가 30초 후 자동 정지까지 처리
             notifyStateChange()
         } catch {
-            print("❌ 미리듣기 재생 실패: \(trackId)")
             notifyStateChange()
         }
     }
@@ -187,5 +190,15 @@ final class DefaultMusicPlayerRepository: MusicPlayerRepository {
             notifyStateChange()
         }
     }
+    
+    // MARK: - 음악 캐싱 관련 메서드들
+    func cacheSong(_ song: Song, for trackId: String) {
+    }
+    
+    func preloadSongToMemory(_ song: Song, for trackId: String) async {
+        
+        if let previewURL = song.previewAssets?.first?.url {
+        } else {
+        }
+    }
 }
-  

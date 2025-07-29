@@ -1,6 +1,7 @@
 
 
 import Foundation
+import MusicKit
 
 // MARK: - Music Player Use Case Protocol
 protocol MusicPlayerUseCase {
@@ -22,6 +23,10 @@ protocol MusicPlayerUseCase {
         onPlaybackStateChanged: @escaping (String?, Bool) -> Void,
         onProgressChanged: @escaping (Double) -> Void
     )
+    
+    /// 음악 캐싱 관련 메서드들
+    func cacheSong(_ song: Song, for trackId: String)
+    func preloadSongToMemory(_ song: Song, for trackId: String) async
 }
 
 
@@ -75,5 +80,14 @@ final class DefaultMusicPlayerUseCase: MusicPlayerUseCase {
     
     func togglePreview(for trackId: String) async {
         await repository.togglePreview(for: trackId)
+    }
+    
+    /// 음악 캐싱 관련 메서드들
+    func cacheSong(_ song: Song, for trackId: String) {
+        repository.cacheSong(song, for: trackId)
+    }
+    
+    func preloadSongToMemory(_ song: Song, for trackId: String) async {
+        await repository.preloadSongToMemory(song, for: trackId)
     }
 }

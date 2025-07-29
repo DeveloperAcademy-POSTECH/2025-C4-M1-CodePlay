@@ -14,9 +14,11 @@ protocol ExportPlaylistRepository {
     func prepareArtistCandidates(from rawText: RawText) -> [String]
     func searchArtists(from rawText: RawText) async -> [ArtistMatch]
     func searchTopSongs(for artists: [ArtistMatch]) async -> [PlaylistEntry]
+    func searchTopSongsWithCaching(for artists: [ArtistMatch], musicPlayerUseCase: MusicPlayerUseCase) async -> [PlaylistEntry]
     func savePlaylist(title: String, entries: [PlaylistEntry]) async throws -> Playlist
     func clearTemporaryData()
     func exportPlaylistToAppleMusic(title: String, trackIds: [String]) async throws
+    func deletePlaylistEntry(trackId: String) async
 }
 
 // 기본 구현체: OCR 텍스트 → 아티스트 후보 추출 → Apple Music에서 탐색 및 플레이리스트 생성
@@ -90,7 +92,6 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                     results.append(match)
                 }
             } catch {
-                print("❌ 검색 실패: \(name) → \(error)")
             }
         }
 
@@ -139,7 +140,57 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                     allEntries.append(entry)
                 }
             } catch {
-                print("❌ \(artist.artistName) 인기곡 검색 실패: \(error)")
+            }
+        }
+
+        return allEntries
+    }
+    
+    // 캐싱과 함께 각 아티스트에 대해 상위 3곡을 Apple Music에서 검색 후 PlaylistEntry로 변환
+    func searchTopSongsWithCaching(for artists: [ArtistMatch], musicPlayerUseCase: MusicPlayerUseCase) async -> [PlaylistEntry] {
+        var allEntries: [PlaylistEntry] = []
+
+        for artist in artists {
+            do {
+                var request = MusicCatalogSearchRequest(term: artist.artistName, types: [Song.self])
+                request.limit = 10
+                let response = try await request.response()
+                let topSongs = response.songs.prefix(3)
+
+                for song in topSongs {
+                    let trackId = song.id.rawValue
+                    let trackTitle = song.title
+
+                    let trackPreviewUrl: String = song.previewAssets?.first?.url?.absoluteString ?? ""
+                    let albumArtworkUrl: String = song.artwork?.url(width: 300, height: 300)?.absoluteString ?? ""
+                    let albumName = song.albumTitle ?? "Unknown Album"
+
+                    let entry = PlaylistEntry(
+                        id: UUID(),
+                        playlistId: UUID(), // save 시 덮어씌움
+                        artistMatchId: artist.id,
+                        artistName: artist.artistName,
+                        appleMusicId: artist.appleMusicId,
+                        trackTitle: trackTitle,
+                        trackId: trackId,
+                        trackPreviewUrl: trackPreviewUrl,
+                        profileArtworkUrl: artist.profileArtworkUrl,
+                        albumArtworkUrl: albumArtworkUrl,
+                        albumName: albumName,
+                        createdAt: .now
+                    )
+
+                    allEntries.append(entry)
+                    
+                    // 백그라운드에서 음악 캐싱 수행
+                    Task {
+                        musicPlayerUseCase.cacheSong(song, for: trackId)
+                        if song.previewAssets?.first?.url != nil {
+                            await musicPlayerUseCase.preloadSongToMemory(song, for: trackId)
+                        }
+                    }
+                }
+            } catch {
             }
         }
 
@@ -196,7 +247,21 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
             description: "CodePlay OCR 기반 자동 생성",
             items: songCollection
         )
+    }
 
-        print("✅ Apple Music playlist created: \(createdPlaylist.name)")
+    func deletePlaylistEntry(trackId: String) async {
+        await MainActor.run {
+            do {
+                let predicate = #Predicate<PlaylistEntry> { $0.trackId == trackId }
+                let descriptor = FetchDescriptor<PlaylistEntry>(predicate: predicate)
+                
+                if let entry = try modelContext.fetch(descriptor).first {
+                    modelContext.delete(entry)
+                    try modelContext.save()
+                } else {
+                }
+            } catch {
+            }
+        }
     }
 }

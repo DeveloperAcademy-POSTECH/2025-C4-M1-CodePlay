@@ -18,6 +18,7 @@ struct FestivalSearchView: View {
     @State private var selectedPlaylist: Playlist?
     @State private var savedPlaylist: Playlist?
     @FocusState private var isSearchFocused: Bool
+    @State private var isNavigateToMainPoster = false
     let suggestTitles: SuggestTitlesModel
 
     var body: some View {
@@ -25,7 +26,7 @@ struct FestivalSearchView: View {
             Color.clear
                 .backgroundWithBlur()
                 .ignoresSafeArea()
-
+            
             if showSearchResults {
                 searchResultView
             } else {
@@ -36,6 +37,12 @@ struct FestivalSearchView: View {
                 destination: selectedPlaylist != nil ? AnyView(SelectArtistView(playlist: selectedPlaylist!)) : AnyView(EmptyView()),
                 isActive: $isNavigate
             ) {
+                EmptyView()
+            }.hidden()
+            
+            NavigationLink(destination: MainPosterView()
+                            .navigationBarBackButtonHidden(true),
+                           isActive: $isNavigateToMainPoster) {
                 EmptyView()
             }.hidden()
         }
@@ -77,6 +84,7 @@ struct FestivalSearchView: View {
                     if showSearchResults {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             showSearchResults = false
+                            isNavigateToMainPoster = true
                         }
                     }
                     searchText = ""
@@ -84,6 +92,7 @@ struct FestivalSearchView: View {
                     Text("취소")
                         .font(.BlgRegular())
                         .foregroundColor(.neu900)
+
                 }
             }
         }
