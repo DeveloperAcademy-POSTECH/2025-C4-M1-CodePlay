@@ -42,7 +42,7 @@ struct ExportPlaylistView: View {
             GradientProgressBar(progress: Double(wrapper.progressStep) / 3.0)
                 .padding(.bottom, 60)
             
-            VStack(spacing: 4) {
+            VStack(spacing: 12) {
                 Text("라인업의 아티스트별\n인기곡을 가져오는 중...")
                     .multilineTextAlignment(.center)
                     .font(.HlgBold())

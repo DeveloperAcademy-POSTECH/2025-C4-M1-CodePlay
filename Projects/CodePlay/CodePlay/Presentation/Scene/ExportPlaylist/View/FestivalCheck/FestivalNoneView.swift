@@ -10,14 +10,15 @@ import SwiftData
 import MusicKit
 
 struct FestivalNoneView: View {
+    @EnvironmentObject var wrapper: PosterViewModelWrapper
+    @State private var recognizedText = ""
+    
+    @State private var isPresented = false
+    
     var body: some View {
-        ZStack (alignment : .bottom){
-            Color.clear
-                .backgroundWithBlur()
-                .ignoresSafeArea()
-            VStack(alignment: .center){
-                
-                Spacer()
+        ZStack(alignment: .bottom) {
+            VStack(alignment: .center) {
+                Spacer().frame(height: 8)
                 
                 Text("페스티벌 인식에 실패했습니다")
                     .font(.HlgBold())
@@ -34,18 +35,21 @@ struct FestivalNoneView: View {
             Image("Festivalfail")
                     .resizable()
                     .scaledToFit( )
-                    .frame(width: 240, height: 240)
+                    .padding(.horizontal, 36.5)
+                    .frame(maxWidth: .infinity, maxHeight: 320)
                 
                 Spacer()
                 
                 BottomButton(title: "다시 촬영하기", kind: .line) {
-                   // ㅎㅎ
+                    isPresented = true
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 50)
             }
         }
-        .toolbar{
+        .backgroundWithBlur()
+        .edgesIgnoringSafeArea(.bottom)
+        .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(
                     action: {
@@ -56,6 +60,14 @@ struct FestivalNoneView: View {
                     }
                 )
             }
+        }
+        .fullScreenCover(isPresented: $isPresented) {
+            CameraLiveTextView(
+                recognizedText: $recognizedText,
+                isPresented: $isPresented
+            )
+            .ignoresSafeArea()
+            .environmentObject(wrapper)
         }
     }
 }

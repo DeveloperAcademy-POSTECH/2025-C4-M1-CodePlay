@@ -28,6 +28,8 @@ struct SelectArtistView: View {
 
                 festivalInfoBox
                 
+                Spacer().frame(height: 24)
+                
                 HStack (alignment : .center ){
                     Text("플레이리스트에 추가")
                         .font(.BlgRegular())

@@ -18,10 +18,9 @@ struct MainPosterView: View {
     @Query(sort: \Playlist.createdAt, order: .reverse) private var playlists: [Playlist]
     
     var body: some View {
-        NavigationStack() {
-            ZStack(alignment: .bottom) {
-                VStack(spacing: 0) {
-                    Spacer().frame(height: 146)
+        NavigationStack {
+            VStack(alignment: .center, spacing: 0) {
+                    Spacer().frame(height: 106)
             
                     if playlists.isEmpty {
                         VStack(alignment: .center, spacing: 76) {
@@ -29,13 +28,12 @@ struct MainPosterView: View {
                                 .resizable()
                                 .frame(maxWidth: .infinity, maxHeight: 320)
                             
-//                            Text("아직 인식한 페스티벌\n라인업이 없습니다")
-//                                .multilineTextAlignment(.center)
-//                                .font(.BlgRegular())
-//                                .foregroundColor(.neu900)
+                            Text("아직 인식한 페스티벌\n라인업이 없습니다")
+                                .multilineTextAlignment(.center)
+                                .font(.BlgRegular())
+                                .foregroundColor(.neu900)
                         }
                         .padding(.horizontal, 36)
-
 
                     } else {
                         VStack {
@@ -44,18 +42,21 @@ struct MainPosterView: View {
                         }
                     }
                     
-                    Spacer().frame(height: 76)
+                    Spacer().frame(height: 36)
                     
                     Text("페스티벌에 가기 전\n슝으로 예습해 보세요!")
                         .multilineTextAlignment(.center)
                         .font(.HlgBold())
                         .foregroundColor(.neu900)
-                    
+                        .padding(.horizontal, 36)
+                        .border(.black)
+
                     Spacer().frame(height: 12)
                     
                     Text("포스터 인식으로 플레이리스트를 만들 수 있어요")
                         .font(.BmdRegular())
                         .foregroundColor(.neu700)
+                        .padding(.horizontal, 36)
                                         
                     Spacer()
                     
@@ -78,7 +79,6 @@ struct MainPosterView: View {
                         EmptyView()
                     }
                 }
-            }
             .edgesIgnoringSafeArea(.all)
             .backgroundWithBlur()
             .navigationBarHidden(true)

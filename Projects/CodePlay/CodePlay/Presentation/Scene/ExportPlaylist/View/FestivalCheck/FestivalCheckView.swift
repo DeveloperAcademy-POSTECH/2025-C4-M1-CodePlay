@@ -1,8 +1,8 @@
 //
-//  FestivalCheckView.swift
+//  FestivalView.swift
 //  CodePlay
 //
-//  Created by 아우신얀 on 7/25/25.
+//  Created by 아우신얀 on 7/29/25.
 //
 
 internal import Combine
@@ -31,63 +31,90 @@ struct FestivalCheckView: View {
                 .backgroundWithBlur()
                 .ignoresSafeArea()
 
-            VStack {
-                Spacer().frame(height: 56)
-
-                Text("인식한 페스티벌 정보가 맞나요?")
-                    .font(.HlgBold())
-                    .foregroundColor(Color.neu900)
-
-                Spacer().frame(height: 6)
-
-                Text("아니오를 하면 수기로 입력하게 됩니다.")
-                    .font(.BmdRegular())
-                    .foregroundColor(Color.neu700)
-
-                Spacer().frame(height: 36)
-
-                if wrapper.isLoading {
-                    // 1. 로딩 상태를 가장 먼저 체크
-                    ProgressView("페스티벌 정보 로딩 중...")
-                        .progressViewStyle(
-                            CircularProgressViewStyle(tint: Color.blue)
-                        )
-                        .font(.BmdRegular())
-                        .foregroundColor(Color.neutral700)
-
-                } else if let data = wrapper.festivalData
-                {
-                    // 2. 로딩이 끝났고 데이터가 있으면 카드 뷰 표시
-                    ArtistCard(
-                        imageUrl: "https://example.com/festival-poster.jpg",
-                        date: data.period,
-                        title: data.title,
-                        subTitle: data.place
-                    )
+            Group {
+                if wrapper.festivalData == nil && !wrapper.isLoading {
+                    FestivalNoneView()
                 } else {
-                    ProgressView("페스티벌 정보 로딩 중...")
-                        .progressViewStyle(CircularProgressViewStyle(tint: Color("Primary")))
-                        .font(.BmdRegular())
-                        .foregroundColor(Color.neu700)
-                        .multilineTextAlignment(.center)
-                }
 
-                Spacer()
+                    VStack {
+                        if wrapper.isLoading {
+                            // 1. 로딩 상태를 가장 먼저 체크
+                            ProgressView("페스티벌 정보 로딩 중...")
+                                .progressViewStyle(
+                                    CircularProgressViewStyle(tint: Color.blue)
+                                )
+                                .font(.BmdRegular())
+                                .foregroundColor(Color.neutral700)
 
-                bottombutton
-                    .padding(.bottom, 50)
-            }
-            .onAppear {
-                Task {
-                    let success = await wrapper.festivalCheckViewModel
-                        .loadFestivalInfo(from: rawText?.text ?? "")
+                            Spacer()
 
-                    if let first = wrapper.suggestTitles.first {
-                        self.suggestTitles = SuggestTitlesModel(titles: wrapper.suggestTitles)
+                            bottombutton
+                                .padding(.bottom, 50)
+
+                        } else if let data = wrapper.festivalData {
+                            // 2. 로딩이 끝났고 데이터가 있으면 카드 뷰 표시
+                            VStack {
+                                Spacer().frame(height: 56)
+
+                                Text("인식한 페스티벌 정보가 맞나요?")
+                                    .font(.HlgBold())
+                                    .foregroundColor(Color.neu900)
+
+                                Spacer().frame(height: 6)
+
+                                Text("아니오를 선택하면 페스티벌을 검색합니다.")
+                                    .font(.BmdRegular())
+                                    .foregroundColor(Color.neu700)
+                                    .lineSpacing(4)
+
+                                Spacer().frame(height: 36)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(data.title)
+                                            .font(.HmdBold())
+                                        
+                                        Text(data.place)
+                                            .font(.BsmRegular())
+                                        
+                                        Text(data.period)
+                                            .font(.BsmRegular())
+                                        
+                                    }
+                                    .padding(.horizontal, 12.5)
+                                    .padding(.vertical, 15)
+                                    .liquidGlass(style: .list)
+
+
+                                Spacer()
+
+                                bottombutton
+                                    .padding(.bottom, 50)
+                            }
+                            .toolbar {
+                                ToolbarItem(placement: .navigationBarTrailing) {
+                                    Button(action: {
+                                        dismiss()
+                                    }) {
+                                        Image(systemName: "xmark")
+                                            .foregroundColor(.neu900)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .onAppear {
+                        Task {
+                            let success = await wrapper.festivalCheckViewModel
+                                .loadFestivalInfo(from: rawText?.text ?? "")
+
+                            if let first = wrapper.suggestTitles.first {
+                                self.suggestTitles = SuggestTitlesModel(
+                                    titles: wrapper.suggestTitles
+                                )
+                            }
+                        }
                     }
                 }
             }
-
             NavigationLink(
                 destination: savedPlaylist != nil
                     ? AnyView(SelectArtistView(playlist: savedPlaylist!))
@@ -97,39 +124,32 @@ struct FestivalCheckView: View {
                 EmptyView()
             }
 
-
-                NavigationLink(
-                    destination: suggestTitles != nil ? AnyView(FestivalSearchView(suggestTitles: suggestTitles!)) : AnyView(EmptyView()),
-                    isActive: $isNavigateToSearch
-                ) {
+            if suggestTitles != nil {
+                NavigationLink(destination: FestivalSearchView(suggestTitles: suggestTitles!), isActive: $isNavigateToSearch) {
                     EmptyView()
                 }
-            
-
-        }
-        .edgesIgnoringSafeArea(.bottom)
-        .navigationBarBackButtonHidden(true)
-        .toolbar{
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(
-                    action: {
-                    },
-                    label: {
-                        Image(systemName: "xmark")
-                            .foregroundColor(.neu900)
-                    }
-                )
+                .hidden()
             }
+//            NavigationLink(
+//                destination: suggestTitles != nil
+//                    ? AnyView(FestivalSearchView(suggestTitles: suggestTitles!))
+//                    : AnyView(EmptyView()),
+//                isActive: $isNavigateToSearch
+//            ) {
+//                EmptyView()
+//            }
         }
+        .navigationBarBackButtonHidden()
+        .edgesIgnoringSafeArea(.bottom)
     }
-
+    
     @ViewBuilder
-    private var bottombutton: some View{
-        HStack(spacing : 16){
+    private var bottombutton: some View {
+        HStack(spacing: 16) {
             BottomButton(title: "아니요", kind: .line) {
                 self.isNavigateToSearch = true
             }
-            
+
             BottomButton(title: "맞아요", kind: .colorFill) {
                 savePlaylist()
                 if savedPlaylist != nil {
