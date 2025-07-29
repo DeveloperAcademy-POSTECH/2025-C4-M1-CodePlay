@@ -147,8 +147,23 @@ final class MusicViewModelWrapper: ObservableObject {
             guard let self else { return }
             DispatchQueue.main.async {
                 self.isLoading = value
+                // UseCase를 통해 Repository 콜백 설정
+                self.musicPlayerUseCase.setupRepositoryCallbacks(
+                    onPlaybackStateChanged: { [weak self] trackId, isPlaying in
+                        DispatchQueue.main.async {
+                            self?.currentlyPlayingTrackId = trackId
+                            self?.isPlaying = isPlaying
+                        }
+                    },
+                    onProgressChanged: { [weak self] progress in
+                        DispatchQueue.main.async {
+                            self?.playbackProgress = progress
+                        }
+                    },
+                )
             }
         }
+            
 
         festivalCheckViewModel.festivalData.observe(on: self) { [weak self] value in
             guard let self else { return }
@@ -287,6 +302,7 @@ final class MusicViewModelWrapper: ObservableObject {
     }
 
     // MARK: - Export
+    /// Apple Music으로 플레이리스트를 내보내는 트리거 함수
     func exportToAppleMusic() {
         isExporting = true
         Task {
@@ -297,14 +313,14 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
     }
-
-    // MARK: - Playback Controls
+    
+    /// 플레이리스트에서 특정 곡 삭제
     func deletePlaylistEntry(trackId: String) {
         Task {
+            // 현재 재생 중인 곡이라면 먼저 음악 정지
             if currentlyPlayingTrackId == trackId {
                 await musicPlayerUseCase.stopPreview()
             }
-
             await exportViewModelWrapper.deletePlaylistEntry(trackId: trackId)
             await MainActor.run {
                 if currentlyPlayingTrackId == trackId {
@@ -316,14 +332,14 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
     }
-
+            
     func deleteEntry(at indexSet: IndexSet) {
         for index in indexSet {
             let trackId = playlistEntries[index].trackId
             deletePlaylistEntry(trackId: trackId)
         }
     }
-
+            
     func togglePreview(for trackId: String) {
         Task {
             await musicPlayerUseCase.musicRepository.togglePreview(for: trackId)
