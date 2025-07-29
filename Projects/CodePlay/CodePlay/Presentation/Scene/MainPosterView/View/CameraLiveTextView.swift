@@ -108,7 +108,6 @@ class CameraLiveTextViewController: UIViewController {
         captureSession.sessionPreset = .photo
 
         guard let backCamera = AVCaptureDevice.default(for: .video) else {
-            print("카메라를 사용할 수 없습니다.")
             return
         }
 
@@ -135,7 +134,6 @@ class CameraLiveTextViewController: UIViewController {
             view.layer.addSublayer(previewLayer)
 
         } catch {
-            print("카메라 설정 오류: \(error)")
         }
     }
 
@@ -267,7 +265,6 @@ class CameraLiveTextViewController: UIViewController {
 
             // 텍스트 전달
             delegate?.didSelectRegion(with: combinedText)
-            print("combinedText:\(combinedText)")
         }
     }
 
@@ -304,7 +301,6 @@ extension CameraLiveTextViewController:
         do {
             try imageRequestHandler.perform([textRecognitionRequest])
         } catch {
-            print("텍스트 인식 오류: \(error)")
         }
     }
 }
