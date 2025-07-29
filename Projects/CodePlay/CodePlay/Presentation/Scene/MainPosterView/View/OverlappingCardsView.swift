@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct OverlappingCardsView: View {
     @State private var playlists: [Playlist]
@@ -13,11 +14,18 @@ struct OverlappingCardsView: View {
     @State private var scrollOffset: CGFloat = 0
     @State private var imageTimer: Timer?
     @State private var imageIndices: [Int] // 각 플레이리스트의 현재 이미지 인덱스를 추적하기 위한 배열
+    @Query var allEntries: [PlaylistEntry]
+    @State private var selectedPlaylist: Playlist?
+    @State private var isNavigateToDetail = false //임시입니다
     
-    init(playlists: [Playlist]) {
-        self._playlists = State(initialValue: playlists)
-        self._imageIndices = State(initialValue: Array(repeating: 0, count: playlists.count))
-    }
+    let wrapper: MusicViewModelWrapper //임시입니다.
+
+    
+    init(playlists: [Playlist], wrapper: MusicViewModelWrapper) {
+           self._playlists = State(initialValue: playlists)
+           self._imageIndices = State(initialValue: Array(repeating: 0, count: playlists.count))
+           self.wrapper = wrapper //임시입니다.
+   }
     
     var body: some View {
         VStack {
@@ -37,12 +45,13 @@ struct OverlappingCardsView: View {
                                     let cardCenter = minX + cardWidth / 2
                                     let distance = abs(cardCenter - screenCenter)
                                     let normalizedDistance = min(distance / (cardWidth / 2), 1.0)
+                                    let matchingEntries = allEntries.filter { $0.playlistId == playlist.id }
                                     
                                     ArtistCard(
                                         imageUrl: currentImageURL(for: playlist, at: index),
                                         date: playlist.period ?? "",
                                         title: playlist.title,
-                                        subTitle: playlist.cast ?? playlist.place ?? ""
+                                        subTitle: "\(matchingEntries.count)곡"
                                     )
                                     .frame(width: cardWidth, height: 420)
                                     .scaleEffect(1.0)
@@ -68,11 +77,12 @@ struct OverlappingCardsView: View {
                                 }
                                 .id(index)
                                 .onTapGesture {
-                                    withAnimation(.easeInOut(duration: 0.5)) {
-                                        if currentIndex != index {
-                                            currentIndex = index
-                                            proxy.scrollTo(index, anchor: .center)
-                                        }
+                                    if currentIndex != index {
+                                        currentIndex = index
+                                        proxy.scrollTo(index, anchor: .center)
+                                    } else {
+                                        selectedPlaylist = playlist
+                                        isNavigateToDetail = true
                                     }
                                 }
                             }
@@ -111,15 +121,62 @@ struct OverlappingCardsView: View {
                         )
                 }
             }
+            NavigationLink( //임시입니다진짜로
+                isActive: $isNavigateToDetail,
+                destination: {
+                    if let selected = selectedPlaylist {
+                        PlaylistDetailView(playlist: selected)
+                            .environmentObject(wrapper)
+                    } else {
+                        EmptyView()
+                    }
+                },
+                label: {
+                    EmptyView()
+                }
+            )
+            .hidden()
         }
     }
-    
-    private func currentImageURL(for playlist: Playlist, at index: Int) -> String? {
-        let artworkURLs = playlist.entries.compactMap { $0.albumArtworkUrl }
-        guard !artworkURLs.isEmpty, imageIndices[index] < artworkURLs.count else { return nil }
-        return artworkURLs[imageIndices[index]]
+    private func printPlaylistInfo(_ playlist: Playlist) {
+        print("🧾 Playlist 정보")
+        print("🟢 title: \(playlist.title)")
+        print("📍 place: \(playlist.place ?? "nil")")
+        print("📅 period: \(playlist.period ?? "nil")")
+        print("🎤 cast: \(playlist.cast ?? "nil")")
+        print("🆔 id: \(playlist.id)")
+        print("🕒 createdAt: \(playlist.createdAt)")
+
+        let matchingEntries = allEntries.filter { $0.playlistId == playlist.id }
+
+        print("🎶 Entries: (\(matchingEntries.count)곡)")
+        for entry in matchingEntries {
+            print("""
+            ---
+            🎤 artist: \(entry.artistName)
+            artistartwork: \(entry.profileArtworkUrl)
+            🎵 title: \(entry.trackTitle)
+            💿 album: \(entry.albumName)
+            🆔 trackId: \(entry.trackId)
+            🔗 preview: \(entry.trackPreviewUrl)
+            🖼 artwork: \(entry.albumArtworkUrl ?? "nil")
+            📅 createdAt: \(entry.createdAt)
+            """)
+        }
     }
-    
+
+
+    private func currentImageURL(for playlist: Playlist, at index: Int) -> String? {
+        let matchingEntries = allEntries.filter { $0.playlistId == playlist.id }
+        let artworkURLs = matchingEntries.compactMap { $0.profileArtworkUrl }
+
+        guard !artworkURLs.isEmpty else { return nil }
+
+        let currentIdx = imageIndices[index]
+        return artworkURLs[currentIdx % artworkURLs.count]
+    }
+
+
     private func updateCurrentIndex(
         cardGeometry: GeometryProxy,
         index: Int,
@@ -140,18 +197,21 @@ struct OverlappingCardsView: View {
     // 특정 인덱스의 카드 이미지를 다음 이미지로 변경
     private func changeImageForCard(at index: Int) {
         guard index < playlists.count else { return }
-        let artworkURLs = playlists[index].entries.compactMap { $0.albumArtworkUrl }
-        guard !artworkURLs.isEmpty else { return }
-        imageIndices[index] = (imageIndices[index] + 1) % artworkURLs.count
+        let matchingEntries = allEntries.filter { $0.playlistId == playlists[index].id }
+        guard !matchingEntries.isEmpty else { return }
+
+        imageIndices[index] = Int.random(in: 0..<matchingEntries.count)
     }
+
     
     // 2초마다 현재 선택된 카드의 이미지 변경 타이머 시작
     private func startImageTimer() {
         stopImageTimer()
-        imageTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
+        imageTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: true) { _ in
             changeImageForCard(at: currentIndex)
         }
     }
+
     
     // 타이머 중지
     private func stopImageTimer() {

@@ -11,6 +11,12 @@ import SwiftUI
 struct ExportSuccessView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var posterWrapper: PosterViewModelWrapper
+    @EnvironmentObject var musicWrapper: MusicViewModelWrapper
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.modelContext) private var modelContext
+    @State private var isNavigateToMainPoster = false
+
     
     var body: some View {
         NavigationStack {
@@ -48,6 +54,16 @@ struct ExportSuccessView: View {
                     .padding(.horizontal, 20)
                     .padding(.bottom, 16)
                 }
+                NavigationLink(
+                    destination: MainPosterView()
+                        .environmentObject(posterWrapper)
+                        .environmentObject(musicWrapper),
+                    isActive: $isNavigateToMainPoster
+                ) {
+                    EmptyView()
+                }
+                .hidden()
+
             }
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(false)
@@ -56,12 +72,15 @@ struct ExportSuccessView: View {
                     Button(action: {
                         posterWrapper.shouldNavigateToMakePlaylist = false
                         posterWrapper.viewModel.clearText()
-                        dismiss()
-                    }) {
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            isNavigateToMainPoster = true
+                        }
+                    }, label: {
                         Image(systemName: "xmark")
                             .foregroundColor(.neu900)
                             .font(.system(size: 16, weight: .medium))
-                    }
+                    })
                 }
             }
             .toolbarBackground(.hidden, for: .navigationBar)

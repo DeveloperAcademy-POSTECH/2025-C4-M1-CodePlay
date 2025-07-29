@@ -8,6 +8,7 @@
 internal import Combine
 import MusicKit
 import SwiftUI
+import SwiftData
 
 struct AppleMusicConnectView: View {
     @EnvironmentObject var viewModelWrapper: MusicViewModelWrapper
@@ -99,52 +100,122 @@ struct AppleMusicConnectView: View {
 
 // MARK: - ViewModelWrapper for ObservableObject compatibility
 final class MusicViewModelWrapper: ObservableObject {
+    // MARK: - Published Properties
     @Published var authorizationStatus: MusicAuthorizationStatusModel?
     @Published var subscriptionStatus: MusicSubscriptionModel?
     @Published var errorMessage: String?
     @Published var canPlayMusic: Bool = false
     @Published var artistCandidates: [String] = []
-    /// 현재 프로세스 단계 (0: 대기, 1: 아티스트 탐색 시작, 2: 아티스트 탐색 완료, 3: 인기곡 추출 완료)
     @Published var progressStep: Int = 0
-    /// 플레이리스트 생성 완료 후 MadePlaylistView로의 네비게이션 트리거
     @Published var navigateToMadePlaylist: Bool = false
-    /// Apple Music으로 내보내기 중인지 여부
     @Published var isExporting: Bool = false
-    /// Apple Music 내보내기 완료 여부
     @Published var isExportCompleted: Bool = false
-    /// 완성된 플레이리스트 엔트리 목록
     @Published var playlistEntries: [PlaylistEntry] = []
-    /// 현재 재생 중인 곡의 ID (30초 미리듣기용)
     @Published var currentlyPlayingTrackId: String?
-    /// 재생 상태 (재생 중/일시정지)
     @Published var isPlaying: Bool = false
-    /// 재생 진행률 (0.0 ~ 1.0, 30초 기준)
     @Published var playbackProgress: Double = 0.0
-    @Published var isLoading: Bool = true  // 로딩 상태 추가
+    @Published var isLoading: Bool = true
     @Published var festivalData: DynamoDataItem? = nil
     @Published var suggestTitles: [String] = []
 
+    @Environment(\.modelContext) private var modelContext
 
+    // MARK: - Dependencies
     var appleMusicConnectViewModel: any AppleMusicConnectViewModel
     var exportViewModelWrapper: any ExportPlaylistViewModel
     var festivalCheckViewModel: any FestivalCheckViewModel
-
-    /// MusicPlayer UseCase (Clean Architecture 적용)
     private var musicPlayerUseCase: MusicPlayerUseCase
 
-    init(appleMusicConnectViewModel: any AppleMusicConnectViewModel, exportViewModelWrapper: any ExportPlaylistViewModel, festivalCheckViewModel: any FestivalCheckViewModel, musicPlayerUseCase: MusicPlayerUseCase) {
+    // MARK: - Init
+    init(
+        appleMusicConnectViewModel: any AppleMusicConnectViewModel,
+        exportViewModelWrapper: any ExportPlaylistViewModel,
+        festivalCheckViewModel: any FestivalCheckViewModel,
+        musicPlayerUseCase: MusicPlayerUseCase
+    ) {
         self.appleMusicConnectViewModel = appleMusicConnectViewModel
         self.exportViewModelWrapper = exportViewModelWrapper
         self.festivalCheckViewModel = festivalCheckViewModel
         self.musicPlayerUseCase = musicPlayerUseCase
-        
 
-        // UseCase를 통해 Repository 콜백 설정
-        self.musicPlayerUseCase.setupRepositoryCallbacks(
-            onPlaybackStateChanged: { [weak self] trackId, isPlaying in
+        bind()
+    }
+
+    // MARK: - Binding Observables
+    private func bind() {
+        festivalCheckViewModel.isLoading.observe(on: self) { [weak self] value in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                self.isLoading = value
+                // UseCase를 통해 Repository 콜백 설정
+                self.musicPlayerUseCase.setupRepositoryCallbacks(
+                    onPlaybackStateChanged: { [weak self] trackId, isPlaying in
+                        DispatchQueue.main.async {
+                            self?.currentlyPlayingTrackId = trackId
+                            self?.isPlaying = isPlaying
+                        }
+                    },
+                    onProgressChanged: { [weak self] progress in
+                        DispatchQueue.main.async {
+                            self?.playbackProgress = progress
+                        }
+                    },
+                )
+            }
+        }
+            
+
+        festivalCheckViewModel.festivalData.observe(on: self) { [weak self] value in
+            guard let self else { return }
+            Task { @MainActor in
+                self.festivalData = value
+            }
+        }
+
+        festivalCheckViewModel.suggestTitles.observe(on: self) { [weak self] value in
+            guard let self else { return }
+            Task { @MainActor in
+                self.suggestTitles = value
+            }
+        }
+
+        appleMusicConnectViewModel.authorizationStatus.observe(on: self) { [weak self] status in
+            DispatchQueue.main.async {
+                self?.authorizationStatus = status
+                self?.canPlayMusic = (status?.status == .authorized)
+            }
+        }
+
+        appleMusicConnectViewModel.subscriptionStatus.observe(on: self) { [weak self] in
+            self?.subscriptionStatus = $0
+        }
+
+        appleMusicConnectViewModel.errorMessage.observe(on: self) { [weak self] in
+            self?.errorMessage = $0
+        }
+
+        appleMusicConnectViewModel.canPlayMusic.observe(on: self) { [weak self] newValue in
+            guard let self else { return }
+            if self.canPlayMusic != newValue {
                 DispatchQueue.main.async {
-                    self?.currentlyPlayingTrackId = trackId
-                    self?.isPlaying = isPlaying
+                    self.canPlayMusic = newValue
+                }
+            }
+        }
+
+        exportViewModelWrapper.artistCandidates.observe(on: self) { [weak self] value in
+            guard let self else { return }
+            Task { @MainActor in
+                self.artistCandidates = value
+            }
+        }
+
+        musicPlayerUseCase.setupRepositoryCallbacks(
+            onPlaybackStateChanged: { [weak self] trackId, isPlaying in
+                guard let self else { return }
+                Task { @MainActor in
+                    self.currentlyPlayingTrackId = trackId
+                    self.isPlaying = isPlaying
                 }
             },
             onProgressChanged: { [weak self] progress in
@@ -153,104 +224,89 @@ final class MusicViewModelWrapper: ObservableObject {
                 }
             }
         )
-        
-        festivalCheckViewModel.isLoading.observe(on: self) { [weak self] newData in
-            self?.isLoading = newData
-        }
-        
-        festivalCheckViewModel.festivalData.observe(on: self) { [weak self] newData in
-            self?.festivalData = newData
-        }
-
-        festivalCheckViewModel.suggestTitles.observe(on: self) { [weak self] newData in
-            print("🎯 suggestTitles 업데이트 감지: \(newData)")
-            self?.suggestTitles = newData
-        }
-        
-        appleMusicConnectViewModel.authorizationStatus.observe(on: self) { [weak self] status in
-            DispatchQueue.main.async {
-                self?.authorizationStatus = status
-                
-                if status?.status == .authorized {
-                    self?.canPlayMusic = true
-                } else {
-                    self?.canPlayMusic = false
-                }
-            }
-        }
-
-        appleMusicConnectViewModel.subscriptionStatus.observe(on: self) { [weak self] subscription in
-            DispatchQueue.main.async {
-                self?.subscriptionStatus = subscription
-            }
-        }
-
-        appleMusicConnectViewModel.errorMessage.observe(on: self) { [weak self] error in
-            DispatchQueue.main.async {
-                self?.errorMessage = error
-            }
-        }
-
-        appleMusicConnectViewModel.canPlayMusic.observe(on: self) { [weak self] canPlay in
-            DispatchQueue.main.async {
-                self?.canPlayMusic = canPlay
-            }
-        }
-        
-        exportViewModelWrapper.artistCandidates.observe(on: self) { [weak self] candidates in
-            self?.artistCandidates = candidates
-        }
     }
-    /// View가 나타날 때 호출되는 함수
-    /// - OCR로부터 받은 RawText를 바탕으로 전체 흐름 수행
-    func onAppear(with rawText: RawText?) {
+
+    // MARK: - Main Flow
+    func onAppear(with rawText: RawText?, for playlist: Playlist, using context: ModelContext) async {
         guard let rawText else { return }
+        print("🟠 [onAppear] rawText: \(rawText.text)")
 
-        progressStep = 0
-
-        // 1단계: 텍스트 전처리 (후보 아티스트 추출)
-        exportViewModelWrapper.preProcessRawText(rawText)
-        withAnimation(.easeInOut(duration: 0.5)) {
-            progressStep = 1
+        await MainActor.run {
+            self.progressStep = 0
         }
 
-        Task {
-            // 2단계: 아티스트 검색
-            let matches = await exportViewModelWrapper.searchArtists(from: rawText)
-            DispatchQueue.main.async {
-                withAnimation(.easeInOut(duration: 0.5)) {
-                    self.progressStep = 2
-                }
-                matches.forEach { print("✅ \( $0.artistName ) (\($0.appleMusicId))") }
-            }
+        exportViewModelWrapper.preProcessRawText(rawText)
 
-            // 3단계: 아티스트별 상위 곡 검색
-            let songs = await exportViewModelWrapper.searchTopSongs(from: rawText, artistMatches: matches)
-            DispatchQueue.main.async {
-                withAnimation(.easeInOut(duration: 1.2)) {
-                    self.progressStep = 3
-                }
-                
-                self.playlistEntries = songs
-                for entry in songs {
-                    print("🎵 \(entry.artistName) - \(entry.trackTitle)")
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    withAnimation(.easeInOut(duration: 0.3)) {
-                        self.navigateToMadePlaylist = true
-                    }
-                }
+        await MainActor.run {
+            withAnimation(.easeInOut(duration: 0.5)) {
+                self.progressStep = 1
+            }
+        }
+
+        let matches = await exportViewModelWrapper.searchArtists(from: rawText)
+        print("🔍 [searchArtists] 매칭된 아티스트 수: \(matches.count)")
+        matches.forEach { print("🎤 \($0.artistName) (\($0.appleMusicId))") }
+
+        await MainActor.run {
+            withAnimation(.easeInOut(duration: 0.5)) {
+                self.progressStep = 2
+            }
+        }
+
+        let songs = await exportViewModelWrapper.searchTopSongs(from: rawText, artistMatches: matches)
+        print("🎶 [searchTopSongs] 가져온 곡 수: \(songs.count)")
+        songs.forEach { print("🎵 \( $0.artistName ) - \( $0.trackTitle )") }
+
+        await MainActor.run {
+            withAnimation(.easeInOut(duration: 1.2)) {
+                self.progressStep = 3
+            }
+            self.playlistEntries = songs
+            print("📦 [playlistEntries 저장 완료] \(songs.count)곡")
+        }
+
+        await savePlaylistAfterTopSongs(playlist: playlist, context: context)
+
+        await MainActor.run {
+            withAnimation(.easeInOut(duration: 0.3)) {
+                self.navigateToMadePlaylist = true
             }
         }
     }
+    
+    // MARK: - Save to SwiftData
+    func savePlaylistAfterTopSongs(playlist: Playlist, context: ModelContext) async {
+        guard !playlistEntries.isEmpty else {
+            print("❌ 저장 시도했지만 playlistEntries가 비어 있음")
+            return
+        }
+
+        let playlistId = playlist.id
+
+        for entry in playlistEntries {
+            guard !entry.trackId.isEmpty else {
+                print("⚠️ 잘못된 Entry - trackId 없음: \(entry.artistName)")
+                continue
+            }
+            entry.playlistId = playlistId
+            context.insert(entry)
+            print("📦 저장할 Entry: \(entry.artistName) - \(entry.trackTitle) / \(entry.trackId)")
+        }
+
+        do {
+            try context.save()
+            print("✅ 기존 Playlist에 Entry 추가 완료")
+        } catch {
+            print("❌ 저장 실패: \(error)")
+        }
+    }
+
+    // MARK: - Export 
     /// Apple Music으로 플레이리스트를 내보내는 트리거 함수
     func exportToAppleMusic() {
         isExporting = true
-
         Task {
             await exportViewModelWrapper.exportLatestPlaylistToAppleMusic()
-
-            // 내보내기 완료 후 상태 업데이트 (5초 후 완료 상태 전환)
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                 self.isExporting = false
                 self.isExportCompleted = true
@@ -265,7 +321,6 @@ final class MusicViewModelWrapper: ObservableObject {
             if currentlyPlayingTrackId == trackId {
                 await musicPlayerUseCase.stopPreview()
             }
-            
             await exportViewModelWrapper.deletePlaylistEntry(trackId: trackId)
             await MainActor.run {
                 if currentlyPlayingTrackId == trackId {
@@ -283,7 +338,7 @@ final class MusicViewModelWrapper: ObservableObject {
             deletePlaylistEntry(trackId: trackId)
         }
     }
-    /// 30초 미리듣기 재생/일시정지 토글
+    
     func togglePreview(for trackId: String) {
         Task {
             await musicPlayerUseCase.musicRepository.togglePreview(for: trackId)

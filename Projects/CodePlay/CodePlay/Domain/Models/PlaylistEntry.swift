@@ -22,6 +22,7 @@ final class PlaylistEntry {
     var albumArtworkUrl: String
     var albumName: String
     var createdAt: Date
+    @Relationship var playlist: Playlist? 
 
     init(
         id: UUID = UUID(),

@@ -116,8 +116,7 @@ final class MainSceneDIContainer {
     // MARK: ViewModelWrapper
     func makePosterViewModelWrapper() -> PosterViewModelWrapper {
         return PosterViewModelWrapper(
-            viewModel: makePosterViewModel(),
-            playlist: Playlist(title: "")
+            viewModel: makePosterViewModel()
         )
     }
 

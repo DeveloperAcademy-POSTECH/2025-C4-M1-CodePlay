@@ -28,24 +28,36 @@ struct ArtistCard: View {
                     .frame(width: 296, height: 296)
                     .background(
                         Group {
-                            
-                            if let imageUrl = imageUrl {
-                                
-                                Image(imageUrl)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 296, height: 296)
-                                    .clipped()
+                            if let imageUrl = imageUrl, let url = URL(string: imageUrl) {
+                                AsyncImage(url: url) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        ProgressView()
+                                            .frame(width: 296, height: 296)
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 296, height: 296)
+                                            .clipped()
+                                    case .failure:
+                                        Image("ArtistImg")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 296, height: 296)
+                                    @unknown default:
+                                        EmptyView()
+                                    }
+                                }
                             } else {
-                                
                                 Image("ArtistImg")
                                     .resizable()
-                                    .aspectRatio(contentMode: .fit)
+                                    .scaledToFit()
                                     .frame(width: 296, height: 296)
-                                    .clipped()
                             }
                         }
                     )
+
                     .cornerRadius(16)
                     .shadow(color: .neu1000.opacity(0.2), radius: 8, x: 0, y: 4)
                 

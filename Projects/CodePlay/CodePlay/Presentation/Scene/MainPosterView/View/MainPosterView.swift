@@ -15,9 +15,12 @@ struct MainPosterView: View {
     @State private var recognizedText: String = ""
     @State private var isNavigateToScanPoster = false
     @Environment(\.modelContext) var modelContext
+    @Query(sort: \Playlist.createdAt, order: .reverse) private var playlists: [Playlist]
+    
+    
     
     var body: some View {
-//        NavigationStack(path: $navigationPath) {
+        NavigationStack() {
             ZStack(alignment: .bottom) {
                 Color.clear
                     .backgroundWithBlur()
@@ -26,7 +29,7 @@ struct MainPosterView: View {
                 VStack(spacing: 0) {
                     Spacer().frame(height: 60)
             
-                    if wrapper.playlist.isEmpty {
+                    if playlists.isEmpty {
                         VStack(alignment: .center) {
                             Image("Mainempty")
                                 .resizable()
@@ -42,9 +45,8 @@ struct MainPosterView: View {
 
                     } else {
                         VStack {
-                            OverlappingCardsView(playlists: [wrapper.playlist])
-                            
-                            Spacer().frame(height: 12)
+                            OverlappingCardsView(playlists: playlists, wrapper: musicWrapper) //임시입다
+                            .padding(.bottom, 12)
                         }
                     }
                     
@@ -83,6 +85,13 @@ struct MainPosterView: View {
                     }
                 }
             }
+            .navigationBarHidden(true)
+            .onAppear() {
+                print("🧾 현재 Playlist 수: \(playlists.count)")
+                for p in playlists {
+                    print("📀 \(p.title) / \(p.createdAt)")
+                }
+            }
 
             .fullScreenCover(isPresented: $isNavigateToScanPoster) {
                 CameraLiveTextView(
@@ -93,8 +102,9 @@ struct MainPosterView: View {
                 .environmentObject(wrapper)
             }
             .ignoresSafeArea()
-//        }
+        }
     }
+    
 }
 
 // MARK: PosterViewModelWrapper
@@ -103,21 +113,19 @@ final class PosterViewModelWrapper: ObservableObject {
     @Published var shouldNavigateToMakePlaylist: Bool = false
     @Published var scannedText: RawText? = nil
     var viewModel: any PosterViewModel
-    var playlist: Playlist
     private var cancellables = Set<AnyCancellable>()
-    
-    init(viewModel: any PosterViewModel, playlist: Playlist) {
+
+    init(viewModel: any PosterViewModel) {
         self.viewModel = viewModel
-        self.playlist = playlist
-        
+
         viewModel.shouldNavigateToFestivalCheck.observe(on: self) { [weak self] newData in
             self?.shouldNavigateToFestivalCheck = newData
         }
-        
+
         viewModel.shouldNavigateToMakePlaylist.observe(on: self) { [weak self] newData in
             self?.shouldNavigateToMakePlaylist = newData
         }
-    
+
         viewModel.scannedText.observe(on: self) { [weak self] newData in
             self?.scannedText = newData
         }
