@@ -98,7 +98,6 @@ struct CustomList: View {
                 Button(action: onDeleteTap) {
                     Image(systemName: "trash")
                         .foregroundColor(.neu700)
-                        .font(.system(size: 18))
                         .frame(width: 28, height: 28)
                 }
                 .buttonStyle(PlainButtonStyle())
