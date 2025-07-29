@@ -40,7 +40,7 @@ struct LiquidGlassModifier: ViewModifier {
                         .fill(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .white.opacity(0.6), .white.opacity(0.3),
+                                    .neu0.opacity(0.6), .neu0.opacity(0.3),
                                 ]),
                                 startPoint: UnitPoint(x: 0.0, y: 0.0),
                                 endPoint: UnitPoint(x: 0.1, y: 1.0)
@@ -49,7 +49,7 @@ struct LiquidGlassModifier: ViewModifier {
                         .stroke(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .white.opacity(0.4),
+                                    .neu0.opacity(0.4),
                                     .clear,
                                 ]),
                                 startPoint: UnitPoint(x: 0.0, y: 0.0),
@@ -59,7 +59,7 @@ struct LiquidGlassModifier: ViewModifier {
                         .stroke(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .clear, .white.opacity(0.5),
+                                    .clear, .neu0.opacity(0.5),
                                 ]),
                                 startPoint: UnitPoint(x: 0.0, y: 0.0),
                                 endPoint: UnitPoint(x: 1.0, y: 0.0)
@@ -67,7 +67,7 @@ struct LiquidGlassModifier: ViewModifier {
                         )
                 )
                 .cornerRadius(cornerRadius)
-                .shadow(color: .black.opacity(0.25), radius: 5, x: 0, y: 5)
+                .shadow(color: .neu1000.opacity(0.25), radius: 5, x: 0, y: 5)
 
         case .list:
             content
@@ -77,7 +77,7 @@ struct LiquidGlassModifier: ViewModifier {
                         .fill(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .white.opacity(0.6), .white.opacity(0.3),
+                                    .neu0.opacity(0.6), .neu0.opacity(0.3),
                                 ]),
                                 startPoint: UnitPoint(x: 0.0, y: 0.0),
                                 endPoint: UnitPoint(x: 0.1, y: 1.0)
@@ -86,7 +86,7 @@ struct LiquidGlassModifier: ViewModifier {
                         .stroke(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .white.opacity(0.4),
+                                    .neu0.opacity(0.4),
                                     .clear,
                                 ]),
                                 startPoint: UnitPoint(x: 0.0, y: 0.0),
@@ -96,7 +96,7 @@ struct LiquidGlassModifier: ViewModifier {
                         .stroke(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .clear, .white.opacity(0.5),
+                                    .clear, .neu0.opacity(0.5),
                                 ]),
                                 startPoint: UnitPoint(x: 0.0, y: 0.0),
                                 endPoint: UnitPoint(x: 1.0, y: 0.0)
@@ -104,7 +104,7 @@ struct LiquidGlassModifier: ViewModifier {
                         )
                 )
                 .cornerRadius(cornerRadius)
-                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 1)
+                .shadow(color: .neu1000.opacity(0.1), radius: 4, x: 0, y: 1)
             
         case .listbutton:
             content
@@ -114,7 +114,7 @@ struct LiquidGlassModifier: ViewModifier {
                             .fill(.ultraThinMaterial)
 
                         Rectangle()
-                            .fill(Color(UIColor.white.withAlphaComponent(0.1)))
+                            .fill(Color(UIColor.neu0.withAlphaComponent(0.1)))
                     }
                 )
                 .ignoresSafeArea()

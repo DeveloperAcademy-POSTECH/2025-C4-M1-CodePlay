@@ -19,8 +19,8 @@ struct PlaylistSectionView: View {
     var body: some View {
         Section(header:
             Text(artist)
-                .font(.title3)
-                .bold()
+                .font(.BlgBold())
+                .foregroundColor(.neu900)
         ) {
             ForEach(entries) { entry in
                 CustomList(
