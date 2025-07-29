@@ -273,7 +273,7 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
     }
-
+    
     // MARK: - Save to SwiftData
     func savePlaylistAfterTopSongs(playlist: Playlist, context: ModelContext) async {
         guard !playlistEntries.isEmpty else {
@@ -301,7 +301,7 @@ final class MusicViewModelWrapper: ObservableObject {
         }
     }
 
-    // MARK: - Export
+    // MARK: - Export 
     /// Apple Music으로 플레이리스트를 내보내는 트리거 함수
     func exportToAppleMusic() {
         isExporting = true
@@ -332,14 +332,13 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
     }
-            
     func deleteEntry(at indexSet: IndexSet) {
         for index in indexSet {
             let trackId = playlistEntries[index].trackId
             deletePlaylistEntry(trackId: trackId)
         }
     }
-            
+    
     func togglePreview(for trackId: String) {
         Task {
             await musicPlayerUseCase.musicRepository.togglePreview(for: trackId)
