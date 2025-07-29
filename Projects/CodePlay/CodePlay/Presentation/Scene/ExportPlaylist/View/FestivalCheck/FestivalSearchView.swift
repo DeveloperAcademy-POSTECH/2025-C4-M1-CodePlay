@@ -80,14 +80,19 @@ struct FestivalSearchView: View {
             }
 
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("취소") {
+                Button(action: {
                     if showSearchResults {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             showSearchResults = false
+                            isNavigateToMainPoster = true
                         }
                     }
                     searchText = ""
-                    isNavigateToMainPoster = true
+                }) {
+                    Text("취소")
+                        .font(.BlgRegular())
+                        .foregroundColor(.neu900)
+
                 }
             }
         }
@@ -179,12 +184,12 @@ struct FestivalSearchView: View {
                             Spacer()
                         }
                         .frame(maxWidth: .infinity, maxHeight: 50)
-                        .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 2)
+                        .shadow(color: .neu1000.opacity(0.1), radius: 10, x: 0, y: 2)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
-                                .stroke(.white.opacity(0.9), lineWidth: 2)
+                                .stroke(.neu0.opacity(0.9), lineWidth: 2)
                         )
-                        .background(.white.opacity(0.3))
+                        .background(.neu0.opacity(0.3))
                         .cornerRadius(12)
                     })
                 }

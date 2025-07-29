@@ -58,7 +58,6 @@ struct BottomButton: View {
             Button(action: action) {
                 Text(title)
                     .font(.BlgBold())
-                    .fontWeight(.bold)
                     .foregroundStyle(kind == .colorFill ? Color.white : Color("Primary"))
                     .padding(.horizontal, 20)
                     .padding(.vertical, 18)

@@ -98,17 +98,13 @@ final class DefaultAppleMusicConnectViewModel: AppleMusicConnectViewModel {
 
     func updateMusicAuthorizationStatus() {
         Task {
-            print("[AppleMusicConnectViewModel]-updateMusicAuthorizationStatus 실행됨")
             let status = checkLicenseUseCase.fetchCurrentAuthorizationStatus()
-            print("현재 권한 상태: \(status.status)") // 상태 출력 추가
 
             authorizationStatus.value = status
 
             if status.isAuthorized {
-                print("권한 허가됨, 구독 확인 시작")
                 checkMusicSubscription()
             } else {
-                print("권한 미허가 또는 거부 상태")
                 updateCanPlayMusic()
             }
         }

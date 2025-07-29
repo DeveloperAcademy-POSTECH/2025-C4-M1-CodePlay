@@ -52,7 +52,7 @@ struct MainPosterView: View {
                     
                     Spacer().frame(height: 25)
                     
-                    Text("페스티벌에 가기 전\n노래를 미리 예습해 보세요!")
+                    Text("페스티벌에 가기 전\n슝으로 예습해 보세요!")
                         .multilineTextAlignment(.center)
                         .font(.HlgBold())
                         .foregroundColor(.neu900)

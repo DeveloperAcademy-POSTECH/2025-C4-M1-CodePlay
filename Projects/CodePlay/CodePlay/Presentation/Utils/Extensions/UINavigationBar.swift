@@ -12,7 +12,7 @@ extension UINavigationBar {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundEffect = UIBlurEffect(style: .light) 
-        appearance.backgroundColor = UIColor.white.withAlphaComponent(0.1)
+        appearance.backgroundColor = UIColor.neu0.withAlphaComponent(0.1)
 
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance

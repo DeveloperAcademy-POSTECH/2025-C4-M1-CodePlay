@@ -14,6 +14,7 @@ struct FestivalCheckView: View {
     @State private var isNavigateToSearch: Bool = false
     @State private var apiResponse: PostFestInfoResponseDTO?
     @State private var suggestTitles: SuggestTitlesModel?
+    @State private var isLoading: Bool = true
     @State private var savedPlaylist: Playlist?
     @EnvironmentObject var wrapper: MusicViewModelWrapper
     @Environment(\.modelContext) private var modelContext
@@ -58,14 +59,14 @@ struct FestivalCheckView: View {
                 {
                     // 2. 로딩이 끝났고 데이터가 있으면 카드 뷰 표시
                     ArtistCard(
-                        imageUrl: "https://example.com/festival-poster.jpg",  // 하드코딩
+                        imageUrl: "https://example.com/festival-poster.jpg",
                         date: data.period,
                         title: data.title,
                         subTitle: data.place
                     )
                 } else {
-                    // 3. 로딩이 끝났는데 데이터가 없으면 (오류 등)
-                    Text("페스티벌 정보를 불러오지 못했습니다.\n다시 시도해주세요.")
+                    ProgressView("페스티벌 정보 로딩 중...")
+                        .progressViewStyle(CircularProgressViewStyle(tint: Color("Primary")))
                         .font(.BmdRegular())
                         .foregroundColor(Color.neu700)
                         .multilineTextAlignment(.center)
@@ -74,8 +75,8 @@ struct FestivalCheckView: View {
                 Spacer()
 
                 bottombutton
+                    .padding(.bottom, 50)
             }
-            .padding(.bottom, 50)
             .onAppear {
                 Task {
                     let success = await wrapper.festivalCheckViewModel
@@ -108,109 +109,35 @@ struct FestivalCheckView: View {
         }
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarBackButtonHidden(true)
+        .toolbar{
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(
+                    action: {
+                    },
+                    label: {
+                        Image(systemName: "xmark")
+                            .foregroundColor(.neu900)
+                    }
+                )
+            }
+        }
     }
 
     @ViewBuilder
-    private var bottombutton: some View {
-        HStack(spacing: 16) {
-            Button(
-                action: {
-                    self.isNavigateToSearch = true
-                },
-                label: {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 999)
-                            .fill(Color.clear)
-                            .frame(height: 60)
-                            .shadow(
-                                color: Color(
-                                    red: 0,
-                                    green: 0.65,
-                                    blue: 1
-                                ).opacity(0.16),
-                                radius: 6,
-                                x: 0,
-                                y: 2
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 999)
-                                    .inset(by: 1)
-                                    .stroke(
-                                        Color(
-                                            red: 0.91,
-                                            green: 0.45,
-                                            blue: 0.93
-                                        ),
-                                        lineWidth: 2
-                                    )
-                            )
-
-                        Text("아니요")
-                            .font(.BlgBold())
-                            .foregroundColor(Color.blue)
-                            .padding(.vertical, 18)
-                            .zIndex(1)
-                    }
+    private var bottombutton: some View{
+        HStack(spacing : 16){
+            BottomButton(title: "아니요", kind: .line) {
+                self.isNavigateToSearch = true
+            }
+            
+            BottomButton(title: "맞아요", kind: .colorFill) {
+                savePlaylist()
+                if savedPlaylist != nil {
+                    self.isNavigate = true
                 }
-            )
-
-            Button(
-                action: {
-                    savePlaylist()
-                    if savedPlaylist != nil {
-                        self.isNavigate = true
-                    }
-                },
-                label: {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 999)
-                            .fill(Color.clear)
-                            .frame(height: 60)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 999)
-                                    .inset(by: 1)
-                                    .fill(
-                                        LinearGradient(
-                                            stops: [
-                                                Gradient.Stop(
-                                                    color: Color(
-                                                        red: 0.91,
-                                                        green: 0.45,
-                                                        blue: 0.93
-                                                    ),
-                                                    location: 0.00
-                                                ),
-                                                Gradient.Stop(
-                                                    color: Color(
-                                                        red: 0,
-                                                        green: 0.65,
-                                                        blue: 1
-                                                    ),
-                                                    location: 1.00
-                                                ),
-                                            ],
-                                            startPoint: UnitPoint(
-                                                x: 0,
-                                                y: 0.5
-                                            ),
-                                            endPoint: UnitPoint(
-                                                x: 1,
-                                                y: 0.5
-                                            )
-                                        )
-                                    )
-                            )
-
-                        Text("맞아요")
-                            .foregroundColor(Color.white)
-                            .font(.BlgBold())
-                            .padding(.vertical, 18)
-                            .zIndex(1)
-                    }
-                }
-            )
+            }
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 20)
     }
 
     private func savePlaylist() {

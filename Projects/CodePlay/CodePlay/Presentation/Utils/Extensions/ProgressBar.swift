@@ -14,7 +14,7 @@ struct GradientProgressBar: View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
                 Capsule()
-                    .frame(height: 6)
+                    .frame(height: 8)
                     .foregroundColor(Color.gray.opacity(0.2))
 
                 Capsule()
@@ -25,11 +25,11 @@ struct GradientProgressBar: View {
                             endPoint: .trailing
                         )
                     )
-                    .frame(width: geometry.size.width * CGFloat(progress), height: 6)
+                    .frame(width: geometry.size.width * CGFloat(progress), height: 8)
             }
         }
-        .frame(height: 6)
-        .padding(.horizontal, 16)
+        .frame(height: 8)
+        .padding(.horizontal, 48)
     }
 }
 
