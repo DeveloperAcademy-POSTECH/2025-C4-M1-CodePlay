@@ -14,6 +14,7 @@ struct FestivalCheckView: View {
     @State private var festivalData: DynamoDataItem?  // API 응답 저장 (dynamoData[0])
     @State private var apiResponse: PostFestInfoResponseDTO?
     @State private var suggestTitles: SuggestTitlesModel?
+    @State private var isNavigateToNoneView: Bool = false
     @State private var isLoading: Bool = true  // 로딩 상태 추가
     @State private var savedPlaylist: Playlist?
     @EnvironmentObject var wrapper: MusicViewModelWrapper
