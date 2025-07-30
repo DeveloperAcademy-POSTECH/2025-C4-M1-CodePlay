@@ -17,7 +17,7 @@ enum LiquidGlassStyle {
 extension View {
     func liquidGlass(
         style: LiquidGlassStyle,
-        cornerRadius: CGFloat = 16,
+        cornerRadius: CGFloat = 20,
         opacity: Double = 0.6
     ) -> some View {
         self.modifier(LiquidGlassModifier(style: style, cornerRadius: cornerRadius, opacity: opacity))
@@ -49,25 +49,25 @@ struct LiquidGlassModifier: ViewModifier {
                         .stroke(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .neu0.opacity(0.4),
+                                    .white.opacity(0.2),
                                     .clear,
                                 ]),
                                 startPoint: UnitPoint(x: 0.0, y: 0.0),
                                 endPoint: UnitPoint(x: 0.1, y: 1.0)
-                            ), lineWidth: 1
+                            ), lineWidth: 3
                         )
                         .stroke(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .clear, .neu0.opacity(0.5),
+                                    .clear, .white.opacity(0.1),
                                 ]),
                                 startPoint: UnitPoint(x: 0.0, y: 0.0),
                                 endPoint: UnitPoint(x: 1.0, y: 0.0)
-                            ), lineWidth: 1
+                            ), lineWidth: 3
                         )
                 )
                 .cornerRadius(cornerRadius)
-                .shadow(color: .neu1000.opacity(0.25), radius: 5, x: 0, y: 5)
+                .shadow(color: .black.opacity(0.25), radius: 5, x: 0, y: 5)
 
         case .list:
             content
@@ -104,7 +104,7 @@ struct LiquidGlassModifier: ViewModifier {
                         )
                 )
                 .cornerRadius(cornerRadius)
-                .shadow(color: .neu1000.opacity(0.1), radius: 4, x: 0, y: 1)
+                .shadow(color: Color("Neutral900").opacity(0.1), radius: 4, x: 0, y: 1)
             
         case .listbutton:
             content
