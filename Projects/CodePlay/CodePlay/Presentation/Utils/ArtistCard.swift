@@ -19,6 +19,10 @@ struct ArtistCard: View {
         colorScheme == .dark ? .white : .black
     }
     
+    private var highQualityImageUrl: String? {
+        return imageUrl?.appleMusicHighQualityImageURL(targetSize: 592)
+    }
+    
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
@@ -27,7 +31,8 @@ struct ArtistCard: View {
                     .frame(width: 296, height: 296)
                     .background(
                         Group {
-                            if let imageUrl = imageUrl, let url = URL(string: imageUrl) {
+                            if let highQualityUrl = highQualityImageUrl,
+                               let url = URL(string: highQualityUrl) {
                                 AsyncImage(url: url) { phase in
                                     switch phase {
                                     case .empty:
@@ -40,10 +45,30 @@ struct ArtistCard: View {
                                             .frame(width: 296, height: 296)
                                             .clipped()
                                     case .failure:
-                                        Image("ArtistImg")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 296, height: 296)
+                                        // 고화질 실패시 원본 URL로 재시도
+                                        if let originalUrl = imageUrl,
+                                           let fallbackUrl = URL(string: originalUrl) {
+                                            AsyncImage(url: fallbackUrl) { fallbackPhase in
+                                                switch fallbackPhase {
+                                                case .success(let fallbackImage):
+                                                    fallbackImage
+                                                        .resizable()
+                                                        .scaledToFill()
+                                                        .frame(width: 296, height: 296)
+                                                        .clipped()
+                                                default:
+                                                    Image("ArtistImg")
+                                                        .resizable()
+                                                        .scaledToFit()
+                                                        .frame(width: 296, height: 296)
+                                                }
+                                            }
+                                        } else {
+                                            Image("ArtistImg")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 296, height: 296)
+                                        }
                                     @unknown default:
                                         EmptyView()
                                     }
@@ -56,7 +81,6 @@ struct ArtistCard: View {
                             }
                         }
                     )
-
                     .cornerRadius(16)
                     .shadow(color: .neu1000.opacity(0.2), radius: 8, x: 0, y: 4)
                 
@@ -80,6 +104,6 @@ struct ArtistCard: View {
             }
             .liquidGlass(style: .card)
         }
-        .frame(maxWidth: 320, maxHeight: 420)
+//        .frame(maxWidth: 320, maxHeight: 420)
     }
 }

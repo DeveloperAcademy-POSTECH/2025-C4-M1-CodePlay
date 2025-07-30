@@ -243,7 +243,6 @@ class CameraLiveTextViewController: UIViewController {
             ),
             instructionContainer.heightAnchor.constraint(equalToConstant: 32),
             
-            // 라벨 제약조건 (좌우 패딩 4)
             instructionLabel.leadingAnchor.constraint(
                 equalTo: instructionContainer.leadingAnchor,
                 constant: 8
