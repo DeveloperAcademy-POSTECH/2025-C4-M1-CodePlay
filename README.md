@@ -1,4 +1,4 @@
-# 🚀 프로젝트 이름
+# 🚀 SHOONG - 슝 : 페스티벌 라인업 예습 플레이리스트
 
 ![배너 이미지 또는 로고](링크)
 
@@ -27,7 +27,7 @@
 
 ## 📱 소개
 
-> 프로젝트의 주요 목적과 사용자가 얻게 될 경험을 설명해주세요.
+> MusicKit과 Vision으로 음악 페스티벌의 정보를 분석한 후 공연 예습 플레이리스트를 만들어서, 사용자가 모르는 노래없이 온전히 음악 페스티벌을 즐기게 하자.
 
 [🔗 앱스토어/웹 링크](https://example.com)
 
@@ -42,7 +42,7 @@
 - iOS: Swift / SwiftUI / UIKit / Vision / MusicKit 등
 - Backend: On-premise: MeiliSearch, BeautifulSoup / Severless : Lambda, ApiGateway, S3, DynamoDB
 - 아키텍처: MVVM + Clean Architecture 등
-- 기타 도구: Figma, Notion, GitHub Projects / JIRA / Confluence 등
+- 기타 도구: Figma, AfterEffects, Notion, GitHub Projects / JIRA / Confluence 등
 
 
 ## 🌟 주요 기능
@@ -93,11 +93,12 @@
 
 | 이름 | 역할 | GitHub |
 |------|------|--------|
-| Cherry | iOS Developer | [@zz6cherry](https://github.com/zz6cherry) |
 | Elian | PM, Back-End | [@dangdang1ing15](https://github.com/dangdang1ing15) |
-| Kwangro | iOS Developer | [@hkwangro](https://github.com/hkwangro) |
-| Three | PM | [@iamseulee](https://github.com/iamseulee) |
 | Yan | iOS Lead | [@yanni13](https://github.com/yanni13) |
+| Cherry | iOS Developer | [@zz6cherry](https://github.com/zz6cherry) |
+| Kwangro | iOS Developer | [@hkwangro](https://github.com/hkwangro) |
+| Three | Designer | [@iamseulee](https://github.com/iamseulee) |
+
 
 [🔗 팀 블로그 / 미디엄 링크](https://medium.com/example)
 
