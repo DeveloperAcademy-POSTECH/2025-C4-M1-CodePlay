@@ -28,8 +28,7 @@ struct FestivalView: View {
     var body: some View {
         ZStack {
             Group {
-                if wrapper.showNoResultView {
-//                if wrapper.festivalData == nil && !wrapper.isLoading {
+                if wrapper.festivalCheckViewModel.shouldShowNoResultView {
                     FestivalNoneView()
                 } else  {
                     VStack {
