@@ -21,7 +21,6 @@ struct ArtistCard: View {
     
     var body: some View {
         ZStack {
-          
             VStack(alignment: .leading) {
                 Rectangle()
                     .foregroundColor(.clear)
