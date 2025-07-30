@@ -117,6 +117,8 @@ final class MusicViewModelWrapper: ObservableObject {
     @Published var isLoading: Bool = true
     @Published var festivalData: DynamoDataItem? = nil
     @Published var suggestTitles: [String] = []
+    @Published var showNoResultView: Bool = false
+    @Published var showErrorView: Bool = false
 
     @Environment(\.modelContext) private var modelContext
 
@@ -163,7 +165,29 @@ final class MusicViewModelWrapper: ObservableObject {
                 )
             }
         }
-            
+        
+        festivalCheckViewModel.shouldShowNoResultView.observe(on: self) { [weak self] value in
+                DispatchQueue.main.async {
+                    self?.showNoResultView = value
+                }
+            }
+        
+//        festivalCheckViewModel.state.observe(on: self) { [weak self] state in
+//                    DispatchQueue.main.async {
+//                        switch state {
+//                        case .noResult:
+//                            self?.showNoResultView = true
+//                            self?.showErrorView = false
+//                        case .error(_):
+//                            self?.showErrorView = true
+//                            self?.showNoResultView = false
+//                        default:
+//                            self?.showNoResultView = false
+//                            self?.showErrorView = false
+//                        }
+//                    }
+//                }
+//            
 
         festivalCheckViewModel.festivalData.observe(on: self) { [weak self] value in
                 self?.festivalData = value

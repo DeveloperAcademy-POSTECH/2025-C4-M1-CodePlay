@@ -46,7 +46,9 @@ struct FestivalNoneView: View {
                     wrapper.shouldNavigateToFestivalCheck = false
                     wrapper.scannedText = nil
                     recognizedText = ""
-                    isPresented = true
+//                    isPresented = true
+                    // TODO: 임시로 메인뷰로 이동
+                    NavigationUtil.popToRootView()
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 50)
@@ -57,19 +59,11 @@ struct FestivalNoneView: View {
         .fullScreenCover(isPresented: $isPresented) {
             CameraLiveTextView(
                 recognizedText: $recognizedText,
-                isPresented: $isPresented,
-                shouldAutoNavigate: false
+                isPresented: $isPresented
             )
             .ignoresSafeArea()
             .environmentObject(wrapper)
         }
-        .onChange(of: recognizedText) { newText in
-                    // 텍스트가 인식되면 수동으로 FestivalCheckView로 이동
-                    if !newText.isEmpty && !isPresented {
-                        wrapper.shouldNavigateToFestivalCheck = true
-                        dismiss()
-                    }
-                }
     }
 }
 

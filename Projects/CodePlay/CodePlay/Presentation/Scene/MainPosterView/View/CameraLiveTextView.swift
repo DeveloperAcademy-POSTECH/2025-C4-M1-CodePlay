@@ -15,20 +15,6 @@ struct CameraLiveTextView: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
     @EnvironmentObject var wrapper: PosterViewModelWrapper
 
-    let shouldAutoNavigate: Bool
-    
-    init(recognizedText: Binding<String>, isPresented: Binding<Bool>) {
-            self._recognizedText = recognizedText
-            self._isPresented = isPresented
-            self.shouldAutoNavigate = true
-        }
-
-    init(recognizedText: Binding<String>, isPresented: Binding<Bool>, shouldAutoNavigate: Bool) {
-            self._recognizedText = recognizedText
-            self._isPresented = isPresented
-            self.shouldAutoNavigate = shouldAutoNavigate
-        }
-
     func makeUIViewController(context: Context) -> CameraLiveTextViewController
     {
         let controller = CameraLiveTextViewController()
@@ -60,13 +46,9 @@ struct CameraLiveTextView: UIViewControllerRepresentable {
                 )
 
                 // 선택 완료 후 자동으로 다음 화면으로
-                if self.parent.shouldAutoNavigate {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        self.parent.wrapper.viewModel.shouldNavigateToFestivalCheck
-                            .value = true
-                        self.parent.isPresented = false
-                    }
-                } else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.parent.wrapper.viewModel.shouldNavigateToFestivalCheck
+                        .value = true
                     self.parent.isPresented = false
                 }
             }

@@ -114,10 +114,6 @@ struct MadePlaylistView: View {
         .fullScreenCover(isPresented: $wrapper.isExportCompleted) {
             ExportSuccessView()
         }
-        .onAppear {
-            UINavigationBar.applyLiquidGlassStyle()
-            wrapper.isExportCompleted = false
-        }
 
         NavigationLink(
             destination: ExportLoadingView(),
@@ -126,5 +122,10 @@ struct MadePlaylistView: View {
             EmptyView()
         }
         .hidden()
+        
+        .onAppear {
+            UINavigationBar.applyLiquidGlassStyle()
+            wrapper.isExportCompleted = false
+        }
     }
 }
