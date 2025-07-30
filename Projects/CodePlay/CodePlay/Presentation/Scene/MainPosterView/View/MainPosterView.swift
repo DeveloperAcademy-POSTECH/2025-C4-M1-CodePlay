@@ -17,31 +17,18 @@ struct MainPosterView: View {
     @Environment(\.modelContext) var modelContext
     @Query(sort: \Playlist.createdAt, order: .reverse) private var playlists: [Playlist]
     
-    
-    
     var body: some View {
-        NavigationStack() {
-            ZStack(alignment: .bottom) {
-                Color.clear
-                    .backgroundWithBlur()
-                    .ignoresSafeArea()
-                
-                VStack(spacing: 0) {
-                    Spacer().frame(height: 60)
+        NavigationStack {
+            VStack(alignment: .center, spacing: 0) {
+                    Spacer().frame(height: 106)
             
                     if playlists.isEmpty {
-                        VStack(alignment: .center) {
+                        VStack(alignment: .center, spacing: 76) {
                             Image("Mainempty")
                                 .resizable()
-                                .scaledToFit()
-                            Text("아직 인식한 페스티벌\n라인업이 없습니다")
-                                .multilineTextAlignment(.center)
-                                .font(.BlgRegular())
-                                .foregroundColor(.neu900)
+                                .frame(maxWidth: .infinity, maxHeight: 320)
                         }
-                        .frame(maxHeight: 420)
-                        .padding(.horizontal, 72)
-                        .liquidGlass(style: .card)
+                        .padding(.horizontal, 36)
 
                     } else {
                         VStack {
@@ -50,20 +37,24 @@ struct MainPosterView: View {
                         }
                     }
                     
-                    Spacer().frame(height: 25)
+                    Spacer().frame(height: 36)
                     
                     Text("페스티벌에 가기 전\n슝으로 예습해 보세요!")
                         .multilineTextAlignment(.center)
                         .font(.HlgBold())
                         .foregroundColor(.neu900)
-                    
+                        .padding(.horizontal, 36)
+                        .lineSpacing(2)
+
                     Spacer().frame(height: 12)
                     
                     Text("포스터 인식으로 플레이리스트를 만들 수 있어요")
                         .font(.BmdRegular())
                         .foregroundColor(.neu700)
-                    
-                    Spacer().frame(height: 35)
+                        .padding(.horizontal, 36)
+                        .lineSpacing(2)
+                                        
+                    Spacer()
                     
                     BottomButton(title: "페스티벌 라인업 인식", kind: .colorFill, action: {
                         recognizedText = ""
@@ -77,22 +68,23 @@ struct MainPosterView: View {
                     NavigationLink(
                         isActive: $wrapper.shouldNavigateToFestivalCheck,
                         destination: {
-                            FestivalCheckView(rawText: wrapper.scannedText)
+                            FestivalView(rawText: wrapper.scannedText)
                                 .environmentObject(musicWrapper)
                         }
                     ) {
                         EmptyView()
                     }
+                    .hidden()
                 }
-            }
+            .edgesIgnoringSafeArea(.all)
+            .backgroundWithBlur()
             .navigationBarHidden(true)
-            .onAppear() {
+            .onAppear {
                 print("🧾 현재 Playlist 수: \(playlists.count)")
                 for p in playlists {
                     print("📀 \(p.title) / \(p.createdAt)")
                 }
             }
-
             .fullScreenCover(isPresented: $isNavigateToScanPoster) {
                 CameraLiveTextView(
                     recognizedText: $recognizedText,
@@ -101,7 +93,6 @@ struct MainPosterView: View {
                 .ignoresSafeArea()
                 .environmentObject(wrapper)
             }
-            .ignoresSafeArea()
         }
     }
     

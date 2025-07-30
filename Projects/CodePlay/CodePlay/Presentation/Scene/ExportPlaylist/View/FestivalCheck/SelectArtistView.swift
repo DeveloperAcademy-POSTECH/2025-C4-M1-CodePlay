@@ -23,14 +23,17 @@ struct SelectArtistView: View {
                 .backgroundWithBlur()
                 .ignoresSafeArea()
             
-            VStack(alignment: .center){
+            VStack(alignment: .center) {
                 Spacer().frame(height: 16)
 
                 festivalInfoBox
+                    .padding(.horizontal, 20)
                 
-                HStack (alignment : .center ){
+                Spacer().frame(height: 24)
+                
+                HStack (alignment : .center ) {
                     Text("플레이리스트에 추가")
-                        .font(.BlgRegular())
+                        .font(.BlgBold())
                         .foregroundColor(.neu900)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
@@ -44,20 +47,19 @@ struct SelectArtistView: View {
                         HStack(spacing: 2) {
                             Image(systemName: "checkmark")
                                 .font(.system(size: 14, weight: selectedArtists.count < playlist.artists.count ? .regular : .bold))
-                                .foregroundColor(selectedArtists.count < playlist.artists.count ? .neu700 : Color("Primary"))
+                                .foregroundColor(selectedArtists.count < playlist.artists.count ? .neutral500 : Color("Primary"))
                             Text("전체선택")
                                 .font(selectedArtists.count < playlist.artists.count ? .BmdRegular() : .BmdBold())
-                                .foregroundColor(selectedArtists.count < playlist.artists.count ? .neu700 : Color("Primary"))
+                                .foregroundColor(selectedArtists.count < playlist.artists.count ? .neutral500 : Color("Primary"))
                         }
                     }
                 }
+                .padding(.horizontal, 20)
       
                 ArtistGridView
                 
                 Spacer()
-            }
-            .padding(.horizontal, 16)
-            
+            }            
             BottomButton(title: "선택 완료", kind: .colorFill) {
                 isNextActive = true
             }
@@ -91,6 +93,7 @@ struct SelectArtistView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(
                     action: {
+                        NavigationUtil.popToRootView()
                     },
                     label: {
                         Text("취소")
@@ -121,6 +124,8 @@ struct SelectArtistView: View {
                     .font(.HmdBold())
                     .foregroundColor(.neu900)
                     .lineSpacing(28)
+                
+                Spacer().frame(height: 2)
                     
                 Text(playlist.place ?? "")
                     .font(.BsmRegular())
@@ -189,6 +194,7 @@ struct SelectArtistView: View {
                     }
                 }
             }
+            .padding(.horizontal, 16)
             .padding(.top, 12)
             .padding(.bottom, 126)
         }

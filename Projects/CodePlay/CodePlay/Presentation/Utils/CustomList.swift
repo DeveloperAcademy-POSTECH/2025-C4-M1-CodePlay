@@ -19,7 +19,7 @@ struct CustomList: View {
     let onDeleteTap: (() -> Void)?   // 삭제 버튼 탭 액션 (옵셔널)
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 8) {
             // 앨범 커버 + 재생 버튼 오버레이
             ZStack {
                 AsyncImage(url: URL(string: imageUrl)) { phase in
@@ -103,8 +103,8 @@ struct CustomList: View {
                 .buttonStyle(PlainButtonStyle())
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .liquidGlass(style: .list)
         .onTapGesture {
             onAlbumCoverTap()

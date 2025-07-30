@@ -15,6 +15,20 @@ struct CameraLiveTextView: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
     @EnvironmentObject var wrapper: PosterViewModelWrapper
 
+    let shouldAutoNavigate: Bool
+    
+    init(recognizedText: Binding<String>, isPresented: Binding<Bool>) {
+            self._recognizedText = recognizedText
+            self._isPresented = isPresented
+            self.shouldAutoNavigate = true
+        }
+
+    init(recognizedText: Binding<String>, isPresented: Binding<Bool>, shouldAutoNavigate: Bool) {
+            self._recognizedText = recognizedText
+            self._isPresented = isPresented
+            self.shouldAutoNavigate = shouldAutoNavigate
+        }
+
     func makeUIViewController(context: Context) -> CameraLiveTextViewController
     {
         let controller = CameraLiveTextViewController()
@@ -46,9 +60,13 @@ struct CameraLiveTextView: UIViewControllerRepresentable {
                 )
 
                 // 선택 완료 후 자동으로 다음 화면으로
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.parent.wrapper.viewModel.shouldNavigateToFestivalCheck
-                        .value = true
+                if self.parent.shouldAutoNavigate {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        self.parent.wrapper.viewModel.shouldNavigateToFestivalCheck
+                            .value = true
+                        self.parent.isPresented = false
+                    }
+                } else {
                     self.parent.isPresented = false
                 }
             }
@@ -335,7 +353,7 @@ protocol RegionSelectionViewDelegate: AnyObject {
 // MARK: - RegionSelectionView (Fixed QR Code Style Area)
 class RegionSelectionView: UIView {
     weak var delegate: RegionSelectionViewDelegate?
-    
+
     private var startPoint: CGPoint = .zero
     private var currentPoint: CGPoint = .zero
     private var isDragging = false
@@ -343,15 +361,15 @@ class RegionSelectionView: UIView {
     private var cornerLayers: [CAShapeLayer] = []
     private var guideLayers: [CAShapeLayer] = []
     private var selectionLayer: CAShapeLayer?
-    
+
     // 고정된 드래그 영역 설정
     private var fixedDragArea: CGRect = .zero
-    
+
     // QR 코드 스타일 설정
     private let cornerLength: CGFloat = 40
     private let cornerWidth: CGFloat = 6
     private let guideLineWidth: CGFloat = 1
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .clear
@@ -359,11 +377,11 @@ class RegionSelectionView: UIView {
         setupFixedDragArea()
         setupLayers()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func setupFixedDragArea() {
         // 화면 중앙에 고정된 정사각형 영역 설정
         let screenWidth = UIScreen.main.bounds.width
@@ -378,27 +396,28 @@ class RegionSelectionView: UIView {
         )
 
     }
-    
+
     private func setupLayers() {
         // 오버레이 레이어 (드래그 영역 외부를 어둡게)
         overlayLayer = CALayer()
-        overlayLayer?.backgroundColor = UIColor.black.withAlphaComponent(0.6).cgColor
+        overlayLayer?.backgroundColor =
+            UIColor.black.withAlphaComponent(0.6).cgColor
         overlayLayer?.frame = bounds
         layer.addSublayer(overlayLayer!)
-        
+
         // 고정 영역 마스크 적용
         updateFixedAreaMask()
-        
+
         // 코너, 가이드라인, 선택 레이어 설정
         setupCornerLayers()
         setupGuideLayers()
         setupSelectionLayer()
-        
+
         // 초기에 고정 영역과 가이드라인 표시
         showFixedArea()
         showGuideLines(true)
     }
-    
+
     private func updateFixedAreaMask() {
         // 고정 영역만 투명하게, 나머지는 어둡게
         let maskPath = UIBezierPath(rect: bounds)
@@ -407,13 +426,13 @@ class RegionSelectionView: UIView {
             cornerRadius: 12
         )
         maskPath.append(fixedAreaPath.reversing())
-        
+
         let maskLayer = CAShapeLayer()
         maskLayer.path = maskPath.cgPath
         maskLayer.fillRule = .evenOdd
         overlayLayer?.mask = maskLayer
     }
-    
+
     private func setupCornerLayers() {
         // 4개 코너 레이어 생성
         for _ in 0..<4 {
@@ -426,82 +445,84 @@ class RegionSelectionView: UIView {
             cornerLayers.append(cornerLayer)
         }
     }
-    
+
     private func setupGuideLayers() {
         // 가이드 라인 레이어들 (3x3 격자)
         for _ in 0..<4 {  // 2개의 세로선, 2개의 가로선
             let guideLayer = CAShapeLayer()
-            guideLayer.strokeColor = UIColor.white.withAlphaComponent(0.1).cgColor
+            guideLayer.strokeColor =
+                UIColor.white.withAlphaComponent(0.1).cgColor
             guideLayer.lineWidth = guideLineWidth
             guideLayer.fillColor = UIColor.clear.cgColor
             layer.addSublayer(guideLayer)
             guideLayers.append(guideLayer)
         }
     }
-    
+
     private func setupSelectionLayer() {
         // 실제 드래그 선택 영역 레이어
         selectionLayer = CAShapeLayer()
         selectionLayer?.strokeColor = UIColor.systemYellow.cgColor
         selectionLayer?.lineWidth = 2
-        selectionLayer?.fillColor = UIColor.systemYellow.withAlphaComponent(0.1).cgColor
+        selectionLayer?.fillColor =
+            UIColor.systemYellow.withAlphaComponent(0.1).cgColor
         selectionLayer?.isHidden = true
         layer.addSublayer(selectionLayer!)
     }
-    
+
     private func showFixedArea() {
         // 고정 영역의 QR 코드 스타일 코너 표시
         updateCorners(for: fixedDragArea)
     }
-    
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         let touchPoint = touch.location(in: self)
-        
+
         // 고정 영역 내부에서만 드래그 시작 허용
         guard fixedDragArea.contains(touchPoint) else { return }
-        
+
         startPoint = touchPoint
         currentPoint = touchPoint
         isDragging = true
-        
+
         // 드래그 시작 시 선택 레이어 표시
         selectionLayer?.isHidden = false
         updateSelection()
     }
-    
+
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first, isDragging else { return }
         let touchPoint = touch.location(in: self)
-        
+
         // 고정 영역 내부로 제한
         currentPoint = CGPoint(
             x: max(fixedDragArea.minX, min(fixedDragArea.maxX, touchPoint.x)),
             y: max(fixedDragArea.minY, min(fixedDragArea.maxY, touchPoint.y))
         )
-        
+
         updateSelection()
     }
-    
+
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard isDragging else { return }
         isDragging = false
-        
+
         var selectedRect = CGRect(
             x: min(startPoint.x, currentPoint.x),
             y: min(startPoint.y, currentPoint.y),
             width: abs(currentPoint.x - startPoint.x),
             height: abs(currentPoint.y - startPoint.y)
         )
-        
+
         // 고정 영역 내부로 제한
         selectedRect = selectedRect.intersection(fixedDragArea)
-        
+
         // 최소 크기 체크
         if selectedRect.width > 60 && selectedRect.height > 60 {
             // 선택 완료 효과
             animateSelectionComplete(selectedRect)
-            
+
             // 0.5초 후 텍스트 인식 실행
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.delegate?.didSelectRegion(selectedRect)
@@ -512,23 +533,26 @@ class RegionSelectionView: UIView {
             resetSelection()
         }
     }
-    
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+
+    override func touchesCancelled(
+        _ touches: Set<UITouch>,
+        with event: UIEvent?
+    ) {
         isDragging = false
         delegate?.didCancelSelection()
         resetSelection()
     }
-    
+
     private func updateSelection() {
         guard isDragging else { return }
-        
+
         let selectedRect = CGRect(
             x: min(startPoint.x, currentPoint.x),
             y: min(startPoint.y, currentPoint.y),
             width: abs(currentPoint.x - startPoint.x),
             height: abs(currentPoint.y - startPoint.y)
         )
-        
+
         // 선택 영역 표시
         let selectionPath = UIBezierPath(
             roundedRect: selectedRect,
@@ -536,7 +560,7 @@ class RegionSelectionView: UIView {
         )
         selectionLayer?.path = selectionPath.cgPath
     }
-    
+
     private func animateSelectionComplete(_ rect: CGRect) {
         // 선택 완료 시 깜빡이는 효과
         let animation = CABasicAnimation(keyPath: "opacity")
@@ -545,82 +569,102 @@ class RegionSelectionView: UIView {
         animation.duration = 0.2
         animation.autoreverses = true
         animation.repeatCount = 2
-        
+
         selectionLayer?.add(animation, forKey: "completeBlink")
     }
-    
+
     private func updateCorners(for rect: CGRect) {
         let corners = [
-            CGPoint(x: rect.minX, y: rect.minY), // 좌상단
-            CGPoint(x: rect.maxX, y: rect.minY), // 우상단
-            CGPoint(x: rect.minX, y: rect.maxY), // 좌하단
-            CGPoint(x: rect.maxX, y: rect.maxY)  // 우하단
+            CGPoint(x: rect.minX, y: rect.minY),  // 좌상단
+            CGPoint(x: rect.maxX, y: rect.minY),  // 우상단
+            CGPoint(x: rect.minX, y: rect.maxY),  // 좌하단
+            CGPoint(x: rect.maxX, y: rect.maxY),  // 우하단
         ]
-        
+
         for (index, corner) in corners.enumerated() {
             let cornerPath = UIBezierPath()
-            
+
             switch index {
-            case 0: // 좌상단
-                cornerPath.move(to: CGPoint(x: corner.x, y: corner.y + cornerLength))
+            case 0:  // 좌상단
+                cornerPath.move(
+                    to: CGPoint(x: corner.x, y: corner.y + cornerLength)
+                )
                 cornerPath.addLine(to: corner)
-                cornerPath.addLine(to: CGPoint(x: corner.x + cornerLength, y: corner.y))
-            case 1: // 우상단
-                cornerPath.move(to: CGPoint(x: corner.x - cornerLength, y: corner.y))
+                cornerPath.addLine(
+                    to: CGPoint(x: corner.x + cornerLength, y: corner.y)
+                )
+            case 1:  // 우상단
+                cornerPath.move(
+                    to: CGPoint(x: corner.x - cornerLength, y: corner.y)
+                )
                 cornerPath.addLine(to: corner)
-                cornerPath.addLine(to: CGPoint(x: corner.x, y: corner.y + cornerLength))
-            case 2: // 좌하단
-                cornerPath.move(to: CGPoint(x: corner.x, y: corner.y - cornerLength))
+                cornerPath.addLine(
+                    to: CGPoint(x: corner.x, y: corner.y + cornerLength)
+                )
+            case 2:  // 좌하단
+                cornerPath.move(
+                    to: CGPoint(x: corner.x, y: corner.y - cornerLength)
+                )
                 cornerPath.addLine(to: corner)
-                cornerPath.addLine(to: CGPoint(x: corner.x + cornerLength, y: corner.y))
-            case 3: // 우하단
-                cornerPath.move(to: CGPoint(x: corner.x - cornerLength, y: corner.y))
+                cornerPath.addLine(
+                    to: CGPoint(x: corner.x + cornerLength, y: corner.y)
+                )
+            case 3:  // 우하단
+                cornerPath.move(
+                    to: CGPoint(x: corner.x - cornerLength, y: corner.y)
+                )
                 cornerPath.addLine(to: corner)
-                cornerPath.addLine(to: CGPoint(x: corner.x, y: corner.y - cornerLength))
+                cornerPath.addLine(
+                    to: CGPoint(x: corner.x, y: corner.y - cornerLength)
+                )
             default:
                 break
             }
-            
+
             cornerLayers[index].path = cornerPath.cgPath
         }
     }
-    
+
     private func showGuideLines(_ show: Bool) {
         if show {
             // 세로 가이드 라인 2개 (1/3, 2/3 지점)
             for i in 0..<2 {
-                let x = fixedDragArea.minX + fixedDragArea.width * CGFloat(i + 1) / 3
+                let x =
+                    fixedDragArea.minX + fixedDragArea.width * CGFloat(i + 1)
+                    / 3
                 let verticalPath = UIBezierPath()
                 verticalPath.move(to: CGPoint(x: x, y: fixedDragArea.minY))
                 verticalPath.addLine(to: CGPoint(x: x, y: fixedDragArea.maxY))
                 guideLayers[i].path = verticalPath.cgPath
             }
-            
+
             // 가로 가이드 라인 2개 (1/3, 2/3 지점)
             for i in 0..<2 {
-                let y = fixedDragArea.minY + fixedDragArea.height * CGFloat(i + 1) / 3
+                let y =
+                    fixedDragArea.minY + fixedDragArea.height * CGFloat(i + 1)
+                    / 3
                 let horizontalPath = UIBezierPath()
                 horizontalPath.move(to: CGPoint(x: fixedDragArea.minX, y: y))
                 horizontalPath.addLine(to: CGPoint(x: fixedDragArea.maxX, y: y))
                 guideLayers[i + 2].path = horizontalPath.cgPath
             }
         }
-        
+
         for guideLayer in guideLayers {
             guideLayer.isHidden = !show
         }
     }
-    
+
     private func resetSelection() {
         selectionLayer?.isHidden = true
         selectionLayer?.path = nil
         selectionLayer?.removeAllAnimations()
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         overlayLayer?.frame = bounds
-        
+
         // 화면 크기 변경 시 고정 영역 재계산
         setupFixedDragArea()
         updateFixedAreaMask()
@@ -631,7 +675,7 @@ class RegionSelectionView: UIView {
 
 // MARK: - Usage in CameraLiveTextViewController
 extension CameraLiveTextViewController {
-    
+
     // setupUI 메서드에 추가할 코드
     private func addFixedAreaInstructions() {
         // 상단 안내 텍스트
@@ -643,10 +687,10 @@ extension CameraLiveTextViewController {
         titleLabel.backgroundColor = UIColor.black.withAlphaComponent(0.7)
         titleLabel.layer.cornerRadius = 8
         titleLabel.clipsToBounds = true
-        
+
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleLabel)
-        
+
         // 하단 안내 텍스트
         let instructionLabel = UILabel()
         instructionLabel.text = "카메라를 안정적으로 유지하세요"
@@ -656,10 +700,10 @@ extension CameraLiveTextViewController {
         instructionLabel.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         instructionLabel.layer.cornerRadius = 6
         instructionLabel.clipsToBounds = true
-        
+
         instructionLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(instructionLabel)
-        
+
         NSLayoutConstraint.activate([
             // 상단 제목
             titleLabel.topAnchor.constraint(
@@ -676,13 +720,15 @@ extension CameraLiveTextViewController {
                 lessThanOrEqualTo: view.trailingAnchor,
                 constant: -20
             ),
-            
+
             // 하단 안내
             instructionLabel.bottomAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.bottomAnchor,
                 constant: -120
             ),
-            instructionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            instructionLabel.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
             instructionLabel.heightAnchor.constraint(equalToConstant: 32),
             instructionLabel.leadingAnchor.constraint(
                 greaterThanOrEqualTo: view.leadingAnchor,
@@ -691,7 +737,7 @@ extension CameraLiveTextViewController {
             instructionLabel.trailingAnchor.constraint(
                 lessThanOrEqualTo: view.trailingAnchor,
                 constant: -20
-            )
+            ),
         ])
     }
 }

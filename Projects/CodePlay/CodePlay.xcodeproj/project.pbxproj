@@ -184,6 +184,7 @@
 				"",
 				"",
 				"",
+				"",
 			);
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -341,8 +342,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CodePlay/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
-				INFOPLIST_KEY_NSAppleMusicUsageDescription = "";
-				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 권한 주세요.";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Apple Music 재생 및 검색, 플레이리스트 추가를 위해 미디어 라이브러리 접근 권한 동의가 필요합니다. 이를 변경할 수 있습니다.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "카메라를 통한 포스터 인식을 위해 카메라 권한이 필요합니다. 이를 변경할 수 있습니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -390,8 +391,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CodePlay/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
-				INFOPLIST_KEY_NSAppleMusicUsageDescription = "";
-				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 권한 주세요.";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Apple Music 재생 및 검색, 플레이리스트 추가를 위해 미디어 라이브러리 접근 권한 동의가 필요합니다. 이를 변경할 수 있습니다.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "카메라를 통한 포스터 인식을 위해 카메라 권한이 필요합니다. 이를 변경할 수 있습니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

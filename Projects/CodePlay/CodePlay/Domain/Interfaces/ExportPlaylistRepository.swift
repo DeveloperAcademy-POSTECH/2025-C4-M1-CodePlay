@@ -241,11 +241,14 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
         }
 
         let songCollection = MusicItemCollection(songs)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: Date())
 
         // Apple Music 라이브러리에 플레이리스트 생성
         let createdPlaylist = try await MusicLibrary.shared.createPlaylist(
             name: title,
-            description: "CodePlay OCR 기반 자동 생성",
+            description: "\(dateString)",
             items: songCollection
         )
     }

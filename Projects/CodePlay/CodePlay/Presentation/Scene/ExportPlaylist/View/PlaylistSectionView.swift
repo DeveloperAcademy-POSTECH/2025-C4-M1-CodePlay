@@ -42,8 +42,8 @@ struct PlaylistSectionView: View {
                 )
             }
         }
-        .alert("삭제하시겠습니까?", isPresented: $showDeleteAlert) {
-            Button("아니요", role: .cancel) {
+        .alert("이 곡을 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
+            Button("아니오", role: .cancel) {
                 entryToDelete = nil
             }
             Button("삭제", role: .destructive) {
@@ -52,7 +52,9 @@ struct PlaylistSectionView: View {
                 }
                 entryToDelete = nil
             }
-        } 
+        } message: {
+            Text("삭제된 곡을 제외하고 플레이리스트가 생성\n됩니다.")
+        }
     }
     
     // MARK: - Private Methods

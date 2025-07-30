@@ -14,6 +14,7 @@ struct ExportLoadingView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            Spacer().frame(height: 146)
             
             if colorScheme == .light {
                 GIFImage(gifName: "PlaylistLoadLight", width: 320, height: 320)
