@@ -30,6 +30,10 @@ final class FestInfoAPIService: BaseAPIService<FestInfoTargetType>, FestInfoAPIS
         case .success(let data):
             guard let data else { throw NetworkResult<Error>.decodeErr }
             return data
+        case .badRequest: throw NetworkResult<Error>.badRequest
+        case .unAuthorized: throw NetworkResult<Error>.unAuthorized
+        case .notFound: throw NetworkResult<Error>.notFound
+        case .unProcessable: throw NetworkResult<Error>.unProcessable
         default:
             throw NetworkResult<Error>.networkFail
         }

@@ -7,8 +7,8 @@
 
 internal import Combine
 import MusicKit
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct AppleMusicConnectView: View {
     @EnvironmentObject var viewModelWrapper: MusicViewModelWrapper
@@ -41,7 +41,7 @@ struct AppleMusicConnectView: View {
                     .foregroundColor(Color.neu900)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .lineSpacing(2)
-                
+
                 Text("페스티벌 플레이리스트 생성을 위해\nApple Music을 연결해주세요.")
                     .font(.BmdRegular())
                     .multilineTextAlignment(.center)
@@ -60,9 +60,10 @@ struct AppleMusicConnectView: View {
                         .font(Font.custom("KoddiUD OnGothic", size: 18))
                         .foregroundColor(.red)
                         .multilineTextAlignment(.center)
-                    
+
                     BottomButton(title: "설정으로 이동", kind: .line) {
-                        viewModelWrapper.appleMusicConnectViewModel.shouldOpenSettings.value = true
+                        viewModelWrapper.appleMusicConnectViewModel
+                            .shouldOpenSettings.value = true
                     }
                     .padding(.horizontal, 20)
                     .padding(.horizontal, 16)
@@ -74,7 +75,8 @@ struct AppleMusicConnectView: View {
                     action: {
                         Task {
                             // 권한 요청
-                            viewModelWrapper.appleMusicConnectViewModel.shouldRequestMusicAuthorization.value = true
+                            viewModelWrapper.appleMusicConnectViewModel
+                                .shouldRequestMusicAuthorization.value = true
                         }
                     }
                 )
@@ -117,6 +119,9 @@ final class MusicViewModelWrapper: ObservableObject {
     @Published var isLoading: Bool = true
     @Published var festivalData: DynamoDataItem? = nil
     @Published var suggestTitles: [String] = []
+    @Published var showNoResultView: Bool = false
+    @Published var showErrorView: Bool = false
+    @Published var entrySource: PlaylistEntrySource = .main
 
     @Environment(\.modelContext) private var modelContext
 
@@ -143,7 +148,8 @@ final class MusicViewModelWrapper: ObservableObject {
 
     // MARK: - Binding Observables
     private func bind() {
-        festivalCheckViewModel.isLoading.observe(on: self) { [weak self] value in
+        festivalCheckViewModel.isLoading.observe(on: self) {
+            [weak self] value in
             guard let self else { return }
             DispatchQueue.main.async {
                 self.isLoading = value
@@ -163,32 +169,46 @@ final class MusicViewModelWrapper: ObservableObject {
                 )
             }
         }
-            
 
-        festivalCheckViewModel.festivalData.observe(on: self) { [weak self] value in
-                self?.festivalData = value
+        festivalCheckViewModel.shouldShowNoResultView.observe(on: self) {
+            [weak self] value in
+            print("🔍 [MusicViewModelWrapper] shouldShowNoResultView 변경됨: \(value)")
+            DispatchQueue.main.async {
+                self?.showNoResultView = value
+                print("🔍 [MusicViewModelWrapper] showNoResultView 업데이트됨: \(self?.showNoResultView ?? false)")
+            }
         }
 
-        festivalCheckViewModel.suggestTitles.observe(on: self) { [weak self] value in
-                self?.suggestTitles = value
+        festivalCheckViewModel.festivalData.observe(on: self) {
+            [weak self] value in
+            self?.festivalData = value
         }
 
-        appleMusicConnectViewModel.authorizationStatus.observe(on: self) { [weak self] status in
+        festivalCheckViewModel.suggestTitles.observe(on: self) {
+            [weak self] value in
+            self?.suggestTitles = value
+        }
+
+        appleMusicConnectViewModel.authorizationStatus.observe(on: self) {
+            [weak self] status in
             DispatchQueue.main.async {
                 self?.authorizationStatus = status
                 self?.canPlayMusic = (status?.status == .authorized)
             }
         }
 
-        appleMusicConnectViewModel.subscriptionStatus.observe(on: self) { [weak self] in
+        appleMusicConnectViewModel.subscriptionStatus.observe(on: self) {
+            [weak self] in
             self?.subscriptionStatus = $0
         }
 
-        appleMusicConnectViewModel.errorMessage.observe(on: self) { [weak self] in
+        appleMusicConnectViewModel.errorMessage.observe(on: self) {
+            [weak self] in
             self?.errorMessage = $0
         }
 
-        appleMusicConnectViewModel.canPlayMusic.observe(on: self) { [weak self] newValue in
+        appleMusicConnectViewModel.canPlayMusic.observe(on: self) {
+            [weak self] newValue in
             guard let self else { return }
             if self.canPlayMusic != newValue {
                 DispatchQueue.main.async {
@@ -197,7 +217,8 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        exportViewModelWrapper.artistCandidates.observe(on: self) { [weak self] value in
+        exportViewModelWrapper.artistCandidates.observe(on: self) {
+            [weak self] value in
             guard let self else { return }
             Task { @MainActor in
                 self.artistCandidates = value
@@ -221,7 +242,11 @@ final class MusicViewModelWrapper: ObservableObject {
     }
 
     // MARK: - Main Flow
-    func onAppear(with rawText: RawText?, for playlist: Playlist, using context: ModelContext) async {
+    func onAppear(
+        with rawText: RawText?,
+        for playlist: Playlist,
+        using context: ModelContext
+    ) async {
         guard let rawText else { return }
         print("🟠 [onAppear] rawText: \(rawText.text)")
 
@@ -247,7 +272,10 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        let songs = await exportViewModelWrapper.searchTopSongs(from: rawText, artistMatches: matches)
+        let songs = await exportViewModelWrapper.searchTopSongs(
+            from: rawText,
+            artistMatches: matches
+        )
         print("🎶 [searchTopSongs] 가져온 곡 수: \(songs.count)")
         songs.forEach { print("🎵 \( $0.artistName ) - \( $0.trackTitle )") }
 
@@ -267,9 +295,11 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
     }
-    
+
     // MARK: - Save to SwiftData
-    func savePlaylistAfterTopSongs(playlist: Playlist, context: ModelContext) async {
+    func savePlaylistAfterTopSongs(playlist: Playlist, context: ModelContext)
+        async
+    {
         guard !playlistEntries.isEmpty else {
             print("❌ 저장 시도했지만 playlistEntries가 비어 있음")
             return
@@ -284,7 +314,9 @@ final class MusicViewModelWrapper: ObservableObject {
             }
             entry.playlistId = playlistId
             context.insert(entry)
-            print("📦 저장할 Entry: \(entry.artistName) - \(entry.trackTitle) / \(entry.trackId)")
+            print(
+                "📦 저장할 Entry: \(entry.artistName) - \(entry.trackTitle) / \(entry.trackId)"
+            )
         }
 
         do {
@@ -295,7 +327,7 @@ final class MusicViewModelWrapper: ObservableObject {
         }
     }
 
-    // MARK: - Export 
+    // MARK: - Export
     /// Apple Music으로 플레이리스트를 내보내는 트리거 함수
     func exportToAppleMusic() {
         isExporting = true
@@ -307,21 +339,21 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
     }
-    
+
     func exportSelectedPlaylistToAppleMusic(entries: [PlaylistEntry]) {
         // 기존 playlistEntries를 임시로 백업
         let originalEntries = self.playlistEntries
-        
+
         // 선택된 엔트리들로 교체
         self.playlistEntries = entries
-        
+
         // 기존 exportToAppleMusic 메서드 호출
         self.exportToAppleMusic()
-        
+
         // 원래 엔트리들로 복원 (필요한 경우)
         // self.playlistEntries = originalEntries
     }
-    
+
     /// 플레이리스트에서 특정 곡 삭제
     func deletePlaylistEntry(trackId: String) {
         Task {
@@ -346,7 +378,7 @@ final class MusicViewModelWrapper: ObservableObject {
             deletePlaylistEntry(trackId: trackId)
         }
     }
-    
+
     func togglePreview(for trackId: String) {
         Task {
             await musicPlayerUseCase.musicRepository.togglePreview(for: trackId)

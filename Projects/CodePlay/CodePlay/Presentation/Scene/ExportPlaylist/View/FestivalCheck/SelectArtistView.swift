@@ -5,9 +5,9 @@
 //  Created by 아우신얀 on 7/25/25.
 //
 
-import SwiftUI
-import SwiftData
 import MusicKit
+import SwiftData
+import SwiftUI
 
 struct SelectArtistView: View {
     @Environment(\.dismiss) var dismiss
@@ -22,21 +22,21 @@ struct SelectArtistView: View {
             Color.clear
                 .backgroundWithBlur()
                 .ignoresSafeArea()
-            
+
             VStack(alignment: .center) {
                 Spacer().frame(height: 16)
 
                 festivalInfoBox
                     .padding(.horizontal, 20)
-                
+
                 Spacer().frame(height: 24)
-                
-                HStack (alignment : .center ) {
+
+                HStack(alignment: .center) {
                     Text("플레이리스트에 추가")
                         .font(.BlgBold())
                         .foregroundColor(.neu900)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    
+
                     Button(action: {
                         if selectedArtists.count < playlist.artists.count {
                             selectedArtists = Set(playlist.artists)
@@ -46,20 +46,39 @@ struct SelectArtistView: View {
                     }) {
                         HStack(spacing: 2) {
                             Image(systemName: "checkmark")
-                                .font(.system(size: 14, weight: selectedArtists.count < playlist.artists.count ? .regular : .bold))
-                                .foregroundColor(selectedArtists.count < playlist.artists.count ? .neutral500 : Color("Primary"))
+                                .font(
+                                    .system(
+                                        size: 14,
+                                        weight: selectedArtists.count
+                                            < playlist.artists.count
+                                            ? .regular : .bold
+                                    )
+                                )
+                                .foregroundColor(
+                                    selectedArtists.count
+                                        < playlist.artists.count
+                                        ? .neutral500 : Color("Primary")
+                                )
                             Text("전체선택")
-                                .font(selectedArtists.count < playlist.artists.count ? .BmdRegular() : .BmdBold())
-                                .foregroundColor(selectedArtists.count < playlist.artists.count ? .neutral500 : Color("Primary"))
+                                .font(
+                                    selectedArtists.count
+                                        < playlist.artists.count
+                                        ? .BmdRegular() : .BmdBold()
+                                )
+                                .foregroundColor(
+                                    selectedArtists.count
+                                        < playlist.artists.count
+                                        ? .neutral500 : Color("Primary")
+                                )
                         }
                     }
                 }
                 .padding(.horizontal, 20)
-      
+
                 ArtistGridView
-                
+
                 Spacer()
-            }            
+            }
             BottomButton(title: "선택 완료", kind: .colorFill) {
                 isNextActive = true
             }
@@ -72,12 +91,12 @@ struct SelectArtistView: View {
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarBackButtonHidden()
         .toolbar {
-            ToolbarItem(placement: .principal){
+            ToolbarItem(placement: .principal) {
                 Text("아티스트 선택")
                     .font(.BlgBold())
                     .foregroundColor(.neu900)
             }
-            
+
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(
                     action: {
@@ -114,24 +133,24 @@ struct SelectArtistView: View {
             )
         }
     }
-    
+
     @ViewBuilder
     private var festivalInfoBox: some View {
         VStack(alignment: .leading, spacing: 4) {
-            
+
             VStack(alignment: .leading) {
                 Text(playlist.title)
                     .font(.HmdBold())
                     .foregroundColor(.neu900)
                     .lineSpacing(28)
-                
+
                 Spacer().frame(height: 2)
-                    
+
                 Text(playlist.place ?? "")
                     .font(.BsmRegular())
                     .foregroundColor(Color.neu700)
                     .lineSpacing(16)
-                
+
                 Text(playlist.period ?? "")
                     .font(.BsmRegular())
                     .foregroundColor(Color.neu700)
@@ -145,20 +164,27 @@ struct SelectArtistView: View {
         .overlay(
             RoundedRectangle(cornerRadius: 12)
                 .stroke(.neu50.opacity(0.9), lineWidth: 2)
-            
+
         )
         .background(.neu50.opacity(0.3))
         .cornerRadius(12)
     }
-    
+
     @ViewBuilder
     private var ArtistGridView: some View {
         ScrollView {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 3), spacing: 10) {
+            LazyVGrid(
+                columns: Array(
+                    repeating: GridItem(.flexible(), spacing: 10),
+                    count: 3
+                ),
+                spacing: 10
+            ) {
                 ForEach(playlist.artists, id: \.self) { artist in
                     VStack(spacing: 8) {
                         ZStack {
-                            AsyncImage(url: artistArtworks[artist] ?? nil) { phase in
+                            AsyncImage(url: artistArtworks[artist] ?? nil) {
+                                phase in
                                 switch phase {
                                 case .empty:
                                     ProgressView()
@@ -171,8 +197,15 @@ struct SelectArtistView: View {
                                         .clipShape(Circle())
                                         .overlay(
                                             Circle()
-                                                .stroke(selectedArtists.contains(artist) ? Color("Primary") : Color.neutral50, lineWidth : 4)
-                                            )
+                                                .stroke(
+                                                    selectedArtists.contains(
+                                                        artist
+                                                    )
+                                                        ? Color("Primary")
+                                                        : Color.neutral50,
+                                                    lineWidth: 4
+                                                )
+                                        )
                                 @unknown default:
                                     Image(systemName: "person.circle.fill")
                                         .resizable()
@@ -185,10 +218,13 @@ struct SelectArtistView: View {
                         .onTapGesture {
                             toggleSelection(for: artist)
                         }
-                        
+
                         Text(artist.prefix(10))
                             .font(.BmdRegular())
-                            .foregroundColor(failedArtists.contains(artist) ? .neu700 : .neu900)
+                            .foregroundColor(
+                                failedArtists.contains(artist)
+                                    ? .neu700 : .neu900
+                            )
                             .multilineTextAlignment(.center)
                             .lineLimit(2)
                     }
@@ -199,7 +235,7 @@ struct SelectArtistView: View {
             .padding(.bottom, 126)
         }
     }
-    
+
     private func toggleSelection(for artist: String) {
         if selectedArtists.contains(artist) {
             selectedArtists.remove(artist)
@@ -207,16 +243,23 @@ struct SelectArtistView: View {
             selectedArtists.insert(artist)
         }
     }
-    
+
     private func fetchArtistArtworks() {
         Task {
             for artist in playlist.artists {
                 do {
-                    var request = MusicCatalogSearchRequest(term: artist, types: [Artist.self])
+                    var request = MusicCatalogSearchRequest(
+                        term: artist,
+                        types: [Artist.self]
+                    )
                     request.limit = 1
                     let response = try await request.response()
                     if let firstArtist = response.artists.first {
-                        let artworkURL = firstArtist.artwork?.url(width: 112, height: 112)
+                        // 고화질 이미지 요청: 220x220 (2배 해상도)
+                        let artworkURL = firstArtist.artwork?.url(
+                            width: 220,
+                            height: 220
+                        )
                         DispatchQueue.main.async {
                             artistArtworks[artist] = artworkURL
                         }
@@ -237,16 +280,3 @@ struct SelectArtistView: View {
         }
     }
 }
-
-//#Preview {
-//    let mockPlaylist = Playlist(
-//        id: UUID(),
-//        title: "Mock Festival",
-//        createdAt: .now,
-//        period: "2025.08.15 - 08.17",
-//        cast: "TAEYANG, NEWJEANS, G-DRAGON, JAY PARK, LISA, THE BOYZ, ATEEZ, ZICO, LE SSERAFIM",
-//        festivalId: nil,
-//        place: "Seoul"
-//    )
-//    SelectArtistView(playlist: mockPlaylist)
-//}

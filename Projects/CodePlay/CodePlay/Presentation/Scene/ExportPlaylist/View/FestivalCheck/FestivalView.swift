@@ -28,10 +28,10 @@ struct FestivalView: View {
     var body: some View {
         ZStack {
             Group {
-                if wrapper.festivalData == nil && !wrapper.isLoading {
+                if wrapper.showNoResultView {
+//                if wrapper.festivalData == nil && !wrapper.isLoading {
                     FestivalNoneView()
-                } else {
-
+                } else  {
                     VStack {
                         if wrapper.isLoading {
                             // 1. 로딩 상태를 가장 먼저 체크
@@ -145,6 +145,9 @@ struct FestivalView: View {
         }
         .navigationBarBackButtonHidden()
         .edgesIgnoringSafeArea(.bottom)
+        .onAppear {
+            print("[FestivalView] onAppear")
+        }
     }
 
     @ViewBuilder

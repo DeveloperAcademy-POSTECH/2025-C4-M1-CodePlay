@@ -15,20 +15,6 @@ struct CameraLiveTextView: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
     @EnvironmentObject var wrapper: PosterViewModelWrapper
 
-    let shouldAutoNavigate: Bool
-    
-    init(recognizedText: Binding<String>, isPresented: Binding<Bool>) {
-            self._recognizedText = recognizedText
-            self._isPresented = isPresented
-            self.shouldAutoNavigate = true
-        }
-
-    init(recognizedText: Binding<String>, isPresented: Binding<Bool>, shouldAutoNavigate: Bool) {
-            self._recognizedText = recognizedText
-            self._isPresented = isPresented
-            self.shouldAutoNavigate = shouldAutoNavigate
-        }
-
     func makeUIViewController(context: Context) -> CameraLiveTextViewController
     {
         let controller = CameraLiveTextViewController()
@@ -60,13 +46,9 @@ struct CameraLiveTextView: UIViewControllerRepresentable {
                 )
 
                 // 선택 완료 후 자동으로 다음 화면으로
-                if self.parent.shouldAutoNavigate {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        self.parent.wrapper.viewModel.shouldNavigateToFestivalCheck
-                            .value = true
-                        self.parent.isPresented = false
-                    }
-                } else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.parent.wrapper.viewModel.shouldNavigateToFestivalCheck
+                        .value = true
                     self.parent.isPresented = false
                 }
             }
@@ -203,7 +185,7 @@ class CameraLiveTextViewController: UIViewController {
         regionSelectionView.delegate = self
         view.addSubview(regionSelectionView)
     }
-
+    
     private func setupUI() {
         let closeButton = UIButton(type: .system)
         closeButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
@@ -232,29 +214,45 @@ class CameraLiveTextViewController: UIViewController {
             closeButton.heightAnchor.constraint(equalToConstant: 40),
         ])
 
-        // TODO: 하단 안내 텍스트 - 폰트 사이즈 작게 하기
+        // 컨테이너 뷰 생성
+        let instructionContainer = UIView()
+        instructionContainer.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        instructionContainer.layer.cornerRadius = 8
+        instructionContainer.clipsToBounds = true
+
         let instructionLabel = UILabel()
         instructionLabel.text = "텍스트를 드래그하는 동안 움직이지 마세요."
         instructionLabel.textColor = .white
-        instructionLabel.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         instructionLabel.textAlignment = .center
-        instructionLabel.layer.cornerRadius = 8
-        instructionLabel.clipsToBounds = true
+        instructionLabel.font = UIFont.systemFont(ofSize: 14) // 폰트 사이즈 작게
 
+        instructionContainer.translatesAutoresizingMaskIntoConstraints = false
         instructionLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(instructionLabel)
+        
+        view.addSubview(instructionContainer)
+        instructionContainer.addSubview(instructionLabel)
 
         NSLayoutConstraint.activate([
-            instructionLabel.topAnchor.constraint(
+            // 컨테이너 뷰 제약조건
+            instructionContainer.topAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.topAnchor,
                 constant: 70
             ),
-            instructionLabel.centerXAnchor.constraint(
+            instructionContainer.centerXAnchor.constraint(
                 equalTo: view.centerXAnchor
             ),
-            instructionLabel.heightAnchor.constraint(equalToConstant: 32),
-            instructionLabel.widthAnchor.constraint(
-                greaterThanOrEqualToConstant: 200
+            instructionContainer.heightAnchor.constraint(equalToConstant: 32),
+            
+            instructionLabel.leadingAnchor.constraint(
+                equalTo: instructionContainer.leadingAnchor,
+                constant: 8
+            ),
+            instructionLabel.trailingAnchor.constraint(
+                equalTo: instructionContainer.trailingAnchor,
+                constant: -8
+            ),
+            instructionLabel.centerYAnchor.constraint(
+                equalTo: instructionContainer.centerYAnchor
             ),
         ])
     }

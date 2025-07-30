@@ -24,7 +24,7 @@ struct PlaylistSectionView: View {
         ) {
             ForEach(entries) { entry in
                 CustomList(
-                    imageUrl: entry.albumArtworkUrl ?? "",
+                    imageUrl: entry.albumArtworkUrl,
                     title: entry.trackTitle,
                     albumName: entry.albumName,
                     trackId: entry.trackId,
