@@ -95,7 +95,6 @@ struct MadePlaylistView: View {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: {
                     NavigationUtil.popToView(at: 2)
-//                    dismiss()
                 }) {
                     Image(systemName: "chevron.left")
                         .foregroundColor(.neu900)
