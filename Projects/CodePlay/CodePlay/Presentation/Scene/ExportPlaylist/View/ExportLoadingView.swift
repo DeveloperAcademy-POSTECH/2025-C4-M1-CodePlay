@@ -26,7 +26,6 @@ struct ExportLoadingView: View {
                     .frame(width: 320, height: 320)
             }
             
-            
             GradientProgressBar(progress: progress)
                 .padding(.bottom, 60)
             

@@ -171,23 +171,6 @@ final class MusicViewModelWrapper: ObservableObject {
                     self?.showNoResultView = value
                 }
             }
-        
-//        festivalCheckViewModel.state.observe(on: self) { [weak self] state in
-//                    DispatchQueue.main.async {
-//                        switch state {
-//                        case .noResult:
-//                            self?.showNoResultView = true
-//                            self?.showErrorView = false
-//                        case .error(_):
-//                            self?.showErrorView = true
-//                            self?.showNoResultView = false
-//                        default:
-//                            self?.showNoResultView = false
-//                            self?.showErrorView = false
-//                        }
-//                    }
-//                }
-//            
 
         festivalCheckViewModel.festivalData.observe(on: self) { [weak self] value in
                 self?.festivalData = value
