@@ -20,7 +20,7 @@ struct MainPosterView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .center, spacing: 0) {
-                    Spacer().frame(height: 106)
+                    Spacer().frame(height: 146)
             
                     if playlists.isEmpty {
                         VStack(alignment: .center, spacing: 76) {
