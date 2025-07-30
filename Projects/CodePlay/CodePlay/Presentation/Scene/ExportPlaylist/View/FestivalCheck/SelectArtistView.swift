@@ -27,6 +27,7 @@ struct SelectArtistView: View {
                 Spacer().frame(height: 16)
 
                 festivalInfoBox
+                    .padding(.horizontal, 20)
                 
                 Spacer().frame(height: 24)
                 
@@ -94,6 +95,7 @@ struct SelectArtistView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(
                     action: {
+                        NavigationUtil.popToRootView()
                     },
                     label: {
                         Text("취소")
@@ -194,10 +196,10 @@ struct SelectArtistView: View {
                     }
                 }
             }
+            .padding(.horizontal, 16)
             .padding(.top, 12)
             .padding(.bottom, 126)
         }
-        .padding(.horizontal, 16)
     }
     
     private func toggleSelection(for artist: String) {

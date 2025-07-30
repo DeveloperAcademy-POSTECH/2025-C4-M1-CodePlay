@@ -54,16 +54,6 @@ struct ExportSuccessView: View {
                     .padding(.horizontal, 20)
                     .padding(.bottom, 16)
                 }
-                NavigationLink(
-                    destination: MainPosterView()
-                        .environmentObject(posterWrapper)
-                        .environmentObject(musicWrapper),
-                    isActive: $isNavigateToMainPoster
-                ) {
-                    EmptyView()
-                }
-                .hidden()
-
             }
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(false)
@@ -74,7 +64,8 @@ struct ExportSuccessView: View {
                         posterWrapper.viewModel.clearText()
 
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            isNavigateToMainPoster = true
+                            NavigationUtil.popToRootView()
+
                         }
                     }, label: {
                         Image(systemName: "xmark")

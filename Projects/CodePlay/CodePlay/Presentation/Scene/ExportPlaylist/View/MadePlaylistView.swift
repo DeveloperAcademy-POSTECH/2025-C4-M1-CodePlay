@@ -104,6 +104,7 @@ struct MadePlaylistView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     posterWrapper.shouldNavigateToMakePlaylist = false
+                    NavigationUtil.popToRootView()
                 }) {
                     Image(systemName: "xmark")
                         .foregroundColor(.neu900)

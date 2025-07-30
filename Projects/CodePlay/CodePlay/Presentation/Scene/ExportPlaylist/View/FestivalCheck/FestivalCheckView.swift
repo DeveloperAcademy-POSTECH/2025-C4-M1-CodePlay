@@ -79,7 +79,8 @@ struct FestivalCheckView: View {
                                             .font(.BsmRegular())
                                         
                                     }
-                                    .padding(.horizontal, 12.5)
+//                                    .padding(.horizontal, 12.5)
+                                    .padding(.horizontal, 16)
                                     .padding(.vertical, 15)
                                     .liquidGlass(style: .list)
 
@@ -88,19 +89,20 @@ struct FestivalCheckView: View {
                                 bottombutton
                                     .padding(.bottom, 50)
                             }
+                            .navigationBarBackButtonHidden()
                             .toolbar {
                                 ToolbarItem(placement: .navigationBarTrailing) {
                                     Button(action: {
-                                        dismiss()
+                                        NavigationUtil.popToRootView()
                                     }) {
                                         Image(systemName: "xmark")
                                             .foregroundColor(.neu900)
                                     }
                                 }
                             }
-                            .navigationBarBackButtonHidden()
                         }
                     }
+                    .frame(maxWidth: .infinity)
                     .onAppear {
                         Task {
                             let success = await wrapper.festivalCheckViewModel
@@ -130,14 +132,6 @@ struct FestivalCheckView: View {
                 }
                 .hidden()
             }
-//            NavigationLink(
-//                destination: suggestTitles != nil
-//                    ? AnyView(FestivalSearchView(suggestTitles: suggestTitles!))
-//                    : AnyView(EmptyView()),
-//                isActive: $isNavigateToSearch
-//            ) {
-//                EmptyView()
-//            }
         }
         .navigationBarBackButtonHidden()
         .edgesIgnoringSafeArea(.bottom)

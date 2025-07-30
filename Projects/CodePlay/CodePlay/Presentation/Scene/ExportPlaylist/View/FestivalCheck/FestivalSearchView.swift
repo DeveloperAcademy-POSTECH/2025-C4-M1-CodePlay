@@ -39,12 +39,6 @@ struct FestivalSearchView: View {
             ) {
                 EmptyView()
             }.hidden()
-            
-            NavigationLink(destination: MainPosterView()
-                            .navigationBarBackButtonHidden(true),
-                           isActive: $isNavigateToMainPoster) {
-                EmptyView()
-            }.hidden()
         }
         .safeAreaInset(edge: .top) {
             Divider()
@@ -84,7 +78,7 @@ struct FestivalSearchView: View {
                     if showSearchResults {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             showSearchResults = false
-                            isNavigateToMainPoster = true
+                            NavigationUtil.popToRootView()
                         }
                     }
                     searchText = ""
