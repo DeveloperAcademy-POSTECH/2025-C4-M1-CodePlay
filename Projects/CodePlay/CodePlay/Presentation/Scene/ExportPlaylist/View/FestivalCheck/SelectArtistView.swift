@@ -59,9 +59,7 @@ struct SelectArtistView: View {
                 ArtistGridView
                 
                 Spacer()
-            }
-//            .padding(.horizontal, 16)
-            
+            }            
             BottomButton(title: "선택 완료", kind: .colorFill) {
                 isNextActive = true
             }

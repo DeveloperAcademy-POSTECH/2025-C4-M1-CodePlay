@@ -9,15 +9,12 @@ import SwiftUI
 
 // MARK: 전송 완료 이후, 애플뮤직 앱으로 전환하는 뷰
 struct ExportSuccessView: View {
-    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var posterWrapper: PosterViewModelWrapper
     @EnvironmentObject var musicWrapper: MusicViewModelWrapper
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.modelContext) private var modelContext
-    @State private var isNavigateToMainPoster = false
 
-    
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom) {
@@ -78,4 +75,3 @@ struct ExportSuccessView: View {
         }
     }
 }
-

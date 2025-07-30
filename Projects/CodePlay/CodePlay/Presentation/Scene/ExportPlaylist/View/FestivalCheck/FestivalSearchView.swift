@@ -18,7 +18,6 @@ struct FestivalSearchView: View {
     @State private var selectedPlaylist: Playlist?
     @State private var savedPlaylist: Playlist?
     @FocusState private var isSearchFocused: Bool
-    @State private var isNavigateToMainPoster = false
     let suggestTitles: SuggestTitlesModel
 
     var body: some View {
@@ -45,16 +44,12 @@ struct FestivalSearchView: View {
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
-            // TODO: 특정뷰로 이동하도록 로직 수정 필요
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(
                     action: {
-                        if showSearchResults {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                showSearchResults = false
-                                searchText = ""
-                            }
-                        } else {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            showSearchResults = false
+                            searchText = ""
                             dismiss()
                         }
                     },
@@ -75,14 +70,12 @@ struct FestivalSearchView: View {
 
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    if showSearchResults {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             showSearchResults = false
+                            searchText = ""
                             NavigationUtil.popToRootView()
                         }
-                    }
-                    searchText = ""
-                }) {
+                    }) {
                     Text("취소")
                         .font(.BlgRegular())
                         .foregroundColor(.neu900)

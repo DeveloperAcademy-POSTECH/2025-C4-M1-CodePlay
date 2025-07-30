@@ -34,6 +34,7 @@ struct FestivalCheckView: View {
             Group {
                 if wrapper.festivalData == nil && !wrapper.isLoading {
                     FestivalNoneView()
+//                        .navigationBarHidden(true)
                 } else {
 
                     VStack {
@@ -79,7 +80,6 @@ struct FestivalCheckView: View {
                                             .font(.BsmRegular())
                                         
                                     }
-//                                    .padding(.horizontal, 12.5)
                                     .padding(.horizontal, 16)
                                     .padding(.vertical, 15)
                                     .liquidGlass(style: .list)
@@ -90,6 +90,7 @@ struct FestivalCheckView: View {
                                     .padding(.bottom, 50)
                             }
                             .navigationBarBackButtonHidden()
+//                            .navigationBarHidden(true)
                             .toolbar {
                                 ToolbarItem(placement: .navigationBarTrailing) {
                                     Button(action: {
