@@ -8,6 +8,12 @@
 import SwiftData
 import SwiftUI
 
+// MARK: 진입점 여부 판단
+enum PlaylistEntrySource {
+    case main
+    case export
+}
+
 struct MadePlaylistView: View {
     @EnvironmentObject var posterWrapper: PosterViewModelWrapper
     @EnvironmentObject var wrapper: MusicViewModelWrapper
@@ -26,25 +32,31 @@ struct MadePlaylistView: View {
 
     var body: some View {
         let playlistEntries: [PlaylistEntry] = {
-                    if let selectedPlaylist = selectedPlaylist {
-                        // 선택된 플레이리스트의 엔트리들만 필터링
-                        let filteredEntries = allEntries.filter { $0.playlistId == selectedPlaylist.id }
-                        print("🎵 선택된 플레이리스트(\(selectedPlaylist.title))의 엔트리 수: \(filteredEntries.count)")
-                        print("🔍 전체 엔트리 수: \(allEntries.count)")
-                        print("🆔 찾는 playlistId: \(selectedPlaylist.id)")
-                        
-                        // 모든 엔트리의 playlistId 출력
-                        for entry in allEntries {
-                            print("📦 Entry: \(entry.artistName) - playlistId: \(entry.playlistId)")
-                        }
-                        
-                        return filteredEntries
-                    } else {
-                        // 기존 동작: wrapper에서 가져온 엔트리들 사용
-                        print("🎵 Wrapper에서 가져온 엔트리 수: \(wrapper.playlistEntries.count)")
-                        return wrapper.playlistEntries
-                    }
-                }()
+            if let selectedPlaylist = selectedPlaylist {
+                // 선택된 플레이리스트의 엔트리들만 필터링
+                let filteredEntries = allEntries.filter {
+                    $0.playlistId == selectedPlaylist.id
+                }
+                print(
+                    "🎵 선택된 플레이리스트(\(selectedPlaylist.title))의 엔트리 수: \(filteredEntries.count)"
+                )
+                print("🔍 전체 엔트리 수: \(allEntries.count)")
+                print("🆔 찾는 playlistId: \(selectedPlaylist.id)")
+
+                // 모든 엔트리의 playlistId 출력
+                for entry in allEntries {
+                    print(
+                        "📦 Entry: \(entry.artistName) - playlistId: \(entry.playlistId)"
+                    )
+                }
+
+                return filteredEntries
+            } else {
+                // 기존 동작: wrapper에서 가져온 엔트리들 사용
+                print("🎵 Wrapper에서 가져온 엔트리 수: \(wrapper.playlistEntries.count)")
+                return wrapper.playlistEntries
+            }
+        }()
 
         let groupedEntries: [String: [PlaylistEntry]] = Dictionary(
             grouping: playlistEntries,
@@ -74,7 +86,7 @@ struct MadePlaylistView: View {
                 }
             }
             BottomButton(title: "Apple Music으로 전송", kind: .colorFill) {
-                    wrapper.exportToAppleMusic()
+                wrapper.exportToAppleMusic()
             }
             .padding(.bottom, 50)
             .padding(.horizontal, 20)
@@ -94,7 +106,12 @@ struct MadePlaylistView: View {
 
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: {
-                    NavigationUtil.popToView(at: 2)
+                    switch wrapper.entrySource {
+                    case .main:
+                        NavigationUtil.popToRootView()
+                    case .export:
+                        NavigationUtil.popToView(at: 2)
+                    }
                 }) {
                     Image(systemName: "chevron.left")
                         .foregroundColor(.neu900)
@@ -114,6 +131,11 @@ struct MadePlaylistView: View {
         .fullScreenCover(isPresented: $wrapper.isExportCompleted) {
             ExportSuccessView()
         }
+        .onAppear {
+            wrapper.currentlyPlayingTrackId = nil
+            wrapper.isPlaying = false
+            wrapper.playbackProgress = 0.0
+        }
 
         NavigationLink(
             destination: ExportLoadingView(),
@@ -122,9 +144,8 @@ struct MadePlaylistView: View {
             EmptyView()
         }
         .hidden()
-        
+
         .onAppear {
-            UINavigationBar.applyLiquidGlassStyle()
             wrapper.isExportCompleted = false
         }
     }

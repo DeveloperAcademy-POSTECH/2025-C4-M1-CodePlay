@@ -57,16 +57,12 @@ struct ArtistCard: View {
                                                         .frame(width: 296, height: 296)
                                                         .clipped()
                                                 default:
-                                                    Text("이미지 로딩에 실패했습니다.")
-//                                                        .resizable()
-//                                                        .scaledToFit()
+                                                    ProgressView()
                                                         .frame(width: 296, height: 296)
                                                 }
                                             }
                                         } else {
-                                            Image("ArtistImg")
-//                                                .resizable()
-//                                                .scaledToFit()
+                                            ProgressView()
                                                 .frame(width: 296, height: 296)
                                         }
                                     @unknown default:
@@ -74,9 +70,7 @@ struct ArtistCard: View {
                                     }
                                 }
                             } else {
-                                Image("ArtistImg")
-                                    .resizable()
-                                    .scaledToFit()
+                                ProgressView()
                                     .frame(width: 296, height: 296)
                             }
                         }

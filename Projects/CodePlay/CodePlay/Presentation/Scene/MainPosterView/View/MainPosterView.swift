@@ -20,7 +20,7 @@ struct MainPosterView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .center, spacing: 0) {
-                    Spacer().frame(height: 146)
+                    Spacer().frame(height: 106)
             
                     if playlists.isEmpty {
                         VStack(alignment: .center, spacing: 76) {
@@ -33,7 +33,6 @@ struct MainPosterView: View {
                     } else {
                         VStack {
                             OverlappingCardsView(playlists: playlists, wrapper: musicWrapper) //임시입다
-                            .padding(.bottom, 12)
                         }
                     }
                     

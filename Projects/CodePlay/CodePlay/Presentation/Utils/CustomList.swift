@@ -51,7 +51,6 @@ struct CustomList: View {
                 
                 // 재생 중일 경우: 진행률 + 재생버튼 오버레이
                 if isCurrentlyPlaying {
-
                     // 배경 원 (48x48 크기로 고정하여 앨범 커버와 동일)
                     if isPlaying {
                         Circle()

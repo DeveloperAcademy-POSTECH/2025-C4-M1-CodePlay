@@ -119,6 +119,7 @@ final class MusicViewModelWrapper: ObservableObject {
     @Published var suggestTitles: [String] = []
     @Published var showNoResultView: Bool = false
     @Published var showErrorView: Bool = false
+    @Published var entrySource: PlaylistEntrySource = .main
 
     @Environment(\.modelContext) private var modelContext
 
