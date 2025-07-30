@@ -12,8 +12,8 @@ enum FestivalFetchState {
     case idle
     case loading
     case success(PostFestInfoResponseDTO)
-    case noResult  // <- FestivalNoneView로 이동 조건
-    case error(String)  // <- 에러 메시지 출력용
+    case noResult
+    case error(String)
 }
 
 // MARK: - Input

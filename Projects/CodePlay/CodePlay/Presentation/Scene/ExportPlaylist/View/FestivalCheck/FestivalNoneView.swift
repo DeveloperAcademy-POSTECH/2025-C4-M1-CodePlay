@@ -63,6 +63,9 @@ struct FestivalNoneView: View {
             .ignoresSafeArea()
             .environmentObject(wrapper)
         }
+        .onAppear {
+            print("[FestivalNoneView] onAppear")
+        }
     }
 }
 

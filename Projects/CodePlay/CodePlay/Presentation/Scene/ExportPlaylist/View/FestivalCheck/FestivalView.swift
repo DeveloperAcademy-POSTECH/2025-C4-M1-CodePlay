@@ -145,6 +145,9 @@ struct FestivalView: View {
         }
         .navigationBarBackButtonHidden()
         .edgesIgnoringSafeArea(.bottom)
+        .onAppear {
+            print("[FestivalView] onAppear")
+        }
     }
 
     @ViewBuilder
