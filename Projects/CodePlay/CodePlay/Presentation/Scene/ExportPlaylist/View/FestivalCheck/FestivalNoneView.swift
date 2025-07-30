@@ -46,7 +46,6 @@ struct FestivalNoneView: View {
                     wrapper.shouldNavigateToFestivalCheck = false
                     wrapper.scannedText = nil
                     recognizedText = ""
-//                    isPresented = true
                     // TODO: 임시로 메인뷰로 이동
                     NavigationUtil.popToRootView()
                 }

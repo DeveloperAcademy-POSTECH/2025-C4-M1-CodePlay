@@ -28,7 +28,6 @@ struct ArtistCard: View {
             VStack(alignment: .leading) {
                 Rectangle()
                     .foregroundColor(.clear)
-                    .frame(width: 296, height: 296)
                     .background(
                         Group {
                             if let highQualityUrl = highQualityImageUrl,
@@ -41,9 +40,9 @@ struct ArtistCard: View {
                                     case .success(let image):
                                         image
                                             .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 296, height: 296)
                                             .clipped()
+                                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                                            .padding(12)
                                     case .failure:
                                         // 고화질 실패시 원본 URL로 재시도
                                         if let originalUrl = imageUrl,
@@ -53,9 +52,11 @@ struct ArtistCard: View {
                                                 case .success(let fallbackImage):
                                                     fallbackImage
                                                         .resizable()
-                                                        .scaledToFill()
-                                                        .frame(width: 296, height: 296)
+                                                        .scaledToFit()
                                                         .clipped()
+                                                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                                                        .padding(12)
+                                                       
                                                 default:
                                                     ProgressView()
                                                         .frame(width: 296, height: 296)
@@ -70,13 +71,14 @@ struct ArtistCard: View {
                                     }
                                 }
                             } else {
-                                ProgressView()
-                                    .frame(width: 296, height: 296)
+                                Text("이미지를 불러올 수 없습니다.")
                             }
                         }
                     )
                     .cornerRadius(16)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
                     .shadow(color: .neu1000.opacity(0.2), radius: 8, x: 0, y: 4)
+                    .frame(width: 296, height: 296)
                 
                 Spacer().frame(height: 4)
                 
@@ -98,6 +100,14 @@ struct ArtistCard: View {
             }
             .liquidGlass(style: .card)
         }
-//        .frame(maxWidth: 320, maxHeight: 420)
     }
+}
+
+#Preview {
+    ArtistCard(
+        imageUrl: nil,
+        date: "2025.07.30",
+        title: "썸머페스트",
+        subTitle: "24곡"
+    )
 }
