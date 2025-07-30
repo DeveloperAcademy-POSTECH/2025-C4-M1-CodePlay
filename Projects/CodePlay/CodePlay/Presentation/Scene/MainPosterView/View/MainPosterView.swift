@@ -83,7 +83,44 @@ struct MainPosterView: View {
                 for p in playlists {
                     print("📀 \(p.title) / \(p.createdAt)")
                 }
+
+                Task {
+                    var didDelete = false
+
+                    for playlist in playlists {
+                        let targetId = playlist.id
+                        let entries = try? modelContext.fetch(
+                            FetchDescriptor<PlaylistEntry>(
+                                predicate: #Predicate { $0.playlistId == targetId }
+                            )
+                        )
+                        if entries?.isEmpty ?? true {
+                            print("🗑️ 삭제할 Playlist: \(playlist.title)")
+                            modelContext.delete(playlist)
+                            didDelete = true
+                        }
+                    }
+
+                    if didDelete {
+                        do {
+                            try modelContext.save()
+                            print("✅ Playlist 정리 완료")
+                        } catch {
+                            print("❌ 저장 실패: \(error)")
+                        }
+                    }
+
+                    // 👉 뷰 강제 갱신 (optional, 필요 시)
+                    await MainActor.run {
+                        withAnimation {
+                            // 무의미한 상태 변경을 통해 강제 리렌더링 유도
+                            recognizedText = UUID().uuidString
+                        }
+                    }
+                }
             }
+
+
             .fullScreenCover(isPresented: $isNavigateToScanPoster) {
                 CameraLiveTextView(
                     recognizedText: $recognizedText,
