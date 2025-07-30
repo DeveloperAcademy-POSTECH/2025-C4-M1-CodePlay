@@ -61,6 +61,7 @@ struct ExportPlaylistView: View {
             ) {
                 EmptyView()
             }
+            .hidden()
         }
         .backgroundWithBlur()
         .navigationBarBackButtonHidden(true)

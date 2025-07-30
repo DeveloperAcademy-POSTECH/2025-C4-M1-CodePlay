@@ -11,8 +11,8 @@ import SwiftUI
 
 struct FestivalNoneView: View {
     @EnvironmentObject var wrapper: PosterViewModelWrapper
+    @Environment(\.dismiss) private var dismiss
     @State private var recognizedText = ""
-
     @State private var isPresented = false
 
     var body: some View {
@@ -43,6 +43,9 @@ struct FestivalNoneView: View {
                 Spacer()
 
                 BottomButton(title: "다시 촬영하기", kind: .line) {
+                    wrapper.shouldNavigateToFestivalCheck = false
+                    wrapper.scannedText = nil
+                    recognizedText = ""
                     isPresented = true
                 }
                 .padding(.horizontal, 16)
@@ -51,18 +54,6 @@ struct FestivalNoneView: View {
         }
         .backgroundWithBlur()
         .edgesIgnoringSafeArea(.bottom)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(
-                    action: {
-                    },
-                    label: {
-                        Image(systemName: "xmark")
-                            .foregroundColor(.neu900)
-                    }
-                )
-            }
-        }
         .fullScreenCover(isPresented: $isPresented) {
             CameraLiveTextView(
                 recognizedText: $recognizedText,

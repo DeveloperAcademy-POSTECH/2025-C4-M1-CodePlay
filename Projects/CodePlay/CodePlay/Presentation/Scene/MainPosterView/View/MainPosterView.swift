@@ -68,12 +68,13 @@ struct MainPosterView: View {
                     NavigationLink(
                         isActive: $wrapper.shouldNavigateToFestivalCheck,
                         destination: {
-                            FestivalCheckView(rawText: wrapper.scannedText)
+                            FestivalView(rawText: wrapper.scannedText)
                                 .environmentObject(musicWrapper)
                         }
                     ) {
                         EmptyView()
                     }
+                    .hidden()
                 }
             .edgesIgnoringSafeArea(.all)
             .backgroundWithBlur()

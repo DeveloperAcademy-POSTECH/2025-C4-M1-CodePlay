@@ -159,21 +159,6 @@ struct OverlappingCardsView: View {
                 }
             )
             .hidden()
-            //            NavigationLink( //임시입니다진짜로
-            //                isActive: $isNavigateToDetail,
-            //                destination: {
-            //                    if let selected = selectedPlaylist {
-            //                        PlaylistDetailView(playlist: selected)
-            //                            .environmentObject(wrapper)
-            //                    } else {
-            //                        EmptyView()
-            //                    }
-            //                },
-            //                label: {
-            //                    EmptyView()
-            //                }
-            //            )
-            //            .hidden()
         }
     }
     private func printPlaylistInfo(_ playlist: Playlist) {

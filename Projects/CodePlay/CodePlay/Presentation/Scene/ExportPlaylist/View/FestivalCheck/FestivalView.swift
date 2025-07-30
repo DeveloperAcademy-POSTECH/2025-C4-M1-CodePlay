@@ -9,7 +9,7 @@ internal import Combine
 import SwiftData
 import SwiftUI
 
-struct FestivalCheckView: View {
+struct FestivalView: View {
     @State private var isNavigate: Bool = false
     @State private var isNavigateToSearch: Bool = false
     @State private var apiResponse: PostFestInfoResponseDTO?
@@ -27,14 +27,9 @@ struct FestivalCheckView: View {
 
     var body: some View {
         ZStack {
-            Color.clear
-                .backgroundWithBlur()
-                .ignoresSafeArea()
-
             Group {
                 if wrapper.festivalData == nil && !wrapper.isLoading {
                     FestivalNoneView()
-//                        .navigationBarHidden(true)
                 } else {
 
                     VStack {
@@ -69,6 +64,8 @@ struct FestivalCheckView: View {
                                     .lineSpacing(4)
 
                                 Spacer().frame(height: 36)
+
+                                VStack {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(data.title)
                                             .font(.HmdBold())
@@ -80,30 +77,22 @@ struct FestivalCheckView: View {
                                             .font(.BsmRegular())
                                         
                                     }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(.horizontal, 16)
                                     .padding(.vertical, 15)
                                     .liquidGlass(style: .list)
+                                }
+                                .padding(.horizontal, 36)
 
                                 Spacer()
 
                                 bottombutton
                                     .padding(.bottom, 50)
                             }
+                            .frame(maxWidth: .infinity)
                             .navigationBarBackButtonHidden()
-//                            .navigationBarHidden(true)
-                            .toolbar {
-                                ToolbarItem(placement: .navigationBarTrailing) {
-                                    Button(action: {
-                                        NavigationUtil.popToRootView()
-                                    }) {
-                                        Image(systemName: "xmark")
-                                            .foregroundColor(.neu900)
-                                    }
-                                }
-                            }
                         }
                     }
-                    .frame(maxWidth: .infinity)
                     .onAppear {
                         Task {
                             let success = await wrapper.festivalCheckViewModel
@@ -126,18 +115,38 @@ struct FestivalCheckView: View {
             ) {
                 EmptyView()
             }
+            .hidden()
 
             if suggestTitles != nil {
-                NavigationLink(destination: FestivalSearchView(suggestTitles: suggestTitles!), isActive: $isNavigateToSearch) {
+                NavigationLink(
+                    destination: FestivalSearchView(
+                        suggestTitles: suggestTitles!
+                    ),
+                    isActive: $isNavigateToSearch
+                ) {
                     EmptyView()
                 }
                 .hidden()
             }
         }
+        .backgroundWithBlur()
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(
+                    action: {
+                        NavigationUtil.popToRootView()
+                    },
+                    label: {
+                        Image(systemName: "xmark")
+                            .foregroundColor(.neu900)
+                    }
+                )
+            }
+        }
         .navigationBarBackButtonHidden()
         .edgesIgnoringSafeArea(.bottom)
     }
-    
+
     @ViewBuilder
     private var bottombutton: some View {
         HStack(spacing: 16) {
