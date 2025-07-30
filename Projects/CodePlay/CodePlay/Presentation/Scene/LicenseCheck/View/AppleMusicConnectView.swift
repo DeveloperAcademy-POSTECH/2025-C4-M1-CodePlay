@@ -119,7 +119,8 @@ final class MusicViewModelWrapper: ObservableObject {
     @Published var isLoading: Bool = true
     @Published var festivalData: DynamoDataItem? = nil
     @Published var suggestTitles: [String] = []
-    @Published var showNoResultView: Bool = false
+//    @Published var shouldShowNoResultView: Bool = false
+    var shouldShowNoResultView: Bool = false
     @Published var showErrorView: Bool = false
     @Published var entrySource: PlaylistEntrySource = .main
 
@@ -167,15 +168,6 @@ final class MusicViewModelWrapper: ObservableObject {
                         }
                     },
                 )
-            }
-        }
-
-        festivalCheckViewModel.shouldShowNoResultView.observe(on: self) {
-            [weak self] value in
-            print("🔍 [MusicViewModelWrapper] shouldShowNoResultView 변경됨: \(value)")
-            DispatchQueue.main.async {
-                self?.showNoResultView = value
-                print("🔍 [MusicViewModelWrapper] showNoResultView 업데이트됨: \(self?.showNoResultView ?? false)")
             }
         }
 

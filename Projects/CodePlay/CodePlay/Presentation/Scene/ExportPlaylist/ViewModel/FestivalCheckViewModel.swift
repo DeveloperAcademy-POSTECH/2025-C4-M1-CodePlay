@@ -27,7 +27,7 @@ protocol FestivalCheckViewModelOutput {
     var suggestTitles: Observable<[String]> { get set }
     var isLoading: Observable<Bool> { get set }
     var errorMessage: String? { get }
-    var shouldShowNoResultView: Observable<Bool> { get set }
+    var shouldShowNoResultView: Bool { get set }
 }
 
 // MARK: - ViewModel
@@ -43,7 +43,7 @@ final class DefaultFestivalCheckViewModel: FestivalCheckViewModel {
     @Published var isLoading = Observable<Bool>(true)
     @Published private(set) var errorMessage: String? = nil
     @Published private(set) var state: FestivalFetchState = .idle
-    @Published var shouldShowNoResultView = Observable<Bool>(false)
+    var shouldShowNoResultView: Bool = false
 
     private let fetchFestivalInfoUseCase: FetchFestivalInfoUseCase
 
@@ -53,7 +53,7 @@ final class DefaultFestivalCheckViewModel: FestivalCheckViewModel {
 
     func loadFestivalInfo(from rawText: String) async {
         isLoading.value = true
-        shouldShowNoResultView.value = false
+        shouldShowNoResultView = false
         defer { isLoading.value = false }
 
         do {
@@ -72,17 +72,12 @@ final class DefaultFestivalCheckViewModel: FestivalCheckViewModel {
             self.festivalData.value = first
             self.suggestTitles.value = response.top5.map { $0.title }
             print("[FestivalCheckViewModel] ✅ festivalData 업데이트 완료")
-        } catch let error as NetworkResult<Error> {
-            switch error {
-            case .badRequest, .notFound, .unProcessable:
-                self.state = .noResult
-                self.shouldShowNoResultView.value = true
-            default:
-                self.state = .error("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
-            }
-            self.errorMessage = error.localizedDescription
-            print("[FestivalCheckViewModel] ❌ Festival Info Fetch 실패: \(error)")
         } catch {
+            self.shouldShowNoResultView = true
+            Task {
+                    try? await Task.sleep(nanoseconds: 3_000_000_000)
+                    self.shouldShowNoResultView = false
+                }
             self.state = .error("알 수 없는 오류가 발생했습니다.")
             self.errorMessage = error.localizedDescription
             print("[FestivalCheckViewModel] ❌ Festival Info Fetch 실패: \(error)")
