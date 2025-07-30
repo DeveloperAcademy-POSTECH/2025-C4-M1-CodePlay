@@ -17,7 +17,7 @@ struct AppleMusicConnectView: View {
     var body: some View {
         VStack(spacing: 0) {
             // 상단 여백 (Safe Area 고려하여 조정)
-            Spacer().frame(height: 96)
+            Spacer().frame(height: 146)
 
             if viewModelWrapper.authorizationStatus?.status == .denied {
                 Image("Linkfail")
@@ -32,20 +32,22 @@ struct AppleMusicConnectView: View {
             }
 
             // 사각형과 제목 사이 간격
-            Spacer().frame(height: 32)
+            Spacer().frame(height: 76)
 
-            VStack(spacing : 12){
-                Text("Apple Music을\n연결해주세요")
+            VStack(spacing: 12) {
+                Text("Apple Music을 연결해주세요")
                     .font(.HlgBold())
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color.neu900)
                     .frame(maxWidth: .infinity, alignment: .center)
+                    .lineSpacing(2)
                 
                 Text("페스티벌 플레이리스트 생성을 위해\nApple Music을 연결해주세요.")
                     .font(.BmdRegular())
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color.neu700)
                     .padding(.horizontal, 32)
+                    .lineSpacing(2)
             }
 
             Spacer()
@@ -87,14 +89,12 @@ struct AppleMusicConnectView: View {
                     .padding(.horizontal, 16)
                     .padding(.top, 16)
                     .multilineTextAlignment(.center)
-            }
 
-            // 하단 여백 (Home Indicator 고려)
-            Spacer().frame(height: 100)
+            }
         }
+        .padding(.bottom, 37)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.white)
-        .ignoresSafeArea(.all, edges: .bottom)  // 하단 Safe Area 무시
+        .backgroundWithBlur()
     }
 }
 

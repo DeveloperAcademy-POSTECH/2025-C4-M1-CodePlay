@@ -45,10 +45,12 @@ struct ExportPlaylistView: View {
                     .multilineTextAlignment(.center)
                     .font(.HlgBold())
                     .foregroundColor(.neu900)
+                    .lineSpacing(4)
                 
                 Text("잠시만 기다려 주세요")
                     .font(.BlgRegular())
                     .foregroundColor(.neu700)
+                    .lineSpacing(4)
             }
 
             Spacer()

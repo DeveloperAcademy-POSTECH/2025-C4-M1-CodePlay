@@ -27,11 +27,6 @@ struct MainPosterView: View {
                             Image("Mainempty")
                                 .resizable()
                                 .frame(maxWidth: .infinity, maxHeight: 320)
-                            
-                            Text("아직 인식한 페스티벌\n라인업이 없습니다")
-                                .multilineTextAlignment(.center)
-                                .font(.BlgRegular())
-                                .foregroundColor(.neu900)
                         }
                         .padding(.horizontal, 36)
 
@@ -49,6 +44,7 @@ struct MainPosterView: View {
                         .font(.HlgBold())
                         .foregroundColor(.neu900)
                         .padding(.horizontal, 36)
+                        .lineSpacing(2)
 
                     Spacer().frame(height: 12)
                     
@@ -56,6 +52,7 @@ struct MainPosterView: View {
                         .font(.BmdRegular())
                         .foregroundColor(.neu700)
                         .padding(.horizontal, 36)
+                        .lineSpacing(2)
                                         
                     Spacer()
                     
@@ -81,7 +78,7 @@ struct MainPosterView: View {
             .edgesIgnoringSafeArea(.all)
             .backgroundWithBlur()
             .navigationBarHidden(true)
-            .onAppear() {
+            .onAppear {
                 print("🧾 현재 Playlist 수: \(playlists.count)")
                 for p in playlists {
                     print("📀 \(p.title) / \(p.createdAt)")

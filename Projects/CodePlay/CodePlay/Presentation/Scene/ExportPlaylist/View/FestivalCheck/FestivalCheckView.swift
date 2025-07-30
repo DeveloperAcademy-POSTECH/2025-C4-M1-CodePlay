@@ -54,7 +54,7 @@ struct FestivalCheckView: View {
                         } else if let data = wrapper.festivalData {
                             // 2. 로딩이 끝났고 데이터가 있으면 카드 뷰 표시
                             VStack {
-                                Spacer().frame(height: 56)
+                                Spacer().frame(height: 8)
 
                                 Text("인식한 페스티벌 정보가 맞나요?")
                                     .font(.HlgBold())
@@ -83,7 +83,6 @@ struct FestivalCheckView: View {
                                     .padding(.vertical, 15)
                                     .liquidGlass(style: .list)
 
-
                                 Spacer()
 
                                 bottombutton
@@ -99,6 +98,7 @@ struct FestivalCheckView: View {
                                     }
                                 }
                             }
+                            .navigationBarBackButtonHidden()
                         }
                     }
                     .onAppear {
