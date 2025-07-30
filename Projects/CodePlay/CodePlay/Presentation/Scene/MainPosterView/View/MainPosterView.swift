@@ -49,7 +49,6 @@ struct MainPosterView: View {
                         .font(.HlgBold())
                         .foregroundColor(.neu900)
                         .padding(.horizontal, 36)
-                        .border(.black)
 
                     Spacer().frame(height: 12)
                     

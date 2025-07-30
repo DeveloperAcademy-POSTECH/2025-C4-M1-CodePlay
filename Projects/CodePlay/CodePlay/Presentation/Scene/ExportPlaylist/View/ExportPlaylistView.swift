@@ -37,8 +37,6 @@ struct ExportPlaylistView: View {
                     .frame(width: 320, height: 320)
             }
 
-            
-            
             GradientProgressBar(progress: Double(wrapper.progressStep) / 3.0)
                 .padding(.bottom, 60)
             
@@ -56,7 +54,7 @@ struct ExportPlaylistView: View {
             Spacer()
 
             NavigationLink(
-                destination: MadePlaylistView(), // 생성 완료 후 이동
+                destination: MadePlaylistView(playlist: playlist), // 생성 완료 후 이동
                 isActive: $wrapper.navigateToMadePlaylist
             ) {
                 EmptyView()

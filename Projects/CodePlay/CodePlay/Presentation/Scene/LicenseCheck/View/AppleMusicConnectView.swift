@@ -308,6 +308,20 @@ final class MusicViewModelWrapper: ObservableObject {
         }
     }
     
+    func exportSelectedPlaylistToAppleMusic(entries: [PlaylistEntry]) {
+        // 기존 playlistEntries를 임시로 백업
+        let originalEntries = self.playlistEntries
+        
+        // 선택된 엔트리들로 교체
+        self.playlistEntries = entries
+        
+        // 기존 exportToAppleMusic 메서드 호출
+        self.exportToAppleMusic()
+        
+        // 원래 엔트리들로 복원 (필요한 경우)
+        // self.playlistEntries = originalEntries
+    }
+    
     /// 플레이리스트에서 특정 곡 삭제
     func deletePlaylistEntry(trackId: String) {
         Task {
