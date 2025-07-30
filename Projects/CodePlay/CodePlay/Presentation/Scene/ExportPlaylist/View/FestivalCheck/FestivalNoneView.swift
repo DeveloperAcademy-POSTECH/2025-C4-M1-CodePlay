@@ -57,11 +57,19 @@ struct FestivalNoneView: View {
         .fullScreenCover(isPresented: $isPresented) {
             CameraLiveTextView(
                 recognizedText: $recognizedText,
-                isPresented: $isPresented
+                isPresented: $isPresented,
+                shouldAutoNavigate: false
             )
             .ignoresSafeArea()
             .environmentObject(wrapper)
         }
+        .onChange(of: recognizedText) { newText in
+                    // 텍스트가 인식되면 수동으로 FestivalCheckView로 이동
+                    if !newText.isEmpty && !isPresented {
+                        wrapper.shouldNavigateToFestivalCheck = true
+                        dismiss()
+                    }
+                }
     }
 }
 
