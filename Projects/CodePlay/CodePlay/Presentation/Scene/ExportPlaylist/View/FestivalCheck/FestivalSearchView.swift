@@ -55,7 +55,7 @@ struct FestivalSearchView: View {
                     },
                     label: {
                         Image(systemName: "chevron.left")
-                            .foregroundColor(.blue)
+                            .foregroundStyle(Color("Primary"))
                     }
                 )
             }
@@ -78,7 +78,7 @@ struct FestivalSearchView: View {
                     }) {
                     Text("취소")
                         .font(.BlgRegular())
-                        .foregroundColor(.neu900)
+                        .foregroundStyle(Color("Primary"))
 
                 }
             }
@@ -138,7 +138,7 @@ struct FestivalSearchView: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 24)
             .frame(alignment: .topLeading)
-            .background(.white.opacity(0.6))
+            .background(.neu0.opacity(0.6))
             .cornerRadius(20)
 
             Spacer()
@@ -174,7 +174,7 @@ struct FestivalSearchView: View {
                         .shadow(color: .neu1000.opacity(0.1), radius: 10, x: 0, y: 2)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
-                                .stroke(.neu0.opacity(0.9), lineWidth: 2)
+                                .stroke(Color("Primary").opacity(0.9), lineWidth: 2)
                         )
                         .background(.neu0.opacity(0.3))
                         .cornerRadius(12)

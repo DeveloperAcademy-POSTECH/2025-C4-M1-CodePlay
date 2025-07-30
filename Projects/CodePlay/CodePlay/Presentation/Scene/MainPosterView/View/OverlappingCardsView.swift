@@ -30,119 +30,123 @@ struct OverlappingCardsView: View {
 
     var body: some View {
         VStack {
-            GeometryReader { geometry in
-                let cardWidth = geometry.size.width * 0.8
+            VStack(spacing: -10) {
+                // 상단 카드 박스
+                GeometryReader { geometry in
+                    let cardWidth = geometry.size.width * 0.8
 
-                ScrollViewReader { proxy in
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: -10) {
-                            ForEach(
-                                Array(playlists.enumerated()),
-                                id: \.element.id
-                            ) { index, playlist in
-                                GeometryReader { cardGeometry in
-                                    let minX = cardGeometry.frame(in: .global)
-                                        .minX
-                                    let screenCenter =
-                                        UIScreen.main.bounds.width / 2
-                                    let cardCenter = minX + cardWidth / 2
-                                    let distance = abs(
-                                        cardCenter - screenCenter
-                                    )
-                                    let normalizedDistance = min(
-                                        distance / (cardWidth / 2),
-                                        1.0
-                                    )
-                                    let matchingEntries = allEntries.filter {
-                                        $0.playlistId == playlist.id
-                                    }
-
-                                    ArtistCard(
-                                        imageUrl: currentImageURL(
-                                            for: playlist,
-                                            at: index
-                                        ),
-                                        date: playlist.period ?? "",
-                                        title: playlist.title,
-                                        subTitle: "\(matchingEntries.count)곡"
-                                    )
-                                    .frame(width: cardWidth, height: 420)
-                                    .scaleEffect(
-                                        1.0 - normalizedDistance * 0.1
-                                    )
-                                    .animation(
-                                        .easeOut(duration: 0.2),
-                                        value: normalizedDistance
-                                    )
-                                    .onChange(of: minX) { _ in
-                                        let globalFrame = cardGeometry.frame(
-                                            in: .global
-                                        )
+                    ScrollViewReader { proxy in
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: -10) {
+                                ForEach(
+                                    Array(playlists.enumerated()),
+                                    id: \.element.id
+                                ) { index, playlist in
+                                    GeometryReader { cardGeometry in
+                                        let minX = cardGeometry.frame(in: .global)
+                                            .minX
                                         let screenCenter =
                                             UIScreen.main.bounds.width / 2
-                                        let cardCenter = globalFrame.midX
+                                        let cardCenter = minX + cardWidth / 2
+                                        let distance = abs(
+                                            cardCenter - screenCenter
+                                        )
+                                        let normalizedDistance = min(
+                                            distance / (cardWidth / 2),
+                                            1.0
+                                        )
+                                        let matchingEntries = allEntries.filter {
+                                            $0.playlistId == playlist.id
+                                        }
 
-                                        if abs(cardCenter - screenCenter)
-                                            < cardWidth / 3
-                                            && currentIndex != index
-                                        {
+                                        ArtistCard(
+                                            imageUrl: currentImageURL(
+                                                for: playlist,
+                                                at: index
+                                            ),
+                                            date: playlist.period ?? "",
+                                            title: playlist.title,
+                                            subTitle: "\(matchingEntries.count)곡"
+                                        )
+                                        .frame(width: cardWidth, height: 420)
+                                        .scaleEffect(
+                                            1.0 - normalizedDistance * 0.1
+                                        )
+                                        .animation(
+                                            .easeOut(duration: 0.2),
+                                            value: normalizedDistance
+                                        )
+                                        .onChange(of: minX) { _ in
+                                            let globalFrame = cardGeometry.frame(
+                                                in: .global
+                                            )
+                                            let screenCenter =
+                                                UIScreen.main.bounds.width / 2
+                                            let cardCenter = globalFrame.midX
+
+                                            if abs(cardCenter - screenCenter)
+                                                < cardWidth / 3
+                                                && currentIndex != index
+                                            {
+                                                currentIndex = index
+                                            }
+                                        }
+                                    }
+                                    .frame(width: cardWidth, height: 420) // GeometryReader
+                                    .scrollTransition { content, phase in
+                                        content
+                                            .scaleEffect(
+                                                phase.isIdentity ? 1.0 : 0.95
+                                            )
+                                            .opacity(phase.isIdentity ? 1.0 : 0.7)
+                                    }
+                                    .id(index)
+                                    .onTapGesture {
+                                        if currentIndex != index {
                                             currentIndex = index
+                                            proxy.scrollTo(index, anchor: .center)
+                                        } else {
+                                            selectedPlaylist = playlist
+                                            isNavigateToDetail = true
                                         }
                                     }
                                 }
-                                .frame(width: cardWidth, height: 420)
-                                .scrollTransition { content, phase in
-                                    content
-                                        .scaleEffect(
-                                            phase.isIdentity ? 1.0 : 0.95
-                                        )
-                                        .opacity(phase.isIdentity ? 1.0 : 0.7)
-                                }
-                                .id(index)
-                                .onTapGesture {
-                                    if currentIndex != index {
-                                        currentIndex = index
-                                        proxy.scrollTo(index, anchor: .center)
-                                    } else {
-                                        selectedPlaylist = playlist
-                                        isNavigateToDetail = true
-                                    }
-                                }
                             }
+                            .padding(.horizontal, geometry.size.width * 0.1)
                         }
-                        .padding(.horizontal, geometry.size.width * 0.1)
-                    }
-                    .scrollTargetBehavior(.viewAligned)
-                    .scrollTargetLayout()
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            proxy.scrollTo(0, anchor: .center)
+                        .scrollTargetBehavior(.viewAligned)
+                        .scrollTargetLayout()
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                proxy.scrollTo(0, anchor: .center)
+                            }
+                            // 2초 타이머 시작
+                            startImageTimer()
                         }
-                        // 2초 타이머 시작
-                        startImageTimer()
-                    }
-                    .onDisappear {
-                        // 뷰가 사라질 때 타이머 중지
-                        stopImageTimer()
+                        .onDisappear {
+                            // 뷰가 사라질 때 타이머 중지
+                            stopImageTimer()
+                        }
                     }
                 }
-            }
-            .frame(height: 420)
+                .frame(height: 420) // 최상단 GeometryReader
 
-            HStack {
-                ForEach(0..<playlists.count, id: \.self) { index in
-                    Capsule()
-                        .fill(
-                            index == currentIndex
-                            ? Color("Primary") : Color.neutral400
-                        )
-                        .frame(width: index == currentIndex ? 32 : 8, height: 8)
-                        .animation(
-                            .easeInOut(duration: 0.3),
-                            value: currentIndex
-                        )
+                HStack {
+                    ForEach(0..<playlists.count, id: \.self) { index in
+                        Capsule()
+                            .fill(
+                                index == currentIndex
+                                ? Color("Primary") : Color.neutral400
+                            )
+                            .frame(width: index == currentIndex ? 32 : 8, height: 8)
+                            .animation(
+                                .easeInOut(duration: 0.3),
+                                value: currentIndex
+                            )
+                    }
                 }
             }
+           
 
             NavigationLink(
                 isActive: $isNavigateToDetail,

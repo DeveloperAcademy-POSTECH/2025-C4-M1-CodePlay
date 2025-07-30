@@ -53,24 +53,30 @@ struct CustomList: View {
                 if isCurrentlyPlaying {
                     // 배경 원 (48x48 크기로 고정하여 앨범 커버와 동일)
                     if isPlaying {
-                        Circle()
-                            .stroke(Color.white.opacity(0.3), lineWidth: 2)
-                            .frame(width: 40, height: 40)
-                        
-                        // 진행률 원 (더 작게 조정)
-                        Circle()
-                            .trim(from: 0, to: playbackProgress)
-                            .stroke(Color.white, style: StrokeStyle(lineWidth: 2, lineCap: .round))
-                            .frame(width: 40, height: 40)
-                            .rotationEffect(.degrees(-90))
-                            .animation(.linear(duration: 0.1), value: playbackProgress)
+                        ZStack{
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color("neu1000").opacity(0.3))     // 반투명 배경
+                                .frame(width: 48, height: 48)
+
+                            Circle()
+                                .stroke(Color("neu0").opacity(0.4), lineWidth: 3)
+                                .frame(width: 36, height: 36)
+                            
+                            // 진행률 원 (더 작게 조정)
+                            Circle()
+                                .trim(from: 0, to: playbackProgress)
+                                .stroke(Color("Primary"), style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                                .frame(width: 36, height: 36)
+                                .rotationEffect(.degrees(-90))
+                                .animation(.linear(duration: 0.1), value: playbackProgress)
+                        }
                     }
                     
                     // 재생/일시정지 아이콘 (크기 고정)
                     ZStack {
-                        Circle()
-                            .fill(Color.black.opacity(0.7))
-                            .frame(width: 24, height: 24)
+//                        Circle()
+//                            .fill(Color.black.opacity(0.7))
+//                            .frame(width: 24, height: 24)
                         
                         Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                             .foregroundColor(.white)
@@ -83,7 +89,7 @@ struct CustomList: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.BlgBold())
-                    .foregroundColor(.neu900)
+                    .foregroundColor(isCurrentlyPlaying ? Color("Primary") : .neu900)
                 
                 Text(albumName)
                     .font(.BsmRegular())
@@ -97,6 +103,7 @@ struct CustomList: View {
                 Button(action: onDeleteTap) {
                     Image(systemName: "trash")
                         .foregroundColor(.neu700)
+                        .opacity(0.5)
                         .frame(width: 28, height: 28)
                 }
                 .buttonStyle(PlainButtonStyle())

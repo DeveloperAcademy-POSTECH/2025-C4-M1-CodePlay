@@ -28,6 +28,7 @@ struct ArtistCard: View {
             VStack(alignment: .leading) {
                 Rectangle()
                     .foregroundColor(.clear)
+                    // .frame(width: 296, height: 296)
                     .background(
                         Group {
                             if let highQualityUrl = highQualityImageUrl,
@@ -40,6 +41,7 @@ struct ArtistCard: View {
                                     case .success(let image):
                                         image
                                             .resizable()
+                                            // .frame(width: 296, height: 296)
                                             .clipped()
                                             .clipShape(RoundedRectangle(cornerRadius: 16))
                                             .padding(12)
@@ -53,25 +55,39 @@ struct ArtistCard: View {
                                                     fallbackImage
                                                         .resizable()
                                                         .scaledToFit()
+                                                        // .frame(width: 296, height: 296)
                                                         .clipped()
                                                         .clipShape(RoundedRectangle(cornerRadius: 16))
                                                         .padding(12)
                                                        
                                                 default:
-                                                    ProgressView()
-                                                        .frame(width: 296, height: 296)
+                                                    Image("ArtistImg")
+                                                        .resizable()
+                                                        .scaledToFit()
+                                                        // .frame(width: 296, height: 296)
+                                                        .clipped()
+                                                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                                                        .padding(12)
                                                 }
                                             }
                                         } else {
-                                            ProgressView()
-                                                .frame(width: 296, height: 296)
+                                            Image("ArtistImg2")
+                                                .resizable()
+                                                .scaledToFit()
+                                                // .frame(width: 296, height: 296)
+                                                .clipped()
+                                                .padding(12)
                                         }
                                     @unknown default:
                                         EmptyView()
                                     }
                                 }
                             } else {
-                                Text("이미지를 불러올 수 없습니다.")
+                                Image("ArtistImg2")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 296, height: 296)
+                                    .padding(12)
                             }
                         }
                     )
@@ -100,6 +116,7 @@ struct ArtistCard: View {
             }
             .liquidGlass(style: .card)
         }
+        // .frame(maxWidth: 320, maxHeight: 420)
     }
 }
 
