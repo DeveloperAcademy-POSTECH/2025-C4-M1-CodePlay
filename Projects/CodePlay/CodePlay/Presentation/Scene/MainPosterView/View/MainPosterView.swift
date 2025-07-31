@@ -16,111 +16,86 @@ struct MainPosterView: View {
     @State private var isNavigateToScanPoster = false
     @Environment(\.modelContext) var modelContext
     @Query(sort: \Playlist.createdAt, order: .reverse) private var playlists: [Playlist]
-    
+    @State private var refreshId = UUID()
+    @State private var hasCleaned = false
+
     var body: some View {
         NavigationStack {
             VStack(alignment: .center, spacing: 0) {
-                    Spacer().frame(height: 106)
-            
-                    if playlists.isEmpty {
-                        VStack(alignment: .center, spacing: 76) {
-                            Image("Mainempty")
-                                .resizable()
-                                .frame(maxWidth: .infinity, maxHeight: 320)
-                        }
-                        .padding(.horizontal, 36)
+                Spacer().frame(height: 106)
 
-                    } else {
-                        VStack {
-                            OverlappingCardsView(playlists: playlists, wrapper: musicWrapper) //임시입다
-                        }
+                if playlists.isEmpty {
+                    VStack(alignment: .center, spacing: 76) {
+                        Image("Mainempty")
+                            .resizable()
+                            .frame(maxWidth: .infinity, maxHeight: 320)
                     }
-                    
-                    Spacer().frame(height: 36)
-                    
-                    Text("페스티벌에 가기 전\n슝으로 예습해 보세요!")
-                        .multilineTextAlignment(.center)
-                        .font(.HlgBold())
-                        .foregroundColor(.neu900)
-                        .padding(.horizontal, 36)
-                        .lineSpacing(2)
-
-                    Spacer().frame(height: 12)
-                    
-                    Text("포스터 인식으로 플레이리스트를 만들 수 있어요")
-                        .font(.BmdRegular())
-                        .foregroundColor(.neu700)
-                        .padding(.horizontal, 36)
-                        .lineSpacing(2)
-                                        
-                    Spacer()
-                    
-                    BottomButton(title: "페스티벌 라인업 인식", kind: .colorFill, action: {
-                        recognizedText = ""
-                        isNavigateToScanPoster = true
-                    })
-                    .padding(.bottom, 16)
-                    .padding(.horizontal, 20)
-                    
-                    Spacer().frame(height: 25)
-                    
-                    NavigationLink(
-                        isActive: $wrapper.shouldNavigateToFestivalCheck,
-                        destination: {
-                            FestivalView(rawText: wrapper.scannedText)
-                                .environmentObject(musicWrapper)
-                        }
-                    ) {
-                        EmptyView()
+                    .padding(.horizontal, 36)
+                } else {
+                    VStack {
+                        OverlappingCardsView(playlists: playlists, wrapper: musicWrapper)
+                            .id(refreshId)
                     }
-                    .hidden()
                 }
+
+                Spacer().frame(height: 36)
+
+                Text("페스티벌에 가기 전\n슝으로 예습해 보세요!")
+                    .multilineTextAlignment(.center)
+                    .font(.HlgBold())
+                    .foregroundColor(.neu900)
+                    .padding(.horizontal, 36)
+                    .lineSpacing(2)
+
+                Spacer().frame(height: 12)
+
+                Text("포스터 인식으로 플레이리스트를 만들 수 있어요")
+                    .font(.BmdRegular())
+                    .foregroundColor(.neu700)
+                    .padding(.horizontal, 36)
+                    .lineSpacing(2)
+
+                Spacer()
+
+                BottomButton(title: "페스티벌 라인업 인식", kind: .colorFill, action: {
+                    recognizedText = ""
+                    isNavigateToScanPoster = true
+                })
+                .padding(.bottom, 16)
+                .padding(.horizontal, 20)
+
+                Spacer().frame(height: 25)
+
+                NavigationLink(
+                    isActive: $wrapper.shouldNavigateToFestivalCheck,
+                    destination: {
+                        FestivalView(rawText: wrapper.scannedText)
+                            .environmentObject(musicWrapper)
+                    }
+                ) {
+                    EmptyView()
+                }
+                .hidden()
+            }
             .edgesIgnoringSafeArea(.all)
             .backgroundWithBlur()
             .navigationBarHidden(true)
             .onAppear {
+                refreshId = UUID() // 강제 렌더링
+
                 print("🧾 현재 Playlist 수: \(playlists.count)")
                 for p in playlists {
                     print("📀 \(p.title) / \(p.createdAt)")
                 }
 
-                Task {
-                    var didDelete = false
-
-                    for playlist in playlists {
-                        let targetId = playlist.id
-                        let entries = try? modelContext.fetch(
-                            FetchDescriptor<PlaylistEntry>(
-                                predicate: #Predicate { $0.playlistId == targetId }
-                            )
-                        )
-                        if entries?.isEmpty ?? true {
-                            print("🗑️ 삭제할 Playlist: \(playlist.title)")
-                            modelContext.delete(playlist)
-                            didDelete = true
-                        }
-                    }
-
-                    if didDelete {
-                        do {
-                            try modelContext.save()
-                            print("✅ Playlist 정리 완료")
-                        } catch {
-                            print("❌ 저장 실패: \(error)")
-                        }
-                    }
-
-                    // 👉 뷰 강제 갱신 (optional, 필요 시)
-                    await MainActor.run {
-                        withAnimation {
-                            // 무의미한 상태 변경을 통해 강제 리렌더링 유도
-                            recognizedText = UUID().uuidString
-                        }
+                // ✅ 안전한 삭제는 Task 내부에서
+                if !hasCleaned {
+                    hasCleaned = true
+                    Task {
+                        await deleteEmptyPlaylists()
                     }
                 }
             }
-
-
             .fullScreenCover(isPresented: $isNavigateToScanPoster) {
                 CameraLiveTextView(
                     recognizedText: $recognizedText,
@@ -131,8 +106,35 @@ struct MainPosterView: View {
             }
         }
     }
-    
+
+    // MARK: - 빈 Playlist 정리 함수 (비동기)
+    @MainActor
+    func deleteEmptyPlaylists() async {
+        do {
+            var deletedCount = 0
+            for playlist in playlists {
+                _ = playlist.entries.first // lazy loading 유도
+
+                let allEntries: [PlaylistEntry] = try modelContext.fetch(FetchDescriptor<PlaylistEntry>())
+                let entryCount = allEntries.filter { $0.playlistId == playlist.id }.count
+
+                if entryCount == 0 {
+                    modelContext.delete(playlist)
+                    print("🗑️ 빈 Playlist 삭제됨: \(playlist.title)")
+                    deletedCount += 1
+                }
+            }
+
+            if deletedCount > 0 {
+                try modelContext.save()
+                print("✅ 빈 Playlist \(deletedCount)개 저장 완료")
+            }
+        } catch {
+            print("❌ 빈 Playlist 삭제 중 오류: \(error.localizedDescription)")
+        }
+    }
 }
+
 
 // MARK: PosterViewModelWrapper
 final class PosterViewModelWrapper: ObservableObject {

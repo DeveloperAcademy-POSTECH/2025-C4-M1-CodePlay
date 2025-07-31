@@ -70,15 +70,15 @@ struct FestivalSearchView: View {
 
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            showSearchResults = false
-                            searchText = ""
-                            NavigationUtil.popToRootView()
-                        }
+//                        withAnimation(.easeInOut(duration: 0.3)) {
+//                            showSearchResults = false
+//                            searchText = ""
+//                            NavigationUtil.popToRootView()
+//                        }
                     }) {
                     Text("취소")
                         .font(.BlgRegular())
-                        .foregroundStyle(Color("Primary"))
+                        .foregroundColor(.neu900.opacity(0)) // 일단은 비활성화
 
                 }
             }
