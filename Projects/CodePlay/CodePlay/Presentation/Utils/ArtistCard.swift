@@ -23,6 +23,29 @@ struct ArtistCard: View {
         return imageUrl?.appleMusicHighQualityImageURL(targetSize: 592)
     }
     
+
+    private func shortenedTitle(_ title: String) -> String {
+     
+        let keywords = ["with", "featuring", "x", "×", "presents", "주최", "후원"]
+        
+        for keyword in keywords {
+            let components = title.components(separatedBy: keyword)
+            if components.count > 1 {
+        
+                let afterKeyword = components[1].trimmingCharacters(in: .whitespaces)
+                let beforeKeyword = components[0].trimmingCharacters(in: .whitespaces)
+                
+                if afterKeyword.count > beforeKeyword.count && 
+                   (afterKeyword.localizedCaseInsensitiveContains("페스티벌") || 
+                    afterKeyword.localizedCaseInsensitiveContains("festival")) {
+                    return afterKeyword
+                }
+            }
+        }
+        
+        return title
+    }
+    
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
@@ -103,9 +126,11 @@ struct ArtistCard: View {
                         .font(.BsmRegular())
                         .foregroundColor(.neu700)
                     
-                    Text(title)
+                    Text(shortenedTitle(title))
                         .font(.BlgBold())
                         .foregroundColor(.neu900)
+                        .lineLimit(2)
+                        .truncationMode(.tail)
                     
                     Text(subTitle)
                         .font(.BsmRegular())
