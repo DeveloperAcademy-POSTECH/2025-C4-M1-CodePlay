@@ -112,12 +112,12 @@ struct SelectArtistView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(
                     action: {
-                        NavigationUtil.popToRootView()
+//                        NavigationUtil.popToRootView()
                     },
                     label: {
                         Text("취소")
                             .font(.BlgRegular())
-                            .foregroundColor(.neu900)
+                            .foregroundColor(.neu900.opacity(0)) // 일단은 비활성화
                     }
                 )
             }

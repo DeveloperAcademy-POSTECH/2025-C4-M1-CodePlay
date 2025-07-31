@@ -173,12 +173,16 @@ final class MusicViewModelWrapper: ObservableObject {
 
         festivalCheckViewModel.festivalData.observe(on: self) {
             [weak self] value in
-            self?.festivalData = value
+            DispatchQueue.main.async {
+                self?.festivalData = value
+            }
         }
 
         festivalCheckViewModel.suggestTitles.observe(on: self) {
             [weak self] value in
-            self?.suggestTitles = value
+            DispatchQueue.main.async {
+                self?.suggestTitles = value
+            }
         }
 
         appleMusicConnectViewModel.authorizationStatus.observe(on: self) {
