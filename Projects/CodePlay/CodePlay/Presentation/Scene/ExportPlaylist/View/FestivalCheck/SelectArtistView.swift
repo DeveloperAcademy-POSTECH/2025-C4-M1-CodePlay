@@ -57,7 +57,7 @@ struct SelectArtistView: View {
                                 .foregroundColor(
                                     selectedArtists.count
                                         < playlist.artists.count
-                                        ? .neutral500 : Color("Primary")
+                                        ? .neutral500 : Color(asset: Asset.primary)
                                 )
                             Text("전체선택")
                                 .font(
@@ -68,7 +68,7 @@ struct SelectArtistView: View {
                                 .foregroundColor(
                                     selectedArtists.count
                                         < playlist.artists.count
-                                        ? .neutral500 : Color("Primary")
+                                    ? .neutral500 : Color(asset: Asset.primary)
                                 )
                         }
                     }
@@ -201,7 +201,7 @@ struct SelectArtistView: View {
                                                     selectedArtists.contains(
                                                         artist
                                                     )
-                                                        ? Color("Primary")
+                                                        ? Color(asset: Asset.primary)
                                                         : Color.neutral50,
                                                     lineWidth: 4
                                                 )

@@ -55,17 +55,17 @@ struct CustomList: View {
                     if isPlaying {
                         ZStack{
                             RoundedRectangle(cornerRadius: 8)
-                                .fill(Color("neu1000").opacity(0.3))     // 반투명 배경
+                                .fill(Color(asset: Asset.neu1000).opacity(0.3))
                                 .frame(width: 48, height: 48)
 
                             Circle()
-                                .stroke(Color("neu0").opacity(0.4), lineWidth: 3)
+                                .stroke(Color(asset: Asset.neu0).opacity(0.4), lineWidth: 3)
                                 .frame(width: 36, height: 36)
                             
                             // 진행률 원 (더 작게 조정)
                             Circle()
                                 .trim(from: 0, to: playbackProgress)
-                                .stroke(Color("Primary"), style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                                .stroke(Color(asset: Asset.primary), style: StrokeStyle(lineWidth: 3, lineCap: .round))
                                 .frame(width: 36, height: 36)
                                 .rotationEffect(.degrees(-90))
                                 .animation(.linear(duration: 0.1), value: playbackProgress)
@@ -89,7 +89,7 @@ struct CustomList: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.BlgBold())
-                    .foregroundColor(isCurrentlyPlaying ? Color("Primary") : .neu900)
+                    .foregroundColor(isCurrentlyPlaying ? Color(asset: Asset.primary) : .neu900)
                 
                 Text(albumName)
                     .font(.BsmRegular())

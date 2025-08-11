@@ -20,7 +20,7 @@ struct GradientProgressBar: View {
                 Capsule()
                     .fill(
                         LinearGradient(
-                            colors: [Color("Secondary"), Color("Primary")],
+                            colors: [Color(asset: Asset.secondary), Color(asset: Asset.primary)],
                             startPoint: .leading,
                             endPoint: .trailing
                         )

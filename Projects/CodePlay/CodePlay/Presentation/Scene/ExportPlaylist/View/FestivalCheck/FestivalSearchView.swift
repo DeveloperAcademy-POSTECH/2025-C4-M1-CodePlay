@@ -55,7 +55,7 @@ struct FestivalSearchView: View {
                     },
                     label: {
                         Image(systemName: "chevron.left")
-                            .foregroundStyle(Color("Primary"))
+                            .foregroundStyle(Color(asset: Asset.primary))
                     }
                 )
             }

@@ -136,7 +136,7 @@ struct OverlappingCardsView: View {
                         Capsule()
                             .fill(
                                 index == currentIndex
-                                ? Color("Primary") : Color.neutral400
+                                ? Color(asset: Asset.primary) : Color.neutral400
                             )
                             .frame(width: index == currentIndex ? 32 : 8, height: 8)
                             .animation(
