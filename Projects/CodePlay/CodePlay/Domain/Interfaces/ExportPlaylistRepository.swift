@@ -114,7 +114,7 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                 let response = try await request.response()
                 let topSongs = response.songs.prefix(3)
 
-                print("🔍 [TopSongs] \(artist.artistName) - 검색된 곡 수: \(topSongs.count)")
+                Log.debug("🔍 [TopSongs] \(artist.artistName) - 검색된 곡 수: \(topSongs.count)")
 
                 for song in topSongs {
                     let entry = PlaylistEntry(
@@ -132,11 +132,11 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                         createdAt: .now
                     )
 
-                    print("🎵 [Entry 생성됨] \(entry.artistName) - \(entry.trackTitle) (\(entry.trackId))")
+                    Log.debug("🎵 [Entry 생성됨] \(entry.artistName) - \(entry.trackTitle) (\(entry.trackId))")
                     allEntries.append(entry)
                 }
             } catch {
-                print("❌ [TopSongs 검색 실패] \(artist.artistName): \(error)")
+                Log.debug("❌ [TopSongs 검색 실패] \(artist.artistName): \(error)")
             }
         }
 
@@ -192,7 +192,7 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
             }
         }
 
-        print("✅ [searchTopSongs] 총 생성된 Entry 수: \(allEntries.count)")
+        Log.debug("✅ [searchTopSongs] 총 생성된 Entry 수: \(allEntries.count)")
         return allEntries
     }
 

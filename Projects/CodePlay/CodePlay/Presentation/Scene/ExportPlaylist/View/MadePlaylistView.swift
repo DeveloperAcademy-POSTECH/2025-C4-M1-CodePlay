@@ -37,15 +37,15 @@ struct MadePlaylistView: View {
                 let filteredEntries = allEntries.filter {
                     $0.playlistId == selectedPlaylist.id
                 }
-                print(
+                Log.debug(
                     "🎵 선택된 플레이리스트(\(selectedPlaylist.title))의 엔트리 수: \(filteredEntries.count)"
                 )
-                print("🔍 전체 엔트리 수: \(allEntries.count)")
-                print("🆔 찾는 playlistId: \(selectedPlaylist.id)")
+                Log.debug("🔍 전체 엔트리 수: \(allEntries.count)")
+                Log.debug("🆔 찾는 playlistId: \(selectedPlaylist.id)")
 
                 // 모든 엔트리의 playlistId 출력
                 for entry in allEntries {
-                    print(
+                    Log.debug(
                         "📦 Entry: \(entry.artistName) - playlistId: \(entry.playlistId)"
                     )
                 }
@@ -53,7 +53,7 @@ struct MadePlaylistView: View {
                 return filteredEntries
             } else {
                 // 기존 동작: wrapper에서 가져온 엔트리들 사용
-                print("🎵 Wrapper에서 가져온 엔트리 수: \(wrapper.playlistEntries.count)")
+                Log.debug("🎵 Wrapper에서 가져온 엔트리 수: \(wrapper.playlistEntries.count)")
                 return wrapper.playlistEntries
             }
         }()

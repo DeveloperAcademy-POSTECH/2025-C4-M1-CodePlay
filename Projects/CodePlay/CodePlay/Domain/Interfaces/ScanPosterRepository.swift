@@ -35,7 +35,6 @@ final class DefaultScanPosterRepository: ScanPosterRepository {
         }
 
         let rawText = RawText(text: fullText)
-        print(rawText.text)
         return rawText
     }
 }

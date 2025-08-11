@@ -49,7 +49,7 @@ class DefaultPosterViewModel: PosterViewModel {
                     self.shouldNavigateToFestivalCheck.value = true
                 }
             } catch {
-                print("[PosterViewModel] - 포스터 인식 실패:\(error)")
+                Log.fault("[PosterViewModel] - 포스터 인식 실패:\(error)")
             }
         }
     }

@@ -270,7 +270,7 @@ struct SelectArtistView: View {
                         }
                     }
                 } catch {
-                    print("Error fetching artwork for \(artist): \(error)")
+                    Log.debug("Error fetching artwork for \(artist): \(error)")
                     DispatchQueue.main.async {
                         artistArtworks[artist] = nil
                         failedArtists.insert(artist)

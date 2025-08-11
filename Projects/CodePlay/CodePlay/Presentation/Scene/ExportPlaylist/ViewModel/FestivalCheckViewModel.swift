@@ -57,21 +57,21 @@ final class DefaultFestivalCheckViewModel: FestivalCheckViewModel {
         defer { isLoading.value = false }
 
         do {
-            print("[FestivalCheckViewModel] 🔄 fetchFestivalInfoUseCase 시작")
+            Log.debug("[FestivalCheckViewModel] 🔄 fetchFestivalInfoUseCase 시작")
             let response = try await fetchFestivalInfoUseCase.execute(
                 rawText: rawText
             )
-            print("[FestivalCheckViewModel] ✅ API 응답 수신: \(response)")
+            Log.debug("[FestivalCheckViewModel] ✅ API 응답 수신: \(response)")
 
             guard let first = response.dynamoData.first else {
-                print("[FestivalCheckViewModel] ❗️dynamoData 비어 있음")
+                Log.debug("[FestivalCheckViewModel] ❗️dynamoData 비어 있음")
                 self.state = .noResult
                 return
             }
 
             self.festivalData.value = first
             self.suggestTitles.value = response.top5.map { $0.title }
-            print("[FestivalCheckViewModel] ✅ festivalData 업데이트 완료")
+            Log.debug("[FestivalCheckViewModel] ✅ festivalData 업데이트 완료")
         } catch {
             self.shouldShowNoResultView = true
             Task {
@@ -80,7 +80,7 @@ final class DefaultFestivalCheckViewModel: FestivalCheckViewModel {
                 }
             self.state = .error("알 수 없는 오류가 발생했습니다.")
             self.errorMessage = error.localizedDescription
-            print("[FestivalCheckViewModel] ❌ Festival Info Fetch 실패: \(error)")
+            Log.fault("[FestivalCheckViewModel] ❌ Festival Info Fetch 실패: \(error)")
         }
     }
 }

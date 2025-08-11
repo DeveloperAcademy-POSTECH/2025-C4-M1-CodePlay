@@ -85,13 +85,13 @@ extension AppDelegate {
                 Log.debug("✅ 서버 등록 성공: \(response.first?.endpointArn ?? "-")")
                 UserDefaults.standard.set(true, forKey: "hasUploadedDeviceToken")
             } catch {
-                Log.error("❌ 서버에 디바이스 토큰 전송 실패:", error.localizedDescription)
+                Log.error("❌ 서버에 디바이스 토큰 전송 실패: \(error.localizedDescription)")
             }
         }
     }
 
     func application(_ application: UIApplication,
                      didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        Log.error("❌ APNs 등록 실패:", error.localizedDescription)
+        Log.error("❌ APNs 등록 실패: \(error.localizedDescription)")
     }
 }

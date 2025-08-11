@@ -83,9 +83,9 @@ struct MainPosterView: View {
             .onAppear {
                 refreshId = UUID() // 강제 렌더링
 
-                print("🧾 현재 Playlist 수: \(playlists.count)")
+                Log.debug("🧾 현재 Playlist 수: \(playlists.count)")
                 for p in playlists {
-                    print("📀 \(p.title) / \(p.createdAt)")
+                    Log.debug("📀 \(p.title) / \(p.createdAt)")
                 }
 
                 // ✅ 안전한 삭제는 Task 내부에서
@@ -120,17 +120,17 @@ struct MainPosterView: View {
 
                 if entryCount == 0 {
                     modelContext.delete(playlist)
-                    print("🗑️ 빈 Playlist 삭제됨: \(playlist.title)")
+                    Log.debug("🗑️ 빈 Playlist 삭제됨: \(playlist.title)")
                     deletedCount += 1
                 }
             }
 
             if deletedCount > 0 {
                 try modelContext.save()
-                print("✅ 빈 Playlist \(deletedCount)개 저장 완료")
+                Log.debug("✅ 빈 Playlist \(deletedCount)개 저장 완료")
             }
         } catch {
-            print("❌ 빈 Playlist 삭제 중 오류: \(error.localizedDescription)")
+            Log.fault("❌ 빈 Playlist 삭제 중 오류: \(error.localizedDescription)")
         }
     }
 }

@@ -77,14 +77,14 @@ struct BottomButton: View {
         title: "페스티벌 라인업 인식",
         kind: .colorFill,
         action: {
-            print("버튼 누름")
+            Log.debug("버튼 누름")
         }
     )
     BottomButton(
         title: "페스티벌 라인업 인식",
         kind: .line,
         action: {
-            print("버튼 누름")
+            Log.debug("버튼 누름")
         }
     )
 }
