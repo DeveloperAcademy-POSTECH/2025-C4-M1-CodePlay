@@ -20,12 +20,12 @@ struct AppleMusicConnectView: View {
             Spacer().frame(height: 146)
 
             if viewModelWrapper.authorizationStatus?.status == .denied {
-                Image("Linkfail")
+                Image(asset: Asset.linkfail)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 320, height: 320)
             } else {
-                Image("Linkapplemusic")
+                Image(asset: Asset.linkapplemusic)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 320, height: 320)
