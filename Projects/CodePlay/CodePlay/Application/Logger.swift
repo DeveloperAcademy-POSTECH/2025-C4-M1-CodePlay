@@ -11,7 +11,6 @@ import os.log
 struct Log {
     /**
      # (e) Level
-     - Authors : suni
      - debug : 디버깅 로그
      - info : 문제 해결 정보
      - fault : 잘못된 정보
