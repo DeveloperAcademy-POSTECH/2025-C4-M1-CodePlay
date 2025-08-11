@@ -37,7 +37,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         let userInfo = notification.request.content.userInfo
-        Log.info("🔔 실시간 푸시 수신 (포그라운드):", userInfo)
+        Log.info("🔔 실시간 푸시 수신 (포그라운드): \(userInfo)")
         completionHandler([.banner, .sound, .badge])
     }
 
@@ -46,7 +46,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
-        Log.debug("🔔 푸시 탭됨:", userInfo)
+        Log.debug("🔔 푸시 탭됨: \(userInfo)")
         completionHandler()
     }
 }
