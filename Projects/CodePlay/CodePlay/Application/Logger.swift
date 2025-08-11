@@ -14,7 +14,7 @@ struct Log {
      - Authors : suni
      - debug : 디버깅 로그
      - info : 문제 해결 정보
-     - network : 네트워크 정보
+     - fault : 잘못된 정보
      - error :  오류
      - custom(category: String) : 커스텀 디버깅 로그
      */
@@ -23,10 +23,9 @@ struct Log {
         case debug
         /// 문제 해결 정보
         case info
-        /// 네트워크 로그
-        case network
         /// 오류 로그
         case error
+        case fault
         case custom(category: String)
         
         fileprivate var category: String {
@@ -35,8 +34,8 @@ struct Log {
                 return "🟡 DEBUG"
             case .info:
                 return "🟠 INFO"
-            case .network:
-                return "🔵 NETWORK"
+            case .fault:
+                return "🔵 FAULT"
             case .error:
                 return "🔴 ERROR"
             case .custom(let category):
@@ -50,8 +49,8 @@ struct Log {
                 return OSLog.debug
             case .info:
                 return OSLog.info
-            case .network:
-                return OSLog.network
+            case .fault:
+                return OSLog.fault
             case .error:
                 return OSLog.error
             case .custom:
@@ -65,8 +64,8 @@ struct Log {
                 return .debug
             case .info:
                 return .info
-            case .network:
-                return .default
+            case .fault:
+                return .fault
             case .error:
                 return .error
             case .custom:
@@ -75,27 +74,22 @@ struct Log {
         }
     }
     
-    static private func log(_ message: Any, _ arguments: [Any], level: Level) {
+    static private func log(_ message: Any, level: Level) {
         #if DEBUG
-        if #available(iOS 14.0, *) {
-            let extraMessage: String = arguments.map({ String(describing: $0) }).joined(separator: " ")
             let logger = Logger(subsystem: OSLog.subsystem, category: level.category)
-            let logMessage = "\(message) \(extraMessage)"
+            let logMessage = "\(level.category): \(message)"
             switch level {
             case .debug,
                  .custom:
                 logger.debug("\(logMessage, privacy: .public)")
             case .info:
                 logger.info("\(logMessage, privacy: .public)")
-            case .network:
-                logger.log("\(logMessage, privacy: .public)")
+            case .fault:
+                logger.log("\(logMessage, privacy: .private)")
             case .error:
-                logger.error("\(logMessage, privacy: .public)")
+                logger.error("\(logMessage, privacy: .private)")
             }
-        } else {
-            let extraMessage: String = arguments.map({ String(describing: $0) }).joined(separator: " ")
-            os_log("%{public}@", log: level.osLog, type: level.osLogType, "\(message) \(extraMessage)")
-        }
+        
         #endif
     }
 }
@@ -103,7 +97,7 @@ struct Log {
 // MARK: - extension
 extension OSLog {
     static let subsystem = Bundle.main.bundleIdentifier!
-    static let network = OSLog(subsystem: subsystem, category: "Network")
+    static let fault = OSLog(subsystem: subsystem, category: "Fault")
     static let debug = OSLog(subsystem: subsystem, category: "Debug")
     static let info = OSLog(subsystem: subsystem, category: "Info")
     static let error = OSLog(subsystem: subsystem, category: "Error")
@@ -114,32 +108,32 @@ extension Log {
      # debug
      - Note : 개발 중 코드 디버깅 시 사용할 수 있는 유용한 정보
      */
-    static func debug(_ message: Any, _ arguments: Any...) {
-        log(message, arguments, level: .debug)
+    static func debug(_ message: Any) {
+        log(message, level: .debug)
     }
 
     /**
      # info
      - Note : 문제 해결시 활용할 수 있는, 도움이 되지만 필수적이지 않은 정보
      */
-    static func info(_ message: Any, _ arguments: Any...) {
-        log(message, arguments, level: .info)
+    static func info(_ message: Any) {
+        log(message, level: .info)
     }
 
     /**
-     # network
-     - Note : 네트워크 문제 해결에 필수적인 정보
+     # fault
+     - Note : 실행 중 발생하는 버그나 잘못된 동작
      */
-    static func network(_ message: Any, _ arguments: Any...) {
-        log(message, arguments, level: .network)
+    static func fault(_ message: Any) {
+        log(message, level: .fault)
     }
 
     /**
      # error
      - Note : 코드 실행 중 나타난 에러
      */
-    static func error(_ message: Any, _ arguments: Any...) {
-        log(message, arguments, level: .error)
+    static func error(_ message: Any) {
+        log(message, level: .error)
     }
 
     /**
@@ -147,6 +141,6 @@ extension Log {
      - Note : 커스텀 디버깅 로그
      */
     static func custom(category: String, _ message: Any, _ arguments: Any...) {
-        log(message, arguments, level: .custom(category: category))
+        log(message, level: .custom(category: category))
     }
 }

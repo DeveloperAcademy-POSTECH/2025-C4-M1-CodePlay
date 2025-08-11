@@ -27,7 +27,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                     UIApplication.shared.registerForRemoteNotifications()
                 }
             } else {
-                print("❌ 푸시 권한 거부됨")
+                Log.debug("❌ 푸시 권한 거부됨")
             }
         }
     }
@@ -37,7 +37,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         let userInfo = notification.request.content.userInfo
-        print("🔔 실시간 푸시 수신 (포그라운드):", userInfo)
+        Log.info("🔔 실시간 푸시 수신 (포그라운드):", userInfo)
         completionHandler([.banner, .sound, .badge])
     }
 
@@ -46,7 +46,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
-        print("🔔 푸시 탭됨:", userInfo)
+        Log.debug("🔔 푸시 탭됨:", userInfo)
         completionHandler()
     }
 }
@@ -57,12 +57,12 @@ extension AppDelegate {
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
 
         let token = deviceToken.map { String(format: "%02x", $0) }.joined()
-        print("📲 APNs 토큰 수신: \(token)")
+        Log.debug("📲 APNs 토큰 수신: \(token)")
 
         // 📌 최초 1회만 서버로 전송
         let hasUploaded = UserDefaults.standard.bool(forKey: "hasUploadedDeviceToken")
         guard !hasUploaded else {
-            print("🔁 이미 업로드된 토큰 → 서버 전송 생략")
+            Log.debug("🔁 이미 업로드된 토큰 → 서버 전송 생략")
             return
         }
 
@@ -82,16 +82,16 @@ extension AppDelegate {
         Task {
             do {
                 let response = try await notificationService.postDeviceToken(model: dto)
-                print("✅ 서버 등록 성공: \(response.first?.endpointArn ?? "-")")
+                Log.debug("✅ 서버 등록 성공: \(response.first?.endpointArn ?? "-")")
                 UserDefaults.standard.set(true, forKey: "hasUploadedDeviceToken")
             } catch {
-                print("❌ 서버에 디바이스 토큰 전송 실패:", error.localizedDescription)
+                Log.error("❌ 서버에 디바이스 토큰 전송 실패:", error.localizedDescription)
             }
         }
     }
 
     func application(_ application: UIApplication,
                      didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("❌ APNs 등록 실패:", error.localizedDescription)
+        Log.error("❌ APNs 등록 실패:", error.localizedDescription)
     }
 }
