@@ -26,7 +26,7 @@ struct MainPosterView: View {
 
                 if playlists.isEmpty {
                     VStack(alignment: .center, spacing: 76) {
-                        Image("Mainempty")
+                        Image(asset: Asset.mainempty)
                             .resizable()
                             .frame(maxWidth: .infinity, maxHeight: 320)
                     }

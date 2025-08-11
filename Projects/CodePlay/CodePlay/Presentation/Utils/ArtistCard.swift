@@ -46,12 +46,12 @@ struct ArtistCard: View {
         return title
     }
     
+    // TODO: ArtistImg를 대체할 빈 화면 보여주는 로직으로 수정해야 함
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
                 Rectangle()
                     .foregroundColor(.clear)
-                    // .frame(width: 296, height: 296)
                     .background(
                         Group {
                             if let highQualityUrl = highQualityImageUrl,
@@ -64,7 +64,6 @@ struct ArtistCard: View {
                                     case .success(let image):
                                         image
                                             .resizable()
-                                            // .frame(width: 296, height: 296)
                                             .clipped()
                                             .clipShape(RoundedRectangle(cornerRadius: 16))
                                             .padding(12)
@@ -78,7 +77,6 @@ struct ArtistCard: View {
                                                     fallbackImage
                                                         .resizable()
                                                         .scaledToFit()
-                                                        // .frame(width: 296, height: 296)
                                                         .clipped()
                                                         .clipShape(RoundedRectangle(cornerRadius: 16))
                                                         .padding(12)
@@ -87,7 +85,6 @@ struct ArtistCard: View {
                                                     Image("ArtistImg")
                                                         .resizable()
                                                         .scaledToFit()
-                                                        // .frame(width: 296, height: 296)
                                                         .clipped()
                                                         .clipShape(RoundedRectangle(cornerRadius: 16))
                                                         .padding(12)
@@ -97,7 +94,6 @@ struct ArtistCard: View {
                                             Image("ArtistImg2")
                                                 .resizable()
                                                 .scaledToFit()
-                                                // .frame(width: 296, height: 296)
                                                 .clipped()
                                                 .padding(12)
                                         }

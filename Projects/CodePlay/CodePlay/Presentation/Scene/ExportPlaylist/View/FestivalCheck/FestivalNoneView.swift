@@ -34,7 +34,7 @@ struct FestivalNoneView: View {
 
                 Spacer().frame(height: 36)
 
-                Image("Festivalfail")
+                Image(asset: Asset.festivalfail)
                     .resizable()
                     .scaledToFit()
                     .padding(.horizontal, 36.5)

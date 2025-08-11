@@ -22,7 +22,7 @@ struct ExportSuccessView: View {
                     .backgroundWithBlur()
                     .ignoresSafeArea()
                 VStack(spacing: 0) {
-                    Image("Playlist")
+                    Image(asset: Asset.playlist)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 320, height: 320)
