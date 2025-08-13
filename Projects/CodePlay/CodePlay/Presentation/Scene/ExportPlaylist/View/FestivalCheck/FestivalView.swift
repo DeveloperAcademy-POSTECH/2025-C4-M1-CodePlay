@@ -144,9 +144,6 @@ struct FestivalView: View {
         }
         .navigationBarBackButtonHidden()
         .edgesIgnoringSafeArea(.bottom)
-        .onAppear {
-            print("[FestivalView] onAppear")
-        }
     }
 
     @ViewBuilder
@@ -168,7 +165,7 @@ struct FestivalView: View {
 
     private func savePlaylist() {
         guard let data = wrapper.festivalData else {
-            print("No festival data to save")
+            Log.debug("No festival data to save")
             return
         }
 
@@ -185,9 +182,9 @@ struct FestivalView: View {
         do {
             try modelContext.save()
             savedPlaylist = playlist
-            print("Playlist saved successfully")
+            Log.debug("Playlist saved successfully")
         } catch {
-            print("Error saving playlist: \(error.localizedDescription)")
+            Log.fault("Error saving playlist: \(error.localizedDescription)")
         }
     }
 }

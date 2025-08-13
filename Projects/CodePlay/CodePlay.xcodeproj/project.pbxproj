@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0918E5B02E1DF93B007E2D1E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 0918E5AF2E1DF931007E2D1E /* .swiftlint.yml */; };
+		D8879ECE2E49FFD500443CD8 /* OSLog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8879ECD2E49FFD500443CD8 /* OSLog.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D8DA034E2E28F44800DF8AE8 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = D8DA034D2E28F44800DF8AE8 /* CombineMoya */; };
 		D8DA03502E28F44800DF8AE8 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = D8DA034F2E28F44800DF8AE8 /* Moya */; };
 		D8DA03522E28F44800DF8AE8 /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = D8DA03512E28F44800DF8AE8 /* ReactiveMoya */; };
@@ -17,6 +18,7 @@
 /* Begin PBXFileReference section */
 		0918E5AF2E1DF931007E2D1E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		D8391C3E2E1CC9C000A44C3F /* CodePlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodePlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8879ECD2E49FFD500443CD8 /* OSLog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSLog.framework; path = System/Library/Frameworks/OSLog.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -45,6 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			files = (
 				D8DA03502E28F44800DF8AE8 /* Moya in Frameworks */,
+				D8879ECE2E49FFD500443CD8 /* OSLog.framework in Frameworks */,
 				D8DA034E2E28F44800DF8AE8 /* CombineMoya in Frameworks */,
 				D8DA03542E28F44800DF8AE8 /* RxMoya in Frameworks */,
 				D8DA03522E28F44800DF8AE8 /* ReactiveMoya in Frameworks */,
@@ -58,6 +61,7 @@
 			children = (
 				0918E5AF2E1DF931007E2D1E /* .swiftlint.yml */,
 				D8391C402E1CC9C000A44C3F /* CodePlay */,
+				D8879ECC2E49FFD400443CD8 /* Frameworks */,
 				D8391C3F2E1CC9C000A44C3F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -68,6 +72,14 @@
 				D8391C3E2E1CC9C000A44C3F /* CodePlay.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		D8879ECC2E49FFD400443CD8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D8879ECD2E49FFD500443CD8 /* OSLog.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -163,6 +175,9 @@
 				"else",
 				"    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions.\"",
 				"fi",
+				"",
+				"",
+				"",
 				"",
 				"",
 				"",

@@ -136,7 +136,7 @@ struct OverlappingCardsView: View {
                         Capsule()
                             .fill(
                                 index == currentIndex
-                                ? Color("Primary") : Color.neutral400
+                                ? Color(asset: Asset.primary) : Color.neutral400
                             )
                             .frame(width: index == currentIndex ? 32 : 8, height: 8)
                             .animation(
@@ -163,34 +163,6 @@ struct OverlappingCardsView: View {
                 }
             )
             .hidden()
-        }
-    }
-    private func printPlaylistInfo(_ playlist: Playlist) {
-        print("🧾 Playlist 정보")
-        print("🟢 title: \(playlist.title)")
-        print("📍 place: \(playlist.place ?? "nil")")
-        print("📅 period: \(playlist.period ?? "nil")")
-        print("🎤 cast: \(playlist.cast ?? "nil")")
-        print("🆔 id: \(playlist.id)")
-        print("🕒 createdAt: \(playlist.createdAt)")
-
-        let matchingEntries = allEntries.filter { $0.playlistId == playlist.id }
-
-        print("🎶 Entries: (\(matchingEntries.count)곡)")
-        for entry in matchingEntries {
-            print(
-                """
-                ---
-                🎤 artist: \(entry.artistName)
-                artistartwork: \(entry.profileArtworkUrl)
-                🎵 title: \(entry.trackTitle)
-                💿 album: \(entry.albumName)
-                🆔 trackId: \(entry.trackId)
-                🔗 preview: \(entry.trackPreviewUrl)
-                🖼 artwork: \(entry.albumArtworkUrl ?? "nil")
-                📅 createdAt: \(entry.createdAt)
-                """
-            )
         }
     }
 

@@ -19,7 +19,7 @@ enum NavigationUtil {
 
         // 루트 뷰 컨트롤러의 이름 출력
         if let rootViewController = keyWindow?.rootViewController {
-            print("Root ViewController name: \(String(describing: type(of: rootViewController)))")
+            Log.debug("Root ViewController name: \(String(describing: type(of: rootViewController)))")
         }
 
         // 루트 뷰 컨트롤러에서 NavigationController를 찾아 루트로 이동
@@ -53,19 +53,19 @@ enum NavigationUtil {
             .filter { $0.isKeyWindow }.first
 
         guard let navigationController = findNavigationController(viewController: keyWindow?.rootViewController) else {
-            print("❌ No navigation controller found")
+            Log.debug("❌ No navigation controller found")
             return
         }
 
         let viewControllersCount = navigationController.viewControllers.count
 
         guard index < viewControllersCount else {
-            print("❌ Index out of bounds")
+            Log.debug("❌ Index out of bounds")
             return
         }
 
         let targetViewController = navigationController.viewControllers[index]
-        print("Navigating to view controller at index \(index): \(targetViewController)")
+        Log.debug("Navigating to view controller at index \(index): \(targetViewController)")
         navigationController.popToViewController(targetViewController, animated: true)
     }
 }

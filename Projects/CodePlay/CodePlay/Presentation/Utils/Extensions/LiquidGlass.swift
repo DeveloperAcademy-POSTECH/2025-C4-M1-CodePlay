@@ -104,7 +104,7 @@ struct LiquidGlassModifier: ViewModifier {
                         )
                 )
                 .cornerRadius(cornerRadius)
-                .shadow(color: Color("Neutral900").opacity(0.1), radius: 4, x: 0, y: 1)
+                .shadow(color: Color(asset: Asset.neutral900).opacity(0.1), radius: 4, x: 0, y: 1)
             
         case .listbutton:
             content

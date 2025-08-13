@@ -20,12 +20,12 @@ struct AppleMusicConnectView: View {
             Spacer().frame(height: 146)
 
             if viewModelWrapper.authorizationStatus?.status == .denied {
-                Image("Linkfail")
+                Image(asset: Asset.linkfail)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 320, height: 320)
             } else {
-                Image("Linkapplemusic")
+                Image(asset: Asset.linkapplemusic)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 320, height: 320)
@@ -244,7 +244,7 @@ final class MusicViewModelWrapper: ObservableObject {
         using context: ModelContext
     ) async {
         guard let rawText else { return }
-        print("🟠 [onAppear] rawText: \(rawText.text)")
+        Log.debug("🟠 [onAppear] rawText: \(rawText.text)")
 
         await MainActor.run {
             self.progressStep = 0
@@ -259,8 +259,8 @@ final class MusicViewModelWrapper: ObservableObject {
         }
 
         let matches = await exportViewModelWrapper.searchArtists(from: rawText)
-        print("🔍 [searchArtists] 매칭된 아티스트 수: \(matches.count)")
-        matches.forEach { print("🎤 \($0.artistName) (\($0.appleMusicId))") }
+        Log.debug("🔍 [searchArtists] 매칭된 아티스트 수: \(matches.count)")
+        matches.forEach { Log.debug("🎤 \($0.artistName) (\($0.appleMusicId))") }
 
         await MainActor.run {
             withAnimation(.easeInOut(duration: 0.5)) {
@@ -272,15 +272,15 @@ final class MusicViewModelWrapper: ObservableObject {
             from: rawText,
             artistMatches: matches
         )
-        print("🎶 [searchTopSongs] 가져온 곡 수: \(songs.count)")
-        songs.forEach { print("🎵 \( $0.artistName ) - \( $0.trackTitle )") }
+        Log.debug("🎶 [searchTopSongs] 가져온 곡 수: \(songs.count)")
+        songs.forEach { Log.debug("🎵 \( $0.artistName ) - \( $0.trackTitle )") }
 
         await MainActor.run {
             withAnimation(.easeInOut(duration: 1.2)) {
                 self.progressStep = 3
             }
             self.playlistEntries = songs
-            print("📦 [playlistEntries 저장 완료] \(songs.count)곡")
+            Log.debug("📦 [playlistEntries 저장 완료] \(songs.count)곡")
         }
 
         await savePlaylistAfterTopSongs(playlist: playlist, context: context)
@@ -297,7 +297,7 @@ final class MusicViewModelWrapper: ObservableObject {
         async
     {
         guard !playlistEntries.isEmpty else {
-            print("❌ 저장 시도했지만 playlistEntries가 비어 있음")
+            Log.debug("❌ 저장 시도했지만 playlistEntries가 비어 있음")
             return
         }
 
@@ -305,21 +305,21 @@ final class MusicViewModelWrapper: ObservableObject {
 
         for entry in playlistEntries {
             guard !entry.trackId.isEmpty else {
-                print("⚠️ 잘못된 Entry - trackId 없음: \(entry.artistName)")
+                Log.debug("⚠️ 잘못된 Entry - trackId 없음: \(entry.artistName)")
                 continue
             }
             entry.playlistId = playlistId
             context.insert(entry)
-            print(
+            Log.debug(
                 "📦 저장할 Entry: \(entry.artistName) - \(entry.trackTitle) / \(entry.trackId)"
             )
         }
 
         do {
             try context.save()
-            print("✅ 기존 Playlist에 Entry 추가 완료")
+            Log.debug("✅ 기존 Playlist에 Entry 추가 완료")
         } catch {
-            print("❌ 저장 실패: \(error)")
+            Log.fault("❌ 저장 실패: \(error)")
         }
     }
 

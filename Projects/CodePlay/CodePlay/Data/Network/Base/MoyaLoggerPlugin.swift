@@ -15,7 +15,7 @@ final class MoyaLoggerPlugin: PluginType {
     // Request를 보낼 때 호출
     func willSend(_ request: RequestType, target: TargetType) {
         guard let httpRequest = request.request else {
-            print("--> 유효하지 않은 요청")
+            Log.debug("--> 유효하지 않은 요청")
             return
         }
         let url = httpRequest.description
@@ -29,7 +29,7 @@ final class MoyaLoggerPlugin: PluginType {
             log.append("\(bodyString)\n")
         }
         log.append("------------------- END \(method) --------------------------")
-        print(log)
+        Log.debug(log)
     }
     
     // Response가 왔을 때 호출
@@ -58,7 +58,7 @@ final class MoyaLoggerPlugin: PluginType {
             log.append("\(reString)\n")
         }
         log.append("------------------- END HTTP (\(response.data.count)-byte body) -------------------")
-        print(log)
+        Log.debug(log)
     }
     
     // Network 통신이 실패했을 때 호출
@@ -71,7 +71,7 @@ final class MoyaLoggerPlugin: PluginType {
         log.append("<-- \(error.errorCode) \(target)\n")
         log.append("\(error.failureReason ?? error.errorDescription ?? "unknown error")\n")
         log.append("<-- END HTTP")
-        print(log)
+        Log.debug(log)
         
         let alertViewController = UIAlertController(title: "네트워크 연결 실패", message: "네트워크 환경을 한번 더 확인해주세요.", preferredStyle: .alert)
         alertViewController.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))

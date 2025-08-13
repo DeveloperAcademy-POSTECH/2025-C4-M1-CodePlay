@@ -30,8 +30,8 @@ struct BottomButton: View {
         LinearGradient(
             gradient: Gradient(colors: [
 
-                Color("Primary"),
-                Color("Secondary")
+                Color(asset: Asset.primary),
+                Color(asset: Asset.secondary)
             ]),
             startPoint: .leading,
             endPoint: .trailing
@@ -58,7 +58,7 @@ struct BottomButton: View {
             Button(action: action) {
                 Text(title)
                     .font(.BlgBold())
-                    .foregroundStyle(kind == .colorFill ? Color.white : Color("Primary"))
+                    .foregroundStyle(kind == .colorFill ? Color.white : Color(asset: Asset.primary))
                     .padding(.horizontal, 20)
                     .padding(.vertical, 18)
                     .frame(maxWidth: .infinity, maxHeight: 60)
@@ -77,14 +77,14 @@ struct BottomButton: View {
         title: "페스티벌 라인업 인식",
         kind: .colorFill,
         action: {
-            print("버튼 누름")
+            Log.debug("버튼 누름")
         }
     )
     BottomButton(
         title: "페스티벌 라인업 인식",
         kind: .line,
         action: {
-            print("버튼 누름")
+            Log.debug("버튼 누름")
         }
     )
 }

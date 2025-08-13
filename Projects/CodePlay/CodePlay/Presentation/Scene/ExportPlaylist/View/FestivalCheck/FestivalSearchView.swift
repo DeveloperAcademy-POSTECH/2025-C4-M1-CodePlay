@@ -55,7 +55,7 @@ struct FestivalSearchView: View {
                     },
                     label: {
                         Image(systemName: "chevron.left")
-                            .foregroundStyle(Color("Primary"))
+                            .foregroundStyle(Color(asset: Asset.primary))
                     }
                 )
             }
@@ -203,7 +203,7 @@ struct FestivalSearchView: View {
                         }
                     }
                 } catch {
-                    print("Search API Error: \(error.localizedDescription)")
+                    Log.fault("Search API Error: \(error.localizedDescription)")
                 }
             }
         }
@@ -228,13 +228,13 @@ struct FestivalSearchView: View {
                 do {
                     try modelContext.save()
                     selectedPlaylist = playlist
-                    print("Playlist saved successfully for \(title)")
+                    Log.debug("Playlist saved successfully for \(title)")
                 } catch {
-                    print("Error saving playlist: \(error.localizedDescription)")
+                    Log.debug("Error saving playlist: \(error.localizedDescription)")
                 }
             }
         } catch {
-            print("API Error for \(title): \(error.localizedDescription)")
+            Log.fault("API Error for \(title): \(error.localizedDescription)")
         }
     }
 }

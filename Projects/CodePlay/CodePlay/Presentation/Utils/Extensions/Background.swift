@@ -15,12 +15,12 @@ extension View {
                     let W = geometry.size.width
 
                     Circle()
-                        .fill(Color("Secondary").opacity(0.3))
+                        .fill(Color(asset: Asset.secondary).opacity(0.3))
                         .frame(width: W * 0.83, height: W * 0.83)
                         .position(x: W * 0.83 / 2 - W * 0.18, y: W * 0.83 / 2 - W * 0.06)
 
                     Circle()
-                        .fill(Color("Primary").opacity(0.3))
+                        .fill(Color(asset: Asset.primary).opacity(0.3))
                         .frame(width: W * 1.15, height: W * 1.15)
                         .position(x: W * 1.15 / 2 + W * 0.48, y: W * 1.15 / 2 + W * 0.24)
 
@@ -40,7 +40,7 @@ struct BackgroundView: View {
 
         ZStack {
             Circle()
-                .fill(Color("Secondary").opacity(0.3))
+                .fill(Color(asset: Asset.secondary).opacity(0.3))
                 .frame(width: W * 0.83, height: W * 0.83)
                 .position(
                     x: W * 0.83 / 2 - W * 0.18,
@@ -48,7 +48,7 @@ struct BackgroundView: View {
                 )
 
             Circle()
-                .fill(Color("Primary").opacity(0.3))
+                .fill(Color(asset: Asset.primary).opacity(0.3))
                 .frame(width: W * 1.15, height: W * 1.15)
                 .position(
                     x: W * 1.15 / 2 + W * 0.48,
