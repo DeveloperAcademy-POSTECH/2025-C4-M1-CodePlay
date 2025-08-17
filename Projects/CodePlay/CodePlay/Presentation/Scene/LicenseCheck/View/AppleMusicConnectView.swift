@@ -102,33 +102,39 @@ struct AppleMusicConnectView: View {
 
 // MARK: - ViewModelWrapper for ObservableObject compatibility
 final class MusicViewModelWrapper: ObservableObject {
-    // MARK: - Published Properties
+    // 애플뮤직 연결 및 인증 관련
     @Published var authorizationStatus: MusicAuthorizationStatusModel?
     @Published var subscriptionStatus: MusicSubscriptionModel?
     @Published var errorMessage: String?
     @Published var canPlayMusic: Bool = false
+    
+    // 플레이리스트 생성 및 내보내기 관련
     @Published var artistCandidates: [String] = []
-    @Published var progressStep: Int = 0
-    @Published var navigateToMadePlaylist: Bool = false
+    @Published var playlistEntries: [PlaylistEntry] = []
     @Published var isExporting: Bool = false
     @Published var isExportCompleted: Bool = false
-    @Published var playlistEntries: [PlaylistEntry] = []
-    @Published var currentlyPlayingTrackId: String?
-    @Published var isPlaying: Bool = false
-    @Published var playbackProgress: Double = 0.0
+    @Published var entrySource: PlaylistEntrySource = .main
+    
+    // 페스티벌 데이터 및 로딩 관련
     @Published var isLoading: Bool = true
     @Published var festivalData: DynamoDataItem? = nil
     @Published var suggestTitles: [String] = []
-//    @Published var shouldShowNoResultView: Bool = false
+    
+    // 음악 재생 및 플레이어 제어 관련 속성
+    @Published var currentlyPlayingTrackId: String?
+    @Published var isPlaying: Bool = false
+    @Published var playbackProgress: Double = 0.0
+    
+    // 전체 흐름 및 네비게이션 관련 속성
+    @Published var progressStep: Int = 0
+    @Published var navigateToMadePlaylist: Bool = false
     var shouldShowNoResultView: Bool = false
-    @Published var showErrorView: Bool = false
-    @Published var entrySource: PlaylistEntrySource = .main
 
     @Environment(\.modelContext) private var modelContext
 
     // MARK: - Dependencies
     var appleMusicConnectViewModel: any AppleMusicConnectViewModel
-    var exportViewModelWrapper: any ExportPlaylistViewModel
+    var exportViewModel: any ExportPlaylistViewModel
     var festivalCheckViewModel: any FestivalCheckViewModel
     private var musicPlayerUseCase: MusicPlayerUseCase
 
@@ -140,7 +146,7 @@ final class MusicViewModelWrapper: ObservableObject {
         musicPlayerUseCase: MusicPlayerUseCase
     ) {
         self.appleMusicConnectViewModel = appleMusicConnectViewModel
-        self.exportViewModelWrapper = exportViewModelWrapper
+        self.exportViewModel = exportViewModelWrapper
         self.festivalCheckViewModel = festivalCheckViewModel
         self.musicPlayerUseCase = musicPlayerUseCase
 
@@ -213,7 +219,7 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        exportViewModelWrapper.artistCandidates.observe(on: self) {
+        exportViewModel.artistCandidates.observe(on: self) {
             [weak self] value in
             guard let self else { return }
             Task { @MainActor in
@@ -250,7 +256,7 @@ final class MusicViewModelWrapper: ObservableObject {
             self.progressStep = 0
         }
 
-        exportViewModelWrapper.preProcessRawText(rawText)
+        exportViewModel.preProcessRawText(rawText)
 
         await MainActor.run {
             withAnimation(.easeInOut(duration: 0.5)) {
@@ -258,7 +264,7 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        let matches = await exportViewModelWrapper.searchArtists(from: rawText)
+        let matches = await exportViewModel.searchArtists(from: rawText)
         Log.debug("🔍 [searchArtists] 매칭된 아티스트 수: \(matches.count)")
         matches.forEach { Log.debug("🎤 \($0.artistName) (\($0.appleMusicId))") }
 
@@ -268,7 +274,7 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        let songs = await exportViewModelWrapper.searchTopSongs(
+        let songs = await exportViewModel.searchTopSongs(
             from: rawText,
             artistMatches: matches
         )
@@ -328,7 +334,7 @@ final class MusicViewModelWrapper: ObservableObject {
     func exportToAppleMusic() {
         isExporting = true
         Task {
-            await exportViewModelWrapper.exportLatestPlaylistToAppleMusic()
+            await exportViewModel.exportLatestPlaylistToAppleMusic()
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                 self.isExporting = false
                 self.isExportCompleted = true
@@ -357,7 +363,7 @@ final class MusicViewModelWrapper: ObservableObject {
             if currentlyPlayingTrackId == trackId {
                 await musicPlayerUseCase.stopPreview()
             }
-            await exportViewModelWrapper.deletePlaylistEntry(trackId: trackId)
+            await exportViewModel.deletePlaylistEntry(trackId: trackId)
             await MainActor.run {
                 if currentlyPlayingTrackId == trackId {
                     currentlyPlayingTrackId = nil

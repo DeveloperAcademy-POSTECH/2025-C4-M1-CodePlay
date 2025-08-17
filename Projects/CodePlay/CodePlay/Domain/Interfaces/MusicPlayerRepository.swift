@@ -5,13 +5,7 @@ import MusicKit
 protocol MusicPlayerRepository {
     /// 특정 트랙 재생
     func playTrack(trackId: String) async throws
-    
-    /// 현재 재생 중인 트랙 일시정지
-    func pauseTrack() async throws
-    
-    /// 현재 재생 중인 트랙 정지
-    func stopTrack() async throws
-    
+
     /// 현재 재생 상태 조회
     func getCurrentPlayingStatus() -> (trackId: String?, isPlaying: Bool)
     
@@ -68,17 +62,6 @@ final class DefaultMusicPlayerRepository: MusicPlayerRepository {
         isCurrentlyPlaying = true
     }
 
-    func pauseTrack() async throws {
-        try await player.pause()
-        isCurrentlyPlaying = false
-    }
-
-    func stopTrack() async throws {
-        try await player.stop()
-        currentTrackId = nil
-        isCurrentlyPlaying = false
-    }
-
     func getCurrentPlayingStatus() -> (trackId: String?, isPlaying: Bool) {
         return (currentTrackId, isCurrentlyPlaying)
     }
@@ -112,7 +95,9 @@ final class DefaultMusicPlayerRepository: MusicPlayerRepository {
     
     func pausePreview() async {
         withNotifyStateChange {
-            try? await self.pauseTrack()
+            self.player.pause()
+            self.isCurrentlyPlaying = false
+            
             self.stopProgressTimer()
         }
     }
@@ -122,7 +107,9 @@ final class DefaultMusicPlayerRepository: MusicPlayerRepository {
             self.stopProgressTimer()
             self.playbackStartTime = nil  // 시작 시간 초기화
             self.resetProgress()
-            try? await self.stopTrack()
+            self.player.stop()
+            self.currentTrackId = nil
+            self.isCurrentlyPlaying = false
         }
     }
     
