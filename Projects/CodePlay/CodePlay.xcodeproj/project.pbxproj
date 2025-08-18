@@ -203,6 +203,9 @@
 				"",
 				"",
 				"",
+				"",
+				"",
+				"",
 			);
 		};
 /* End PBXShellScriptBuildPhase section */
