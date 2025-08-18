@@ -17,7 +17,6 @@ struct PostFestInfoResponseDTO: Decodable {
 // Top5 배열 아이템
 struct Top5Item: Decodable {
     let rank: Int
-    let similarity: Double
     let id: String
     let title: String
     let searchableText: String
