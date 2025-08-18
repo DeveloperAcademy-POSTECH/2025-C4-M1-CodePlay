@@ -1,3 +1,10 @@
+//
+//  MusicPlayerViewModel.swift
+//  CodePlay
+//
+//  Created by 아우신얀 on 8/18/25.
+//
+
 import Foundation
 internal import Combine
 
@@ -21,14 +28,12 @@ protocol MusicPlayerViewModel: MusicPlayerViewModelInput, MusicPlayerViewModelOu
 
 // MARK: - Implementation
 final class DefaultMusicPlayerViewModel: MusicPlayerViewModel {
-    // MARK: Output (프레젠테이션 상태)
     var currentlyPlayingTrackId: Observable<String?> = Observable(nil)
     var isPlaying: Observable<Bool> = Observable(false)
     var playbackProgress: Observable<Double> = Observable(0.0)
     
     private let musicPlayerUseCase: MusicPlayerUseCase
     
-    // MARK: Init
     init(musicPlayerUseCase: MusicPlayerUseCase) {
         self.musicPlayerUseCase = musicPlayerUseCase
         setupCallbacks()

@@ -136,7 +136,7 @@ final class MusicViewModelWrapper: ObservableObject {
     var appleMusicConnectViewModel: any AppleMusicConnectViewModel
     var exportViewModel: any ExportPlaylistViewModel
     var festivalCheckViewModel: any FestivalCheckViewModel
-    private var musicPlayerViewModel: any MusicPlayerViewModel
+    var musicPlayerViewModel: any MusicPlayerViewModel
 
     // MARK: - Init
     init(
