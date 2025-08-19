@@ -71,12 +71,15 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
     
     // 후보 이름을 기반으로 Apple Music에서 아티스트 검색
     func searchArtists(from rawText: RawText) async -> [ArtistMatch] {
-        let candidates = prepareArtistCandidates(from: rawText)
+        let selectedArtists = rawText.text.components(separatedBy: ", ")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+        
         var results: [ArtistMatch] = []
 
-        for name in candidates {
+        for artistName in selectedArtists {
             do {
-                var request = MusicCatalogSearchRequest(term: name, types: [Artist.self])
+                var request = MusicCatalogSearchRequest(term: artistName, types: [Artist.self])
                 request.limit = 1
                 
                 let response = try await request.response()
