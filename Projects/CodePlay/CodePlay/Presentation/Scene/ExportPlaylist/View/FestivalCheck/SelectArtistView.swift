@@ -11,6 +11,8 @@ import SwiftUI
 
 struct SelectArtistView: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
+    @EnvironmentObject var musicWrapper: MusicViewModelWrapper
     let playlist: Playlist
     @State private var artistArtworks: [String: URL?] = [:]
     @State private var failedArtists: Set<String> = []
@@ -80,6 +82,7 @@ struct SelectArtistView: View {
                 Spacer()
             }
             BottomButton(title: "선택 완료", kind: .colorFill) {
+                savePlaylistToDB()
                 isNextActive = true
             }
             .disabled(selectedArtists.isEmpty)
@@ -127,10 +130,12 @@ struct SelectArtistView: View {
             fetchArtistArtworks()
         }
         .navigationDestination(isPresented: $isNextActive) {
-            ExportPlaylistView(
-                selectedArtists: Array(selectedArtists),
-                playlist: playlist
-            )
+            if let savedPlaylist = musicWrapper.selectedPlaylist {
+                ExportPlaylistView(
+                    selectedArtists: Array(selectedArtists),
+                    playlist: savedPlaylist
+                )
+            }
         }
     }
 
@@ -277,6 +282,18 @@ struct SelectArtistView: View {
                     }
                 }
             }
+        }
+    }
+    
+    private func savePlaylistToDB() {
+        modelContext.insert(playlist)
+        
+        do {
+            try modelContext.save()
+            musicWrapper.selectedPlaylist = playlist
+            Log.debug("Playlist saved successfully: \(playlist.title)")
+        } catch {
+            Log.fault("Error saving playlist: \(error.localizedDescription)")
         }
     }
 }

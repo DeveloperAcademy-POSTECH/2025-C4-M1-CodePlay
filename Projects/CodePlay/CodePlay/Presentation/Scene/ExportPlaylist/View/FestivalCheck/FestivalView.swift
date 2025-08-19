@@ -15,7 +15,8 @@ struct FestivalView: View {
     @State private var apiResponse: PostFestInfoResponseDTO?
     @State private var suggestTitles: SuggestTitlesModel?
     @State private var isLoading: Bool = true
-    @State private var savedPlaylist: Playlist?
+    @State private var shouldNavigateToSelectArtist = false
+    @State private var tempPlaylist: Playlist?
     @EnvironmentObject var wrapper: MusicViewModelWrapper
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) var dismiss
@@ -107,10 +108,16 @@ struct FestivalView: View {
                 }
             }
             NavigationLink(
-                destination: savedPlaylist != nil
-                    ? AnyView(SelectArtistView(playlist: savedPlaylist!))
+                destination: wrapper.festivalData != nil
+                    ? AnyView(SelectArtistView(playlist: Playlist(
+                        title: wrapper.festivalData!.title,
+                        period: wrapper.festivalData!.period,
+                        cast: wrapper.festivalData!.cast,
+                        festivalId: wrapper.festivalData!.festivalId,
+                        place: wrapper.festivalData!.place
+                    )))
                     : AnyView(EmptyView()),
-                isActive: $isNavigate
+                isActive: $shouldNavigateToSelectArtist
             ) {
                 EmptyView()
             }
@@ -154,37 +161,34 @@ struct FestivalView: View {
             }
 
             BottomButton(title: "맞아요", kind: .colorFill) {
-                savePlaylist()
-                if savedPlaylist != nil {
-                    self.isNavigate = true
-                }
+                self.shouldNavigateToSelectArtist = true
             }
         }
         .padding(.horizontal, 20)
     }
-
-    private func savePlaylist() {
-        guard let data = wrapper.festivalData else {
-            Log.debug("No festival data to save")
-            return
-        }
-
-        let playlist = Playlist(
-            title: data.title,
-            period: data.period,
-            cast: data.cast,
-            festivalId: data.festivalId,
-            place: data.place
-        )
-
-        modelContext.insert(playlist)
-
-        do {
-            try modelContext.save()
-            savedPlaylist = playlist
-            Log.debug("Playlist saved successfully")
-        } catch {
-            Log.fault("Error saving playlist: \(error.localizedDescription)")
-        }
-    }
+//
+//    private func savePlaylist() {
+//        guard let data = wrapper.festivalData else {
+//            Log.debug("No festival data to save")
+//            return
+//        }
+//
+//        let playlist = Playlist(
+//            title: data.title,
+//            period: data.period,
+//            cast: data.cast,
+//            festivalId: data.festivalId,
+//            place: data.place
+//        )
+//
+//        modelContext.insert(playlist)
+//
+//        do {
+//            try modelContext.save()
+//            savedPlaylist = playlist
+//            Log.debug("Playlist saved successfully")
+//        } catch {
+//            Log.fault("Error saving playlist: \(error.localizedDescription)")
+//        }
+//    }
 }
