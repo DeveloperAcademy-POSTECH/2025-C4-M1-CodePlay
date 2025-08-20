@@ -21,8 +21,6 @@ protocol MusicPlayerUseCase {
     
     /// 현재 재생 상태 조회
     func getCurrentPlayingTrackId() -> String?
-    func getIsPlaying() -> Bool
-    func getPlaybackProgress() -> Double
     
     /// 상태 변경 콜백 설정 (ViewModel과의 연결)
     func setOnPlaybackStateChanged(_ callback: @escaping (String?, Bool) -> Void)
@@ -55,14 +53,6 @@ final class DefaultMusicPlayerUseCase: MusicPlayerUseCase {
     // MARK: - 상태 조회 메서드
     func getCurrentPlayingTrackId() -> String? {
         return repository.getCurrentPlayingStatus().trackId
-    }
-    
-    func getIsPlaying() -> Bool {
-        return repository.getCurrentPlayingStatus().isPlaying
-    }
-    
-    func getPlaybackProgress() -> Double {
-        return _playbackProgress
     }
     
     // MARK: - 콜백 설정
