@@ -10,12 +10,11 @@ import SwiftData
 import SwiftUI
 
 struct FestivalView: View {
-    @State private var isNavigate: Bool = false
     @State private var isNavigateToSearch: Bool = false
     @State private var apiResponse: PostFestInfoResponseDTO?
     @State private var suggestTitles: SuggestTitlesModel?
     @State private var isLoading: Bool = true
-    @State private var savedPlaylist: Playlist?
+    @State private var isNavigateToSelectArtist = false
     @EnvironmentObject var wrapper: MusicViewModelWrapper
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) var dismiss
@@ -106,15 +105,21 @@ struct FestivalView: View {
                     }
                 }
             }
-            NavigationLink(
-                destination: savedPlaylist != nil
-                    ? AnyView(SelectArtistView(playlist: savedPlaylist!))
-                    : AnyView(EmptyView()),
-                isActive: $isNavigate
-            ) {
-                EmptyView()
+            if let festivalData = wrapper.festivalData {
+                NavigationLink(
+                    destination: SelectArtistView(playlist: Playlist(
+                        title: festivalData.title,
+                        period: festivalData.period,
+                        cast: festivalData.cast,
+                        festivalId: festivalData.festivalId,
+                        place: festivalData.place
+                    )),
+                    isActive: $isNavigateToSelectArtist
+                ) {
+                    EmptyView()
+                }
+                .hidden()
             }
-            .hidden()
 
             if suggestTitles != nil {
                 NavigationLink(
@@ -154,37 +159,9 @@ struct FestivalView: View {
             }
 
             BottomButton(title: "맞아요", kind: .colorFill) {
-                savePlaylist()
-                if savedPlaylist != nil {
-                    self.isNavigate = true
-                }
+                self.isNavigateToSelectArtist = true
             }
         }
         .padding(.horizontal, 20)
-    }
-
-    private func savePlaylist() {
-        guard let data = wrapper.festivalData else {
-            Log.debug("No festival data to save")
-            return
-        }
-
-        let playlist = Playlist(
-            title: data.title,
-            period: data.period,
-            cast: data.cast,
-            festivalId: data.festivalId,
-            place: data.place
-        )
-
-        modelContext.insert(playlist)
-
-        do {
-            try modelContext.save()
-            savedPlaylist = playlist
-            Log.debug("Playlist saved successfully")
-        } catch {
-            Log.fault("Error saving playlist: \(error.localizedDescription)")
-        }
     }
 }

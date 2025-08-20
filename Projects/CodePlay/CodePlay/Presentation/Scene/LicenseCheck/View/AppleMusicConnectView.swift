@@ -119,6 +119,7 @@ final class MusicViewModelWrapper: ObservableObject {
     @Published var isLoading: Bool = true
     @Published var festivalData: DynamoDataItem? = nil
     @Published var suggestTitles: [String] = []
+    @Published var selectedPlaylist: Playlist? = nil
 //    @Published var shouldShowNoResultView: Bool = false
     var shouldShowNoResultView: Bool = false
     @Published var showErrorView: Bool = false
