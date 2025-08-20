@@ -206,6 +206,7 @@
 				"",
 				"",
 				"",
+				"",
 			);
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -362,11 +363,10 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CodePlay/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = SHOONG;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
-				INFOPLIST_KEY_NSAppleMusicUsageDescription = "";
-				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 권한 주세요.";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "생성된 플레이리스트를 Apple Music 라이브러리에 추가하고, 앱에서 바로 열 수 있도록 하기 위해 권한이 필요합니다.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "페스티벌 포스터의 라인업을 스캔하여 자동으로 플레이리스트를 만들기 위해 카메라 접근이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -413,11 +413,10 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CodePlay/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = SHOONG;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
-				INFOPLIST_KEY_NSAppleMusicUsageDescription = "";
-				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 권한 주세요.";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "생성된 플레이리스트를 Apple Music 라이브러리에 추가하고, 앱에서 바로 열 수 있도록 하기 위해 권한이 필요합니다.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "페스티벌 포스터의 라인업을 스캔하여 자동으로 플레이리스트를 만들기 위해 카메라 접근이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
