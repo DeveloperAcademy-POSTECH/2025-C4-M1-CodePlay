@@ -104,7 +104,6 @@ struct AppleMusicConnectView: View {
 final class MusicViewModelWrapper: ObservableObject {
     // 애플뮤직 연결 및 인증 관련
     @Published var authorizationStatus: MusicAuthorizationStatusModel?
-    @Published var subscriptionStatus: MusicSubscriptionModel?
     @Published var errorMessage: String?
     @Published var canPlayMusic: Bool = false
     
@@ -183,11 +182,6 @@ final class MusicViewModelWrapper: ObservableObject {
                 self?.authorizationStatus = status
                 self?.canPlayMusic = (status?.status == .authorized)
             }
-        }
-
-        appleMusicConnectViewModel.subscriptionStatus.observe(on: self) {
-            [weak self] in
-            self?.subscriptionStatus = $0
         }
 
         appleMusicConnectViewModel.errorMessage.observe(on: self) {
