@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D8391C3D2E1CC9C000A44C3F"
-               BuildableName = "CodePlay.app"
+               BuildableName = "SHOONG.app"
                BlueprintName = "CodePlay"
                ReferencedContainer = "container:CodePlay.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D8391C3D2E1CC9C000A44C3F"
-            BuildableName = "CodePlay.app"
+            BuildableName = "SHOONG.app"
             BlueprintName = "CodePlay"
             ReferencedContainer = "container:CodePlay.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D8391C3D2E1CC9C000A44C3F"
-            BuildableName = "CodePlay.app"
+            BuildableName = "SHOONG.app"
             BlueprintName = "CodePlay"
             ReferencedContainer = "container:CodePlay.xcodeproj">
          </BuildableReference>

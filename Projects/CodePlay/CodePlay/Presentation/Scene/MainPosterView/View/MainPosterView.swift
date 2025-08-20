@@ -18,6 +18,8 @@ struct MainPosterView: View {
     @Query(sort: \Playlist.createdAt, order: .reverse) private var playlists: [Playlist]
     @State private var refreshId = UUID()
     @State private var hasCleaned = false
+    /// 마지막 플레이리스트 갯수를 저장하는 변수
+    @State private var lastPlaylistCount = 0
 
     var body: some View {
         NavigationStack {
@@ -81,11 +83,16 @@ struct MainPosterView: View {
             .backgroundWithBlur()
             .navigationBarHidden(true)
             .onAppear {
-                refreshId = UUID() // 강제 렌더링
-
-                Log.debug("🧾 현재 Playlist 수: \(playlists.count)")
-                for p in playlists {
-                    Log.debug("📀 \(p.title) / \(p.createdAt)")
+                // 플레이리스트 개수가 변경될 때만 강제 렌더링
+                let currentCount = playlists.count
+                if lastPlaylistCount != currentCount {
+                    refreshId = UUID()
+                    lastPlaylistCount = currentCount
+                    
+                    Log.debug("🧾 현재 Playlist 수: \(playlists.count)")
+                    for p in playlists {
+                        Log.debug("📀 \(p.title) / \(p.createdAt)")
+                    }
                 }
 
                 // ✅ 안전한 삭제는 Task 내부에서

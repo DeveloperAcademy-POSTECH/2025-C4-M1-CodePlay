@@ -13,9 +13,9 @@ import MusicKit
 // MARK: 아티스트별 인기곡을 가져오는 뷰 (hifi 04_1부분)
 struct ExportPlaylistView: View {
     @EnvironmentObject var wrapper: MusicViewModelWrapper
-    let selectedArtists: [String]
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
+    let selectedArtists: [String]
     let playlist: Playlist
 
     init(selectedArtists: [String], playlist: Playlist) {
