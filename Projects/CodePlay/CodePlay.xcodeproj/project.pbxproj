@@ -17,7 +17,7 @@
 
 /* Begin PBXFileReference section */
 		0918E5AF2E1DF931007E2D1E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
-		D8391C3E2E1CC9C000A44C3F /* CodePlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodePlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8391C3E2E1CC9C000A44C3F /* SHOONG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SHOONG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8879ECD2E49FFD500443CD8 /* OSLog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSLog.framework; path = System/Library/Frameworks/OSLog.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -69,7 +69,7 @@
 		D8391C3F2E1CC9C000A44C3F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D8391C3E2E1CC9C000A44C3F /* CodePlay.app */,
+				D8391C3E2E1CC9C000A44C3F /* SHOONG.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -107,7 +107,7 @@
 				D8DA03532E28F44800DF8AE8 /* RxMoya */,
 			);
 			productName = CodePlay;
-			productReference = D8391C3E2E1CC9C000A44C3F /* CodePlay.app */;
+			productReference = D8391C3E2E1CC9C000A44C3F /* SHOONG.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -175,6 +175,7 @@
 				"else",
 				"    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions.\"",
 				"fi",
+				"",
 				"",
 				"",
 				"",
@@ -365,7 +366,7 @@
 				INFOPLIST_FILE = CodePlay/Info.plist;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
-				INFOPLIST_KEY_NSAppleMusicUsageDescription = "생성된 플레이리스트를 Apple Music 라이브러리에 추가하고, 앱에서 바로 열 수 있도록 하기 위해 권한이 필요합니다.";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "생성된 플레이리스트를 Apple Music 라이브러리에 추가하고, 앱에서 바로 열 수 있도록 권한이 필요합니다.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "페스티벌 포스터의 라인업을 스캔하여 자동으로 플레이리스트를 만들기 위해 카메라 접근이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -415,7 +416,7 @@
 				INFOPLIST_FILE = CodePlay/Info.plist;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
-				INFOPLIST_KEY_NSAppleMusicUsageDescription = "생성된 플레이리스트를 Apple Music 라이브러리에 추가하고, 앱에서 바로 열 수 있도록 하기 위해 권한이 필요합니다.";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "생성된 플레이리스트를 Apple Music 라이브러리에 추가하고, 앱에서 바로 열 수 있도록 권한이 필요합니다.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "페스티벌 포스터의 라인업을 스캔하여 자동으로 플레이리스트를 만들기 위해 카메라 접근이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

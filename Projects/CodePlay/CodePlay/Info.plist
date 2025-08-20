@@ -5,7 +5,7 @@
 	<key>BASE_URL</key>
 	<string>$(BASE_URL)</string>
 	<key>NSUserNotificationsUsageDescription</key>
-	<string>비정기적으로 페스티벌 라인업 스캔을 안내하여 예상 플레이리스트를 만들어볼 수 있도록 알려드립니다.</string>
+	<string>페스티벌 라인업에 맞춘 플레이리스트와 소식을 전달하기 위해 권한이 필요합니다.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>KoddiUDOnGothic-Bold.otf</string>
