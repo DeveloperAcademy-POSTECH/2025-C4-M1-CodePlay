@@ -15,9 +15,20 @@
 		D8DA03542E28F44800DF8AE8 /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = D8DA03532E28F44800DF8AE8 /* RxMoya */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		D8613F992E56E9D900376948 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D8391C362E1CC9C000A44C3F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D8391C3D2E1CC9C000A44C3F;
+			remoteInfo = CodePlay;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		0918E5AF2E1DF931007E2D1E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		D8391C3E2E1CC9C000A44C3F /* SHOONG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SHOONG.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8613F952E56E9D900376948 /* SHOONGTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SHOONGTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8879ECD2E49FFD500443CD8 /* OSLog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSLog.framework; path = System/Library/Frameworks/OSLog.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -40,6 +51,11 @@
 			path = CodePlay;
 			sourceTree = "<group>";
 		};
+		D8613F962E56E9D900376948 /* SHOONGTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SHOONGTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +69,11 @@
 				D8DA03522E28F44800DF8AE8 /* ReactiveMoya in Frameworks */,
 			);
 		};
+		D8613F922E56E9D900376948 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -61,6 +82,7 @@
 			children = (
 				0918E5AF2E1DF931007E2D1E /* .swiftlint.yml */,
 				D8391C402E1CC9C000A44C3F /* CodePlay */,
+				D8613F962E56E9D900376948 /* SHOONGTests */,
 				D8879ECC2E49FFD400443CD8 /* Frameworks */,
 				D8391C3F2E1CC9C000A44C3F /* Products */,
 			);
@@ -70,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				D8391C3E2E1CC9C000A44C3F /* SHOONG.app */,
+				D8613F952E56E9D900376948 /* SHOONGTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -110,6 +133,27 @@
 			productReference = D8391C3E2E1CC9C000A44C3F /* SHOONG.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D8613F942E56E9D900376948 /* SHOONGTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D8613F9D2E56E9D900376948 /* Build configuration list for PBXNativeTarget "SHOONGTests" */;
+			buildPhases = (
+				D8613F912E56E9D900376948 /* Sources */,
+				D8613F922E56E9D900376948 /* Frameworks */,
+				D8613F932E56E9D900376948 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D8613F9A2E56E9D900376948 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D8613F962E56E9D900376948 /* SHOONGTests */,
+			);
+			name = SHOONGTests;
+			productName = SHOONGTests;
+			productReference = D8613F952E56E9D900376948 /* SHOONGTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -122,6 +166,10 @@
 				TargetAttributes = {
 					D8391C3D2E1CC9C000A44C3F = {
 						CreatedOnToolsVersion = 26.0;
+					};
+					D8613F942E56E9D900376948 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = D8391C3D2E1CC9C000A44C3F;
 					};
 				};
 			};
@@ -143,6 +191,7 @@
 			projectRoot = "";
 			targets = (
 				D8391C3D2E1CC9C000A44C3F /* CodePlay */,
+				D8613F942E56E9D900376948 /* SHOONGTests */,
 			);
 		};
 /* End PBXProject section */
@@ -152,6 +201,11 @@
 			isa = PBXResourcesBuildPhase;
 			files = (
 				0918E5B02E1DF93B007E2D1E /* .swiftlint.yml in Resources */,
+			);
+		};
+		D8613F932E56E9D900376948 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
 			);
 		};
 /* End PBXResourcesBuildPhase section */
@@ -208,6 +262,8 @@
 				"",
 				"",
 				"",
+				"",
+				"",
 			);
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -218,7 +274,20 @@
 			files = (
 			);
 		};
+		D8613F912E56E9D900376948 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D8613F9A2E56E9D900376948 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D8391C3D2E1CC9C000A44C3F /* CodePlay */;
+			targetProxy = D8613F992E56E9D900376948 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		D8391C492E1CC9C100A44C3F /* Debug configuration for PBXProject "CodePlay" */ = {
@@ -446,6 +515,50 @@
 			};
 			name = Release;
 		};
+		D8613F9B2E56E9D900376948 /* Debug configuration for PBXNativeTarget "SHOONGTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W5Z68U98HJ;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yanni13.SHOONGTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SHOONG.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SHOONG";
+			};
+			name = Debug;
+		};
+		D8613F9C2E56E9D900376948 /* Release configuration for PBXNativeTarget "SHOONGTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W5Z68U98HJ;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yanni13.SHOONGTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SHOONG.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SHOONG";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -462,6 +575,14 @@
 			buildConfigurations = (
 				D8391C4C2E1CC9C100A44C3F /* Debug configuration for PBXNativeTarget "CodePlay" */,
 				D8391C4D2E1CC9C100A44C3F /* Release configuration for PBXNativeTarget "CodePlay" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		D8613F9D2E56E9D900376948 /* Build configuration list for PBXNativeTarget "SHOONGTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D8613F9B2E56E9D900376948 /* Debug configuration for PBXNativeTarget "SHOONGTests" */,
+				D8613F9C2E56E9D900376948 /* Release configuration for PBXNativeTarget "SHOONGTests" */,
 			);
 			defaultConfigurationName = Release;
 		};

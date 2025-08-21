@@ -16,47 +16,47 @@ struct ExportSuccessView: View {
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
-        NavigationStack {
-            ZStack(alignment: .bottom) {
-                Color.clear
-                    .backgroundWithBlur()
-                    .ignoresSafeArea()
-                VStack(spacing: 0) {
-                    Image(asset: Asset.playlist)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 320, height: 320)
-                        .padding(.top, 80)
-                        .padding(.bottom, 96)
-                    
-                    VStack(spacing: 12) {
-                        Text("Apple Music에\n플레이리스트를 생성했어요!")
-                            .font(.HlgBold())
-                            .multilineTextAlignment(.center)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .foregroundColor(.neu900)
-                        
-                        Text("애플뮤직에서 생성된 플레이리스트를 확인해보세요.")
-                            .font(.BmdRegular())
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.neu700)
-                    }
-                    .padding(.bottom, 80)
-                    
-                    BottomButton(title: "Apple Music으로 가기", kind: .line) {
-                        if let url = URL(string: "music://") {
-                            UIApplication.shared.open(url)
-                        }
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 16)
+        VStack(spacing: 0) {
+            
+            Spacer().frame(height: 48)
+
+            Image(asset: Asset.playlist)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 320, height: 320)
+                .padding(.top, 80)
+
+            Spacer()
+            
+            VStack(spacing: 12) {
+                Text("Apple Music에\n플레이리스트를 생성했어요!")
+                    .font(.HlgBold())
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .foregroundColor(.neu900)
+
+                Text("애플뮤직에서 생성된 플레이리스트를 확인해보세요.")
+                    .font(.BmdRegular())
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.neu700)
+            }
+            Spacer()
+
+            BottomButton(title: "Apple Music으로 가기", kind: .line) {
+                if let url = URL(string: "music://") {
+                    UIApplication.shared.open(url)
                 }
             }
-            .navigationBarBackButtonHidden(true)
-            .navigationBarHidden(false)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
+            .padding(.horizontal, 20)
+            .padding(.bottom, 36)
+        }
+        .backgroundWithBlur()
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(false)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(
+                    action: {
                         posterWrapper.shouldNavigateToMakePlaylist = false
                         posterWrapper.viewModel.clearText()
 
@@ -64,14 +64,15 @@ struct ExportSuccessView: View {
                             NavigationUtil.popToRootView()
 
                         }
-                    }, label: {
+                    },
+                    label: {
                         Image(systemName: "xmark")
                             .foregroundColor(.neu900)
                             .font(.system(size: 16, weight: .medium))
-                    })
-                }
+                    }
+                )
             }
-            .toolbarBackground(.hidden, for: .navigationBar)
         }
+        .toolbarBackground(.hidden, for: .navigationBar)
     }
 }
