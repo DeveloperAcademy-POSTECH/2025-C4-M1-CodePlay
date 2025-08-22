@@ -24,7 +24,7 @@ struct ExportSuccessView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 320, height: 320)
-                .padding(.top, 80)
+//                .padding(.top, 80)
 
             Spacer()
             
@@ -48,11 +48,10 @@ struct ExportSuccessView: View {
                 }
             }
             .padding(.horizontal, 20)
-            .padding(.bottom, 36)
+            .padding(.bottom, 16)
         }
         .backgroundWithBlur()
         .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(false)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(

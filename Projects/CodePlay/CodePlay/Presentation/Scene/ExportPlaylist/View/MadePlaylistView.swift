@@ -128,9 +128,6 @@ struct MadePlaylistView: View {
                 }
             }
         }
-        .fullScreenCover(isPresented: $wrapper.isExportCompleted) {
-            ExportSuccessView()
-        }
         .onAppear {
             wrapper.currentlyPlayingTrackId = nil
             wrapper.isPlaying = false
