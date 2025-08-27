@@ -19,10 +19,10 @@
 
 ## 🛠 기술 스택
 
-- iOS: Swift / SwiftUI / UIKit / Vision / MusicKit 등
+- iOS: Swift / SwiftUI / UIKit / Vision / MusicKit 
 - Backend: On-premise: MeiliSearch, BeautifulSoup / Severless : Lambda, ApiGateway, S3, DynamoDB
-- 아키텍처: MVVM + Clean Architecture 등
-- 기타 도구: Figma, AfterEffects, Notion, GitHub Projects / JIRA / Confluence 등
+- 아키텍처: MVVM + Clean Architecture 
+- 기타 도구: Figma, AfterEffects, Notion, GitHub Projects, JIRA, Confluence 
 
 
 ## 🌟 주요 기능
@@ -32,8 +32,7 @@
 - ✅ 추출된 텍스트를 가지고 페스티벌 라인업에 포함된 가수들을 모아 플레이리스트를 생성한다.
 - ✅ MusicKit으로 30초 미리듣기 및 생성된 플레이리스트를 내보낼 수 있다.
 
-> 필요시 이미지, GIF, 혹은 링크 삽입
-
+![git파일](https://github.com/user-attachments/assets/9efa8509-764b-4dff-9e09-171c4d189e75)
 
 
 ## 🧱 폴더 구조
