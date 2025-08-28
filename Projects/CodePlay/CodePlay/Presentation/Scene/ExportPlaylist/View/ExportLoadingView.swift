@@ -46,7 +46,7 @@ struct ExportLoadingView: View {
         }
         .navigationBarBackButtonHidden(true)
         .onAppear {
-            withAnimation(.easeInOut(duration: 5)) {
+            withAnimation(.linear(duration: 5)) {
                 progress = 1.0
             }
             
@@ -55,14 +55,9 @@ struct ExportLoadingView: View {
             }
         }
         .backgroundWithBlur()
-        
-        NavigationLink(
-            destination: ExportSuccessView(),
-            isActive: $isLoadingComplete
-        ) {
-            EmptyView()
+        .navigationDestination(isPresented: $isLoadingComplete) {
+            ExportSuccessView()
         }
-        .hidden()
     }
 }
 

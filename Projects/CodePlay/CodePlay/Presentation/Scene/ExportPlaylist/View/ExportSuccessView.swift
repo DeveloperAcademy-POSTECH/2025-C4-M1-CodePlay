@@ -24,7 +24,6 @@ struct ExportSuccessView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 320, height: 320)
-//                .padding(.top, 80)
 
             Spacer()
             
