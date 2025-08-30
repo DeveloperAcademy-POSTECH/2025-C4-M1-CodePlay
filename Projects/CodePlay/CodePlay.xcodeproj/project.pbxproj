@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0918E5B02E1DF93B007E2D1E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 0918E5AF2E1DF931007E2D1E /* .swiftlint.yml */; };
+		8F72AFEE2E618A7F00E91346 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 8F72AFED2E618A7F00E91346 /* Lottie */; };
 		D8879ECE2E49FFD500443CD8 /* OSLog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8879ECD2E49FFD500443CD8 /* OSLog.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D8DA034E2E28F44800DF8AE8 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = D8DA034D2E28F44800DF8AE8 /* CombineMoya */; };
 		D8DA03502E28F44800DF8AE8 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = D8DA034F2E28F44800DF8AE8 /* Moya */; };
@@ -51,6 +52,7 @@
 				D8DA034E2E28F44800DF8AE8 /* CombineMoya in Frameworks */,
 				D8DA03542E28F44800DF8AE8 /* RxMoya in Frameworks */,
 				D8DA03522E28F44800DF8AE8 /* ReactiveMoya in Frameworks */,
+				8F72AFEE2E618A7F00E91346 /* Lottie in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				D8DA034F2E28F44800DF8AE8 /* Moya */,
 				D8DA03512E28F44800DF8AE8 /* ReactiveMoya */,
 				D8DA03532E28F44800DF8AE8 /* RxMoya */,
+				8F72AFED2E618A7F00E91346 /* Lottie */,
 			);
 			productName = CodePlay;
 			productReference = D8391C3E2E1CC9C000A44C3F /* SHOONG.app */;
@@ -136,6 +139,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				D8DA034C2E28F44800DF8AE8 /* XCRemoteSwiftPackageReference "Moya" */,
+				8F72AFEC2E618A7F00E91346 /* XCRemoteSwiftPackageReference "lottie-spm" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = D8391C3F2E1CC9C000A44C3F /* Products */;
@@ -175,6 +179,7 @@
 				"else",
 				"    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions.\"",
 				"fi",
+				"",
 				"",
 				"",
 				"",
@@ -471,6 +476,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		8F72AFEC2E618A7F00E91346 /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.2;
+			};
+		};
 		D8DA034C2E28F44800DF8AE8 /* XCRemoteSwiftPackageReference "Moya" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Moya/Moya.git";
@@ -482,6 +495,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8F72AFED2E618A7F00E91346 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F72AFEC2E618A7F00E91346 /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
+		};
 		D8DA034D2E28F44800DF8AE8 /* CombineMoya */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = D8DA034C2E28F44800DF8AE8 /* XCRemoteSwiftPackageReference "Moya" */;
