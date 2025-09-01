@@ -87,7 +87,7 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                 if let artist = response.artists.first {
                     let match = ArtistMatch(
                         rawText: rawText.text,
-                        artistName: artist.name,
+                        artistName: artistName,
                         appleMusicId: artist.id.rawValue,
                         profileArtworkUrl: artist.artwork?.url(width: 300, height: 300)?.absoluteString ?? "",
                         createdAt: .now
