@@ -216,7 +216,6 @@
 				"",
 				"",
 				"",
-				"",
 			);
 		};
 /* End PBXShellScriptBuildPhase section */

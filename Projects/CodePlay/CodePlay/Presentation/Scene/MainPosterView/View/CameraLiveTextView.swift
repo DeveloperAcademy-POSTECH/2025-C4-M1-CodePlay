@@ -10,7 +10,34 @@ import SwiftUI
 import UIKit
 import Vision
 
-struct CameraLiveTextView: UIViewControllerRepresentable {
+struct CameraLiveTextView: View {
+    @Binding var recognizedText: String
+    @Binding var isPresented: Bool
+    @EnvironmentObject var wrapper: PosterViewModelWrapper
+    @State private var showCoachMark = !UserDefaults.standard.bool(forKey: "hasSeenCameraCoachMark")
+    
+    var body: some View {
+        ZStack {
+            CameraLiveTextViewRepresentable(
+                recognizedText: $recognizedText,
+                isPresented: $isPresented
+            )
+            .environmentObject(wrapper)
+            // 코치마크 오버레이
+            if showCoachMark {
+                CoachMarkView(
+                    isPresented: $showCoachMark,
+                    onCompleted: {
+                        UserDefaults.standard.set(true, forKey: "hasSeenCameraCoachMark")
+                        showCoachMark = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+struct CameraLiveTextViewRepresentable: UIViewControllerRepresentable {
     @Binding var recognizedText: String
     @Binding var isPresented: Bool
     @EnvironmentObject var wrapper: PosterViewModelWrapper
@@ -32,9 +59,9 @@ struct CameraLiveTextView: UIViewControllerRepresentable {
     }
 
     class Coordinator: NSObject, CameraLiveTextDelegate {
-        let parent: CameraLiveTextView
+        let parent: CameraLiveTextViewRepresentable
 
-        init(_ parent: CameraLiveTextView) {
+        init(_ parent: CameraLiveTextViewRepresentable) {
             self.parent = parent
         }
 
@@ -44,8 +71,6 @@ struct CameraLiveTextView: UIViewControllerRepresentable {
                 self.parent.wrapper.viewModel.scannedText.value = RawText(
                     text: text
                 )
-
-                // 선택 완료 후 자동으로 다음 화면으로
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     self.parent.wrapper.viewModel.shouldNavigateToFestivalCheck
                         .value = true
