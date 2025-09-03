@@ -18,6 +18,7 @@ struct SelectArtistView: View {
     @State private var failedArtists: Set<String> = []
     @State private var selectedArtists: Set<String> = []
     @State private var isNextActive = false
+    @State private var artworkTask: Task<Void, Never>?
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -82,6 +83,7 @@ struct SelectArtistView: View {
                 Spacer()
             }
             BottomButton(title: "선택 완료", kind: .colorFill) {
+                artworkTask?.cancel()
                 savePlaylistToDB()
                 isNextActive = true
             }
@@ -127,7 +129,9 @@ struct SelectArtistView: View {
 
         }
         .onAppear {
-            fetchArtistArtworks()
+            artworkTask = Task {
+                await fetchArtistArtworks()
+            }
         }
         .navigationDestination(isPresented: $isNextActive) {
             if let savedPlaylist = musicWrapper.selectedPlaylist {
@@ -249,36 +253,43 @@ struct SelectArtistView: View {
         }
     }
 
-    private func fetchArtistArtworks() {
-        Task {
-            for artist in playlist.artists {
-                do {
-                    var request = MusicCatalogSearchRequest(
-                        term: artist,
-                        types: [Artist.self]
-                    )
-                    request.limit = 1
-                    let response = try await request.response()
-                    if let firstArtist = response.artists.first {
-                        // 고화질 이미지 요청: 220x220 (2배 해상도)
-                        let artworkURL = firstArtist.artwork?.url(
-                            width: 220,
-                            height: 220
-                        )
-                        DispatchQueue.main.async {
-                            artistArtworks[artist] = artworkURL
-                        }
-                    } else {
-                        DispatchQueue.main.async {
-                            artistArtworks[artist] = nil
-                            failedArtists.insert(artist)
+    private func fetchArtistArtworks() async {
+        guard !playlist.artists.isEmpty else { return }
+        await withTaskGroup(of: (String, URL?).self) { group in
+                for artist in playlist.artists {
+                    group.addTask {
+                        do {
+                            var request = MusicCatalogSearchRequest(
+                                term: artist,
+                                types: [Artist.self]
+                            )
+                            request.limit = 1
+                            let response = try await request.response()
+                            
+                            // 찾은 첫번쨰 아티스트의 아트워크 URL반환
+                            if let firstArtist = response.artists.first {
+                                let artworkURL = firstArtist.artwork?.url(
+                                    width: 220,
+                                    height: 220
+                                )
+                                return (artist, artworkURL)
+                            } else {
+                                return (artist, nil)
+                            }
+                        } catch {
+                            Log.debug("Error fetching artwork for \(artist): \(error)")
+                            return (artist, nil)
                         }
                     }
-                } catch {
-                    Log.debug("Error fetching artwork for \(artist): \(error)")
-                    DispatchQueue.main.async {
-                        artistArtworks[artist] = nil
-                        failedArtists.insert(artist)
+                }
+                
+            // TaskGroup의 모든 작업이 완료될 때 까지 결과를 기다림
+            for await (artist, artworkURL) in group {
+                guard !Task.isCancelled else { return }
+                DispatchQueue.main.async {
+                    self.artistArtworks[artist] = artworkURL
+                    if artworkURL == nil {
+                        self.failedArtists.insert(artist)
                     }
                 }
             }

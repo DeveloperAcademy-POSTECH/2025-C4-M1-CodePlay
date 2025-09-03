@@ -10,6 +10,7 @@ import SwiftUI
 // MARK: 애플뮤직 플레이리스트로 전송하는 뷰 (hifi 06_1부분)
 struct ExportLoadingView: View {
     @State private var progress: Double = 0.0
+    @State private var isLoadingComplete: Bool = false
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -45,11 +46,18 @@ struct ExportLoadingView: View {
         }
         .navigationBarBackButtonHidden(true)
         .onAppear {
-            withAnimation(.easeInOut(duration: 5)) {
+            withAnimation(.linear(duration: 5)) {
                 progress = 1.0
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                isLoadingComplete = true
             }
         }
         .backgroundWithBlur()
+        .navigationDestination(isPresented: $isLoadingComplete) {
+            ExportSuccessView()
+        }
     }
 }
 
