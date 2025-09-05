@@ -81,13 +81,20 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
             do {
                 var request = MusicCatalogSearchRequest(term: artistName, types: [Artist.self])
                 request.limit = 1
-                
+
                 let response = try await request.response()
 
                 if let artist = response.artists.first {
+                    let displayName: String
+                    if artistName.containsHangul && !artist.name.containsHangul {
+                        displayName = artistName // 검색어 유지
+                    } else {
+                        displayName = artist.name // 기본값
+                    }
+                    
                     let match = ArtistMatch(
                         rawText: rawText.text,
-                        artistName: artistName,
+                        artistName: displayName, // 보정된 이름
                         appleMusicId: artist.id.rawValue,
                         profileArtworkUrl: artist.artwork?.url(width: 300, height: 300)?.absoluteString ?? "",
                         createdAt: .now
@@ -95,6 +102,7 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                     results.append(match)
                 }
             } catch {
+                Log.debug("❌ [Search 실패] \(artistName): \(error)")
             }
         }
 
@@ -109,16 +117,28 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
     // 각 아티스트에 대해 상위 3곡을 Apple Music에서 검색 후 PlaylistEntry로 변환
     func searchTopSongs(for artists: [ArtistMatch]) async -> [PlaylistEntry] {
         var allEntries: [PlaylistEntry] = []
-
+        
         for artist in artists {
             do {
-                var request = MusicCatalogSearchRequest(term: artist.artistName, types: [Song.self])
-                request.limit = 10
+                // 1. appleMusicId로 아티스트 fetch
+                let request = MusicCatalogResourceRequest<Artist>(matching: \.id, equalTo: MusicItemID(artist.appleMusicId))
                 let response = try await request.response()
-                let topSongs = response.songs.prefix(3)
-
+                
+                guard let fetchedArtist = response.items.first else {
+                    Log.debug("❌ [Artist not found] \(artist.artistName) (\(artist.appleMusicId))")
+                    continue
+                }
+                
+                // 2. topSongs 관계 로드
+                let detailedArtist = try await fetchedArtist.with(.topSongs)
+                guard let topSongs = detailedArtist.topSongs?.prefix(3) else {
+                    Log.debug("❌ [No top songs found] \(artist.artistName) (\(artist.appleMusicId))")
+                    continue
+                }
+                
                 Log.debug("🔍 [TopSongs] \(artist.artistName) - 검색된 곡 수: \(topSongs.count)")
-
+                
+                // 3. PlaylistEntry로 변환
                 for song in topSongs {
                     let entry = PlaylistEntry(
                         id: UUID(),
@@ -134,15 +154,15 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                         albumName: song.albumTitle ?? "Unknown Album",
                         createdAt: .now
                     )
-
+                    
                     Log.debug("🎵 [Entry 생성됨] \(entry.artistName) - \(entry.trackTitle) (\(entry.trackId))")
                     allEntries.append(entry)
                 }
             } catch {
-                Log.debug("❌ [TopSongs 검색 실패] \(artist.artistName): \(error)")
+                Log.debug("❌ [TopSongs 검색 실패] \(artist.artistName) (\(artist.appleMusicId)): \(error)")
             }
         }
-
+        
         return allEntries
     }
     
@@ -269,6 +289,15 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
                 }
             } catch {
             }
+        }
+    }
+}
+
+// 추후에 어디로 빼야할지 고민해보겠읍니다.
+extension String {
+    var containsHangul: Bool {
+        return self.unicodeScalars.contains { scalar in
+            scalar.value >= 0xAC00 && scalar.value <= 0xD7A3
         }
     }
 }
