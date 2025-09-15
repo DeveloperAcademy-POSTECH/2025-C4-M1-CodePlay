@@ -120,7 +120,6 @@ final class MusicViewModelWrapper: ObservableObject {
     @Published var festivalData: DynamoDataItem? = nil
     @Published var suggestTitles: [String] = []
     @Published var selectedPlaylist: Playlist? = nil
-//    @Published var shouldShowNoResultView: Bool = false
     var shouldShowNoResultView: Bool = false
     @Published var showErrorView: Bool = false
     @Published var entrySource: PlaylistEntrySource = .main
@@ -149,23 +148,8 @@ final class MusicViewModelWrapper: ObservableObject {
     private func bind() {
         festivalCheckViewModel.isLoading.observe(on: self) {
             [weak self] value in
-            guard let self else { return }
             DispatchQueue.main.async {
-                self.isLoading = value
-                // ViewModel을 통해 Repository 콜백 설정
-                self.exportViewModelWrapper.setupMusicPlayerCallbacks(
-                    onPlaybackStateChanged: { [weak self] trackId, isPlaying in
-                        DispatchQueue.main.async {
-                            self?.currentlyPlayingTrackId = trackId
-                            self?.isPlaying = isPlaying
-                        }
-                    },
-                    onProgressChanged: { [weak self] progress in
-                        DispatchQueue.main.async {
-                            self?.playbackProgress = progress
-                        }
-                    }
-                )
+                self?.isLoading = value
             }
         }
 
@@ -219,20 +203,28 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        exportViewModelWrapper.setupMusicPlayerCallbacks(
-            onPlaybackStateChanged: { [weak self] trackId, isPlaying in
-                guard let self else { return }
-                Task { @MainActor in
-                    self.currentlyPlayingTrackId = trackId
-                    self.isPlaying = isPlaying
-                }
-            },
-            onProgressChanged: { [weak self] progress in
-                DispatchQueue.main.async {
-                    self?.playbackProgress = progress
-                }
+        exportViewModelWrapper.currentlyPlayingTrackId.observe(on: self) {
+            [weak self] trackId in
+            guard let self else { return }
+            Task { @MainActor in
+                self.currentlyPlayingTrackId = trackId
             }
-        )
+        }
+
+        exportViewModelWrapper.isPlaying.observe(on: self) {
+            [weak self] isPlaying in
+            guard let self else { return }
+            Task { @MainActor in
+                self.isPlaying = isPlaying
+            }
+        }
+
+        exportViewModelWrapper.playbackProgress.observe(on: self) {
+            [weak self] progress in
+            DispatchQueue.main.async {
+                self?.playbackProgress = progress
+            }
+        }
     }
 
     // MARK: - Main Flow

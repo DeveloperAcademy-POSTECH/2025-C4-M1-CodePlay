@@ -7,6 +7,7 @@
 import Foundation
 import SwiftData
 
+// MARK: ExportPlaylistViewModel
 protocol ExportPlaylistViewModel {
     func preProcessRawText(_ rawText: RawText)  // 텍스트를 띄어쓰기에 맞춰서 여러개 쪼개고, 하나의 데이터로 저장하는 로직 (RawText 업데이트)
     var artistCandidates: Observable<[String]> { get }  // 아티스트 스트링 관리, 추후 리펙토링 필요
@@ -16,23 +17,38 @@ protocol ExportPlaylistViewModel {
     func searchTopSongsWithCaching(from rawText: RawText, artistMatches: [ArtistMatch], musicPlayerUseCase: MusicPlayerUseCase) async -> [PlaylistEntry]  // 캐싱과 함께 인기곡 검색
     func exportLatestPlaylistToAppleMusic() async  // 애플뮤직으로 플레이리스트 전송
     func deletePlaylistEntry(trackId: String) async  // 플레이리스트에서 특정 항목 삭제
-
-    func setupMusicPlayerCallbacks(onPlaybackStateChanged: @escaping (String?, Bool) -> Void, onProgressChanged: @escaping (Double) -> Void)
     func togglePreview(for trackId: String) async
     func stopPreview() async
 }
 
+// MARK: DefaultExportPlaylistViewModel
 final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {
     private let useCase: ExportPlaylistUseCase
     private let musicPlayerUseCase: MusicPlayerUseCase
     private let modelContext: ModelContext
 
     var artistCandidates: Observable<[String]> = Observable([])
+    var currentlyPlayingTrackId: Observable<String?> = Observable(nil)
+    var isPlaying: Observable<Bool> = Observable(false)
+    var playbackProgress: Observable<Double> = Observable(0.0)
 
     init(useCase: ExportPlaylistUseCase, musicPlayerUseCase: MusicPlayerUseCase, modelContext: ModelContext) {
         self.useCase = useCase
         self.musicPlayerUseCase = musicPlayerUseCase
         self.modelContext = modelContext
+        setupMusicPlayerCallbacks()
+    }
+
+    private func setupMusicPlayerCallbacks() {
+        musicPlayerUseCase.setupRepositoryCallbacks(
+            onPlaybackStateChanged: { [weak self] trackId, isPlaying in
+                self?.currentlyPlayingTrackId.value = trackId
+                self?.isPlaying.value = isPlaying
+            },
+            onProgressChanged: { [weak self] progress in
+                self?.playbackProgress.value = progress
+            }
+        )
     }
 
     func preProcessRawText(_ rawText: RawText) {
@@ -94,11 +110,6 @@ final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {
     
     func deletePlaylistEntry(trackId: String) async {
         await useCase.deletePlaylistEntry(trackId: trackId)
-    }
-
-    // MARK: - Music Player functionality
-    func setupMusicPlayerCallbacks(onPlaybackStateChanged: @escaping (String?, Bool) -> Void, onProgressChanged: @escaping (Double) -> Void) {
-        musicPlayerUseCase.setupRepositoryCallbacks(onPlaybackStateChanged: onPlaybackStateChanged, onProgressChanged: onProgressChanged)
     }
 
     func togglePreview(for trackId: String) async {
