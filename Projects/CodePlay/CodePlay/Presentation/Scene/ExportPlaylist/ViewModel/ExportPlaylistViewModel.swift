@@ -16,16 +16,22 @@ protocol ExportPlaylistViewModel {
     func searchTopSongsWithCaching(from rawText: RawText, artistMatches: [ArtistMatch], musicPlayerUseCase: MusicPlayerUseCase) async -> [PlaylistEntry]  // 캐싱과 함께 인기곡 검색
     func exportLatestPlaylistToAppleMusic() async  // 애플뮤직으로 플레이리스트 전송
     func deletePlaylistEntry(trackId: String) async  // 플레이리스트에서 특정 항목 삭제
+
+    func setupMusicPlayerCallbacks(onPlaybackStateChanged: @escaping (String?, Bool) -> Void, onProgressChanged: @escaping (Double) -> Void)
+    func togglePreview(for trackId: String) async
+    func stopPreview() async
 }
 
 final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {
     private let useCase: ExportPlaylistUseCase
+    private let musicPlayerUseCase: MusicPlayerUseCase
     private let modelContext: ModelContext
 
     var artistCandidates: Observable<[String]> = Observable([])
 
-    init(useCase: ExportPlaylistUseCase, modelContext: ModelContext) {
+    init(useCase: ExportPlaylistUseCase, musicPlayerUseCase: MusicPlayerUseCase, modelContext: ModelContext) {
         self.useCase = useCase
+        self.musicPlayerUseCase = musicPlayerUseCase
         self.modelContext = modelContext
     }
 
@@ -55,7 +61,8 @@ final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {
         )) ?? []
     }
 
-    func exportLatestPlaylistToAppleMusic() async {  // 추후 Repository로 이동해야할 듯 합니다.
+    // TODO: 추후 Repository로 이동해야할 듯 합니다.
+    func exportLatestPlaylistToAppleMusic() async {
         await MainActor.run {
             do {
                 guard
@@ -87,5 +94,18 @@ final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {
     
     func deletePlaylistEntry(trackId: String) async {
         await useCase.deletePlaylistEntry(trackId: trackId)
+    }
+
+    // MARK: - Music Player functionality
+    func setupMusicPlayerCallbacks(onPlaybackStateChanged: @escaping (String?, Bool) -> Void, onProgressChanged: @escaping (Double) -> Void) {
+        musicPlayerUseCase.setupRepositoryCallbacks(onPlaybackStateChanged: onPlaybackStateChanged, onProgressChanged: onProgressChanged)
+    }
+
+    func togglePreview(for trackId: String) async {
+        await musicPlayerUseCase.musicRepository.togglePreview(for: trackId)
+    }
+
+    func stopPreview() async {
+        await musicPlayerUseCase.stopPreview()
     }
 }

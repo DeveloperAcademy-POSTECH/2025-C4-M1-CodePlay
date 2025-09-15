@@ -107,8 +107,10 @@ final class MainSceneDIContainer {
         let exportUseCase = makeExportPlaylistUseCase(
             repository: exportRepository
         )
+        let musicPlayerUseCase = makeMusicPlayerUseCase()
         return DefaultExportPlaylistViewModel(
             useCase: exportUseCase,
+            musicPlayerUseCase: musicPlayerUseCase,
             modelContext: modelContext
         )
     }
@@ -125,13 +127,11 @@ final class MainSceneDIContainer {
         let exportViewModel = makeExportViewModel(
             exportRepository: exportRepository
         )
-        let musicPlayerUseCase = makeMusicPlayerUseCase()
 
         return MusicViewModelWrapper(
             appleMusicConnectViewModel: appleMusicConnectViewModel(),
             exportViewModelWrapper: exportViewModel,
-            festivalCheckViewModel: makeFestivalCheckViewModel(),
-            musicPlayerUseCase: musicPlayerUseCase
+            festivalCheckViewModel: makeFestivalCheckViewModel()
         )
     }
 }
