@@ -174,6 +174,45 @@ struct SelectArtistView: View {
         .background(.neu50.opacity(0.3))
         .cornerRadius(12)
     }
+    
+    @ViewBuilder
+    func imageView(for phase: AsyncImagePhase, artist: String, selectedArtists: Set<String>) -> some View {
+        switch phase {
+        case .empty:
+            ProgressView().frame(width: 110, height: 110)
+        case .success(let image):
+            image.resizable()
+                .scaledToFill()
+                .frame(width: 110, height: 110)
+                .clipShape(Circle())
+                .overlay(
+                    Circle()
+                        .stroke(
+                            selectedArtists.contains(artist)
+                                ? Color(asset: Asset.primary)
+                                : Color.neutral50,
+                            lineWidth: 4
+                        )
+                )
+            
+            
+        case .failure(_):
+            Circle()
+                .fill(Color.gray.opacity(0.3)) // 회색 배경색 설정, 투명도 조절 가능
+                .frame(width: 110, height: 110)
+                .overlay(
+                    Image("logo") // 로고 이미지
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 27, height: 47)
+                )
+                .clipShape(Circle())
+                .overlay(
+                    Circle()
+                        .stroke(Color.neutral50, lineWidth: 4)
+                )
+        }
+    }
 
     @ViewBuilder
     private var ArtistGridView: some View {
@@ -186,45 +225,29 @@ struct SelectArtistView: View {
                 spacing: 10
             ) {
                 ForEach(playlist.artists, id: \.self) { artist in
+                    let isFailed = failedArtists.contains(artist)
+                    let artworkURL = artistArtworks[artist] ?? nil
                     VStack(spacing: 8) {
                         ZStack {
-                            AsyncImage(url: artistArtworks[artist] ?? nil) {
-                                phase in
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                        .frame(width: 110, height: 110)
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 110, height: 110)
-                                        .clipShape(Circle())
-                                        .overlay(
-                                            Circle()
-                                                .stroke(
-                                                    selectedArtists.contains(
-                                                        artist
-                                                    )
-                                                        ? Color(asset: Asset.primary)
-                                                        : Color.neutral50,
-                                                    lineWidth: 4
-                                                )
-                                        )
-                                @unknown default:
-                                    Image(systemName: "person.circle.fill")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 110, height: 110)
-                                        .foregroundColor(.gray)
+                            if isFailed {
+                                Image("logo")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 27, height: 47)
+                                    .foregroundColor(.gray)
+                            } else if let url = artworkURL {
+                                AsyncImage(url: url) { phase in
+                                    imageView(for: phase, artist: artist, selectedArtists: selectedArtists)
                                 }
+                            } else {
+                                ProgressView().frame(width: 110, height: 110)
                             }
                         }
                         .onTapGesture {
                             toggleSelection(for: artist)
                         }
 
-                        Text(artist.prefix(10))
+                        Text(artist.prefix(16)) // 텍스트 길이 늘리기
                             .font(.BmdRegular())
                             .foregroundColor(
                                 failedArtists.contains(artist)
@@ -272,6 +295,7 @@ struct SelectArtistView: View {
                         DispatchQueue.main.async {
                             artistArtworks[artist] = nil
                             failedArtists.insert(artist)
+                            print("❌ failedArtists updated: \(failedArtists)")
                         }
                     }
                 } catch {
@@ -279,6 +303,7 @@ struct SelectArtistView: View {
                     DispatchQueue.main.async {
                         artistArtworks[artist] = nil
                         failedArtists.insert(artist)
+                        print("❌ failedArtists updated: \(failedArtists)")
                     }
                 }
             }
