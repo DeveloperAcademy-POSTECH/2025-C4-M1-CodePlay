@@ -56,7 +56,7 @@ struct ArtistCard: View {
                         Group {
                             if let highQualityUrl = highQualityImageUrl,
                                let url = URL(string: highQualityUrl) {
-                                AsyncImage(url: url) { phase in
+                                CachedAsyncImage(url: url) { phase in
                                     switch phase {
                                     case .empty:
                                         ProgressView()
@@ -71,7 +71,7 @@ struct ArtistCard: View {
                                         // 고화질 실패시 원본 URL로 재시도
                                         if let originalUrl = imageUrl,
                                            let fallbackUrl = URL(string: originalUrl) {
-                                            AsyncImage(url: fallbackUrl) { fallbackPhase in
+                                            CachedAsyncImage(url: fallbackUrl) { fallbackPhase in
                                                 switch fallbackPhase {
                                                 case .success(let fallbackImage):
                                                     fallbackImage
