@@ -8,14 +8,6 @@
 import Combine
 import Foundation
 
-enum FestivalFetchState {
-    case idle
-    case loading
-    case success(PostFestInfoResponseDTO)
-    case noResult
-    case error(String)
-}
-
 // MARK: - Input
 protocol FestivalCheckViewModelInput {
     func loadFestivalInfo(from rawText: String) async

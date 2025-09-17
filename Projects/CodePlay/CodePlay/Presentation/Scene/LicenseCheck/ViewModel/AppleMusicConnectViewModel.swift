@@ -33,7 +33,6 @@ protocol AppleMusicConnectViewModel: AppleMusicConnectViewModelInput,
 
 // MARK: - Implementation
 final class DefaultAppleMusicConnectViewModel: AppleMusicConnectViewModel {
-    // MARK: Output
     var authorizationStatus: Observable<MusicAuthorizationStatusModel?> =
         Observable(nil)
     var subscriptionStatus: Observable<MusicSubscriptionModel?> = Observable(
@@ -46,14 +45,12 @@ final class DefaultAppleMusicConnectViewModel: AppleMusicConnectViewModel {
 
     private let checkLicenseUseCase: CheckLicenseUseCase
 
-    // MARK: Init
     init(checkLicenseUseCase: CheckLicenseUseCase) {
         self.checkLicenseUseCase = checkLicenseUseCase
         observeTriggers()
         updateMusicAuthorizationStatus()
     }
 
-    // MARK: Input
     func requestMusicAuthorization() {
         Task {
             do {
@@ -114,7 +111,6 @@ final class DefaultAppleMusicConnectViewModel: AppleMusicConnectViewModel {
         checkLicenseUseCase.openSettings()
     }
 
-    // MARK: Private Helpers
     private func updateCanPlayMusic() {
         let isAuthorized = authorizationStatus.value?.isAuthorized ?? false
         let hasSubscription = subscriptionStatus.value?.canPlayMusic ?? false
