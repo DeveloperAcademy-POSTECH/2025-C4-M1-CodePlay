@@ -5,7 +5,7 @@
 //  Created by 아우신얀 on 7/28/25.
 //
 
-internal import Combine
+import Combine
 import Foundation
 
 enum FestivalFetchState {

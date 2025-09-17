@@ -6,7 +6,7 @@
 //
 import Foundation
 import UIKit
-internal import Combine
+import Combine
 
 // MARK: PosterViewModelInput
 protocol PosterViewModelInput {

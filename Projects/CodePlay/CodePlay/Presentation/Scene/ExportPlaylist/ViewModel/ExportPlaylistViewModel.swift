@@ -6,7 +6,7 @@
 //
 import Foundation
 import SwiftData
-internal import Combine
+import Combine
 
 // MARK: - Input
 protocol ExportPlaylistViewModelInput {
