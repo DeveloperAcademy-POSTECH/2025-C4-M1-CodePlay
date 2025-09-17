@@ -44,11 +44,9 @@ final class MainSceneDIContainer {
             repository: makeCheckLicenseRepository()
         )
     }
-
-    private func makeExportPlaylistUseCase(repository: ExportPlaylistRepository)
-        -> ExportPlaylistUseCase
-    {
-        return DefaultExportPlaylistUseCase(repository: repository)
+    
+    private func makeExportPlaylistUseCase() -> ExportPlaylistUseCase {
+        return DefaultExportPlaylistUseCase(repository: makeExportPlaylistRepository())
     }
 
     private func makeMusicPlayerUseCase() -> MusicPlayerUseCase {
@@ -101,18 +99,9 @@ final class MainSceneDIContainer {
             fetchFestivalInfoUseCase: makeFestivalUseCase()
         )
     }
-    private func makeExportViewModel(exportRepository: ExportPlaylistRepository)
-        -> any ExportPlaylistViewModel
-    {
-        let exportUseCase = makeExportPlaylistUseCase(
-            repository: exportRepository
-        )
-        let musicPlayerUseCase = makeMusicPlayerUseCase()
-        return DefaultExportPlaylistViewModel(
-            useCase: exportUseCase,
-            musicPlayerUseCase: musicPlayerUseCase,
-            modelContext: modelContext
-        )
+    
+    private func makeExportViewModel() -> any ExportPlaylistViewModel {
+        DefaultExportPlaylistViewModel(useCase: makeExportPlaylistUseCase(), musicPlayerUseCase: makeMusicPlayerUseCase(), modelContext: modelContext)
     }
 
     // MARK: ViewModelWrapper
@@ -123,14 +112,9 @@ final class MainSceneDIContainer {
     }
 
     func appleMusicConnectViewModelWrapper() -> MusicViewModelWrapper {
-        let exportRepository = makeExportPlaylistRepository()
-        let exportViewModel = makeExportViewModel(
-            exportRepository: exportRepository
-        )
-
         return MusicViewModelWrapper(
             appleMusicConnectViewModel: appleMusicConnectViewModel(),
-            exportViewModelWrapper: exportViewModel,
+            exportPlaylistViewModel: makeExportViewModel(),
             festivalCheckViewModel: makeFestivalCheckViewModel()
         )
     }

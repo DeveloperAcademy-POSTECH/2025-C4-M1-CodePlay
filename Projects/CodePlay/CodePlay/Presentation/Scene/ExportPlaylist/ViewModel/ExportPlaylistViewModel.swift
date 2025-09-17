@@ -6,11 +6,11 @@
 //
 import Foundation
 import SwiftData
+internal import Combine
 
-// MARK: ExportPlaylistViewModel
-protocol ExportPlaylistViewModel {
+// MARK: - Input
+protocol ExportPlaylistViewModelInput {
     func preProcessRawText(_ rawText: RawText)  // 텍스트를 띄어쓰기에 맞춰서 여러개 쪼개고, 하나의 데이터로 저장하는 로직 (RawText 업데이트)
-    var artistCandidates: Observable<[String]> { get }  // 아티스트 스트링 관리, 추후 리펙토링 필요
     func searchArtists(from rawText: RawText) async -> [ArtistMatch]  // RawText를 한줄한줄 검색해 매칭된 아티스트 저장
     func searchTopSongs(from rawText: RawText, artistMatches: [ArtistMatch])
         async -> [PlaylistEntry]  // ArtistMatch에서 노래를 검색하고, PlaylistEntry로 저장
@@ -20,6 +20,17 @@ protocol ExportPlaylistViewModel {
     func togglePreview(for trackId: String) async
     func stopPreview() async
 }
+
+// MARK: - Output
+protocol ExportPlaylistViewModelOutput {
+    var artistCandidates: Observable<[String]> { get }  // 아티스트 스트링 관리, 추후 리펙토링 필요
+    var currentlyPlayingTrackId: Observable<String?> { get }  // 현재 재생 중인 트랙 ID
+    var isPlaying: Observable<Bool> { get }  // 재생 상태
+    var playbackProgress: Observable<Double> { get }  // 재생 진행률
+}
+
+// MARK: - ExportPlaylistViewModel
+protocol ExportPlaylistViewModel: ExportPlaylistViewModelInput, ExportPlaylistViewModelOutput, ObservableObject {}
 
 // MARK: DefaultExportPlaylistViewModel
 final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {

@@ -128,17 +128,17 @@ final class MusicViewModelWrapper: ObservableObject {
 
     // MARK: - Dependencies
     var appleMusicConnectViewModel: any AppleMusicConnectViewModel
-    var exportViewModelWrapper: any ExportPlaylistViewModel
+    var exportPlaylistViewModel: any ExportPlaylistViewModel
     var festivalCheckViewModel: any FestivalCheckViewModel
 
     // MARK: - Init
     init(
         appleMusicConnectViewModel: any AppleMusicConnectViewModel,
-        exportViewModelWrapper: any ExportPlaylistViewModel,
+        exportPlaylistViewModel: any ExportPlaylistViewModel,
         festivalCheckViewModel: any FestivalCheckViewModel
     ) {
         self.appleMusicConnectViewModel = appleMusicConnectViewModel
-        self.exportViewModelWrapper = exportViewModelWrapper
+        self.exportPlaylistViewModel = exportPlaylistViewModel
         self.festivalCheckViewModel = festivalCheckViewModel
 
         bind()
@@ -195,7 +195,7 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        exportViewModelWrapper.artistCandidates.observe(on: self) {
+        exportPlaylistViewModel.artistCandidates.observe(on: self) {
             [weak self] value in
             guard let self else { return }
             Task { @MainActor in
@@ -203,7 +203,7 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        exportViewModelWrapper.currentlyPlayingTrackId.observe(on: self) {
+        exportPlaylistViewModel.currentlyPlayingTrackId.observe(on: self) {
             [weak self] trackId in
             guard let self else { return }
             Task { @MainActor in
@@ -211,7 +211,7 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        exportViewModelWrapper.isPlaying.observe(on: self) {
+        exportPlaylistViewModel.isPlaying.observe(on: self) {
             [weak self] isPlaying in
             guard let self else { return }
             Task { @MainActor in
@@ -219,7 +219,7 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        exportViewModelWrapper.playbackProgress.observe(on: self) {
+        exportPlaylistViewModel.playbackProgress.observe(on: self) {
             [weak self] progress in
             DispatchQueue.main.async {
                 self?.playbackProgress = progress
@@ -240,7 +240,7 @@ final class MusicViewModelWrapper: ObservableObject {
             self.progressStep = 0
         }
 
-        exportViewModelWrapper.preProcessRawText(rawText)
+        exportPlaylistViewModel.preProcessRawText(rawText)
 
         await MainActor.run {
             withAnimation(.easeInOut(duration: 0.5)) {
@@ -248,7 +248,7 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        let matches = await exportViewModelWrapper.searchArtists(from: rawText)
+        let matches = await exportPlaylistViewModel.searchArtists(from: rawText)
         Log.debug("🔍 [searchArtists] 매칭된 아티스트 수: \(matches.count)")
         matches.forEach { Log.debug("🎤 \($0.artistName) (\($0.appleMusicId))") }
 
@@ -258,7 +258,7 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        let songs = await exportViewModelWrapper.searchTopSongs(
+        let songs = await exportPlaylistViewModel.searchTopSongs(
             from: rawText,
             artistMatches: matches
         )
@@ -318,7 +318,7 @@ final class MusicViewModelWrapper: ObservableObject {
     func exportToAppleMusic() {
         isExporting = true
         Task {
-            await exportViewModelWrapper.exportLatestPlaylistToAppleMusic()
+            await exportPlaylistViewModel.exportLatestPlaylistToAppleMusic()
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                 self.isExporting = false
                 self.isExportCompleted = true
@@ -345,9 +345,9 @@ final class MusicViewModelWrapper: ObservableObject {
         Task {
             // 현재 재생 중인 곡이라면 먼저 음악 정지
             if currentlyPlayingTrackId == trackId {
-                await exportViewModelWrapper.stopPreview()
+                await exportPlaylistViewModel.stopPreview()
             }
-            await exportViewModelWrapper.deletePlaylistEntry(trackId: trackId)
+            await exportPlaylistViewModel.deletePlaylistEntry(trackId: trackId)
             await MainActor.run {
                 if currentlyPlayingTrackId == trackId {
                     currentlyPlayingTrackId = nil
@@ -367,7 +367,7 @@ final class MusicViewModelWrapper: ObservableObject {
 
     func togglePreview(for trackId: String) {
         Task {
-            await exportViewModelWrapper.togglePreview(for: trackId)
+            await exportPlaylistViewModel.togglePreview(for: trackId)
         }
     }
 }
