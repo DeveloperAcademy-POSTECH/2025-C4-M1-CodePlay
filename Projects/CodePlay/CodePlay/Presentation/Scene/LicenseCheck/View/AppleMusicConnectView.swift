@@ -5,7 +5,7 @@
 //  Created by 성현 on 7/15/25.
 //
 
-internal import Combine
+import Combine
 import MusicKit
 import SwiftData
 import SwiftUI
@@ -120,7 +120,6 @@ final class MusicViewModelWrapper: ObservableObject {
     @Published var festivalData: DynamoDataItem? = nil
     @Published var suggestTitles: [String] = []
     @Published var selectedPlaylist: Playlist? = nil
-//    @Published var shouldShowNoResultView: Bool = false
     var shouldShowNoResultView: Bool = false
     @Published var showErrorView: Bool = false
     @Published var entrySource: PlaylistEntrySource = .main
@@ -129,21 +128,18 @@ final class MusicViewModelWrapper: ObservableObject {
 
     // MARK: - Dependencies
     var appleMusicConnectViewModel: any AppleMusicConnectViewModel
-    var exportViewModelWrapper: any ExportPlaylistViewModel
+    var exportPlaylistViewModel: any ExportPlaylistViewModel
     var festivalCheckViewModel: any FestivalCheckViewModel
-    private var musicPlayerUseCase: MusicPlayerUseCase
 
     // MARK: - Init
     init(
         appleMusicConnectViewModel: any AppleMusicConnectViewModel,
-        exportViewModelWrapper: any ExportPlaylistViewModel,
-        festivalCheckViewModel: any FestivalCheckViewModel,
-        musicPlayerUseCase: MusicPlayerUseCase
+        exportPlaylistViewModel: any ExportPlaylistViewModel,
+        festivalCheckViewModel: any FestivalCheckViewModel
     ) {
         self.appleMusicConnectViewModel = appleMusicConnectViewModel
-        self.exportViewModelWrapper = exportViewModelWrapper
+        self.exportPlaylistViewModel = exportPlaylistViewModel
         self.festivalCheckViewModel = festivalCheckViewModel
-        self.musicPlayerUseCase = musicPlayerUseCase
 
         bind()
     }
@@ -152,23 +148,8 @@ final class MusicViewModelWrapper: ObservableObject {
     private func bind() {
         festivalCheckViewModel.isLoading.observe(on: self) {
             [weak self] value in
-            guard let self else { return }
             DispatchQueue.main.async {
-                self.isLoading = value
-                // UseCase를 통해 Repository 콜백 설정
-                self.musicPlayerUseCase.setupRepositoryCallbacks(
-                    onPlaybackStateChanged: { [weak self] trackId, isPlaying in
-                        DispatchQueue.main.async {
-                            self?.currentlyPlayingTrackId = trackId
-                            self?.isPlaying = isPlaying
-                        }
-                    },
-                    onProgressChanged: { [weak self] progress in
-                        DispatchQueue.main.async {
-                            self?.playbackProgress = progress
-                        }
-                    },
-                )
+                self?.isLoading = value
             }
         }
 
@@ -214,7 +195,7 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        exportViewModelWrapper.artistCandidates.observe(on: self) {
+        exportPlaylistViewModel.artistCandidates.observe(on: self) {
             [weak self] value in
             guard let self else { return }
             Task { @MainActor in
@@ -222,20 +203,28 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        musicPlayerUseCase.setupRepositoryCallbacks(
-            onPlaybackStateChanged: { [weak self] trackId, isPlaying in
-                guard let self else { return }
-                Task { @MainActor in
-                    self.currentlyPlayingTrackId = trackId
-                    self.isPlaying = isPlaying
-                }
-            },
-            onProgressChanged: { [weak self] progress in
-                DispatchQueue.main.async {
-                    self?.playbackProgress = progress
-                }
+        exportPlaylistViewModel.currentlyPlayingTrackId.observe(on: self) {
+            [weak self] trackId in
+            guard let self else { return }
+            Task { @MainActor in
+                self.currentlyPlayingTrackId = trackId
             }
-        )
+        }
+
+        exportPlaylistViewModel.isPlaying.observe(on: self) {
+            [weak self] isPlaying in
+            guard let self else { return }
+            Task { @MainActor in
+                self.isPlaying = isPlaying
+            }
+        }
+
+        exportPlaylistViewModel.playbackProgress.observe(on: self) {
+            [weak self] progress in
+            DispatchQueue.main.async {
+                self?.playbackProgress = progress
+            }
+        }
     }
 
     // MARK: - Main Flow
@@ -251,7 +240,7 @@ final class MusicViewModelWrapper: ObservableObject {
             self.progressStep = 0
         }
 
-        exportViewModelWrapper.preProcessRawText(rawText)
+        exportPlaylistViewModel.preProcessRawText(rawText)
 
         await MainActor.run {
             withAnimation(.easeInOut(duration: 0.5)) {
@@ -259,7 +248,7 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        let matches = await exportViewModelWrapper.searchArtists(from: rawText)
+        let matches = await exportPlaylistViewModel.searchArtists(from: rawText)
         Log.debug("🔍 [searchArtists] 매칭된 아티스트 수: \(matches.count)")
         matches.forEach { Log.debug("🎤 \($0.artistName) (\($0.appleMusicId))") }
 
@@ -269,7 +258,7 @@ final class MusicViewModelWrapper: ObservableObject {
             }
         }
 
-        let songs = await exportViewModelWrapper.searchTopSongs(
+        let songs = await exportPlaylistViewModel.searchTopSongs(
             from: rawText,
             artistMatches: matches
         )
@@ -329,7 +318,7 @@ final class MusicViewModelWrapper: ObservableObject {
     func exportToAppleMusic() {
         isExporting = true
         Task {
-            await exportViewModelWrapper.exportLatestPlaylistToAppleMusic()
+            await exportPlaylistViewModel.exportLatestPlaylistToAppleMusic()
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                 self.isExporting = false
                 self.isExportCompleted = true
@@ -356,9 +345,9 @@ final class MusicViewModelWrapper: ObservableObject {
         Task {
             // 현재 재생 중인 곡이라면 먼저 음악 정지
             if currentlyPlayingTrackId == trackId {
-                await musicPlayerUseCase.stopPreview()
+                await exportPlaylistViewModel.stopPreview()
             }
-            await exportViewModelWrapper.deletePlaylistEntry(trackId: trackId)
+            await exportPlaylistViewModel.deletePlaylistEntry(trackId: trackId)
             await MainActor.run {
                 if currentlyPlayingTrackId == trackId {
                     currentlyPlayingTrackId = nil
@@ -378,7 +367,7 @@ final class MusicViewModelWrapper: ObservableObject {
 
     func togglePreview(for trackId: String) {
         Task {
-            await musicPlayerUseCase.musicRepository.togglePreview(for: trackId)
+            await exportPlaylistViewModel.togglePreview(for: trackId)
         }
     }
 }

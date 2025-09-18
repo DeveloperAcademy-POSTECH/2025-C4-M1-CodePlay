@@ -5,7 +5,7 @@
 //  Created by 아우신얀 on 7/29/25.
 //
 
-internal import Combine
+import Combine
 import SwiftData
 import SwiftUI
 

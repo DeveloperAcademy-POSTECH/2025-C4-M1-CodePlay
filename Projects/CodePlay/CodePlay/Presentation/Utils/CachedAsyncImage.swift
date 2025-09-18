@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-internal import Combine
+import Combine
 
 struct CachedAsyncImage<Content: View>: View {
     let url: URL?

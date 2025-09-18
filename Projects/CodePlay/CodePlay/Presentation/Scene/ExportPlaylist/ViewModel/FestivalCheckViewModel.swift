@@ -5,16 +5,8 @@
 //  Created by 아우신얀 on 7/28/25.
 //
 
-internal import Combine
+import Combine
 import Foundation
-
-enum FestivalFetchState {
-    case idle
-    case loading
-    case success(PostFestInfoResponseDTO)
-    case noResult
-    case error(String)
-}
 
 // MARK: - Input
 protocol FestivalCheckViewModelInput {
