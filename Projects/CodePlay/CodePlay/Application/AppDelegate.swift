@@ -11,13 +11,90 @@ import UserNotifications
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     private let notificationService: NotificationAPIServiceProtocol = NotificationAPIService()
+    
+    private let appConfigService: AppConfigAPIServiceProtocol = AppConfigAPIService()
+    private var isShowingUpdateAlert = false
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         UNUserNotificationCenter.current().delegate = self
         requestAuthorization()
+        
+        Task { await checkUpdateGate() }
+        
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil, queue: .main
+        ) { [weak self] _ in
+            Task { await self?.checkUpdateGate() }
+        }
+        
         return true
+    }
+    
+    func checkUpdateGate() async {
+        do {
+            let cfg = try await appConfigService.getAppConfig(platform: "ios")
+            let current = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "0.0.0"
+            let minV = cfg.ios.minSupportedVersion
+
+            guard isVersion(current, lowerThan: minV),
+                  let url = URL(string: cfg.ios.updateUrl) else { return }
+
+            presentUpdateAlert(force: cfg.ios.force, message: cfg.ios.message, url: url)
+        } catch {
+            Log.debug("⚠️ GetAppConfig 실패: \(error.localizedDescription)")
+        }
+    }
+
+    func presentUpdateAlert(force: Bool, message: String, url: URL) {
+        guard !isShowingUpdateAlert, let presenter = topMostViewController() else { return }
+        isShowingUpdateAlert = true
+
+        let title = force ? "업데이트 필요" : "업데이트 안내"
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+
+        if !force {
+            alert.addAction(UIAlertAction(title: "나중에", style: .cancel) { [weak self] _ in
+                self?.isShowingUpdateAlert = false
+            })
+        }
+        alert.addAction(UIAlertAction(title: "업데이트", style: .default) { [weak self] _ in
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            self?.isShowingUpdateAlert = false
+        })
+
+        presenter.present(alert, animated: true)
+    }
+    
+    func topMostViewController() -> UIViewController? {
+        let scenes = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .filter { $0.activationState == .foregroundActive }
+        let window = scenes.flatMap({ $0.windows }).first(where: { $0.isKeyWindow })
+            ?? scenes.flatMap({ $0.windows }).first
+
+        func climb(_ vc: UIViewController?) -> UIViewController? {
+            if let nav = vc as? UINavigationController { return climb(nav.visibleViewController) }
+            if let tab = vc as? UITabBarController { return climb(tab.selectedViewController) }
+            if let presented = vc?.presentedViewController { return climb(presented) }
+            return vc
+        }
+        return climb(window?.rootViewController)
+    }
+    
+    func isVersion(_ v: String, lowerThan min: String) -> Bool {
+        func parts(_ s: String) -> [Int] {
+            let p = s.split(separator: ".").compactMap { Int($0) }
+            return (p + [0,0,0]).prefix(3).map { $0 }
+        }
+        let a = parts(v), b = parts(min)
+        for i in 0..<3 {
+            if a[i] < b[i] { return true }
+            if a[i] > b[i] { return false }
+        }
+        return false
     }
 
     func requestAuthorization() {
