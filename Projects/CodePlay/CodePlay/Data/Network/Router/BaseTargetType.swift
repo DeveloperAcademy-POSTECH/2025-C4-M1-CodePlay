@@ -9,6 +9,7 @@ import Foundation
 import Moya
 
 enum UtilPath: String {
+    case config = ""
     case notification = "SNSToken/register"
     case festivalinfo = "festinfo"
 }
