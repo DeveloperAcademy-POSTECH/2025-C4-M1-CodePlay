@@ -34,22 +34,39 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     }
     
     func checkUpdateGate() async {
+        Log.info("🔍 [Gate] Fetching AppConfig…")
         do {
             let cfg = try await appConfigService.getAppConfig(platform: "ios")
             let current = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "0.0.0"
             let minV = cfg.ios.minSupportedVersion
+            Log.debug("🔎 [Gate] current=\(current), min=\(minV), force=\(cfg.ios.force)")
 
             guard isVersion(current, lowerThan: minV),
-                  let url = URL(string: cfg.ios.updateUrl) else { return }
+                  let url = URL(string: cfg.ios.updateUrl) else {
+                Log.info("✅ [Gate] Allowed (no update required)")
+                return
+            }
+
+            Log.info(cfg.ios.force
+                     ? "⛔️ [Gate] Hard-blocking: \(minV) required"
+                     : "⚠️ [Gate] Soft-blocking: \(minV) recommended")
 
             presentUpdateAlert(force: cfg.ios.force, message: cfg.ios.message, url: url)
         } catch {
-            Log.debug("⚠️ GetAppConfig 실패: \(error.localizedDescription)")
+            Log.error("❌ [Gate] GetAppConfig failed: \(error.localizedDescription)")
+            // 실패 시 통과(원하면 마지막 성공값 캐시 사용)
         }
     }
 
     func presentUpdateAlert(force: Bool, message: String, url: URL) {
-        guard !isShowingUpdateAlert, let presenter = topMostViewController() else { return }
+        guard !isShowingUpdateAlert else {
+            Log.debug("↩️ [Gate] Alert already showing; skip")
+            return
+        }
+        guard let presenter = topMostViewController() else {
+            Log.error("❌ [Gate] No presenter (topMostViewController is nil)")
+            return
+        }
         isShowingUpdateAlert = true
 
         let title = force ? "업데이트 필요" : "업데이트 안내"
@@ -57,14 +74,18 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
         if !force {
             alert.addAction(UIAlertAction(title: "나중에", style: .cancel) { [weak self] _ in
+                Log.info("🟠 [Gate] User chose Later")
                 self?.isShowingUpdateAlert = false
             })
         }
+
         alert.addAction(UIAlertAction(title: "업데이트", style: .default) { [weak self] _ in
+            Log.info("🟢 [Gate] User chose Update – opening App Store")
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
             self?.isShowingUpdateAlert = false
         })
 
+        Log.debug("🪄 [Gate] Presenting update alert (force=\(force))")
         presenter.present(alert, animated: true)
     }
     
@@ -72,6 +93,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         let scenes = UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
             .filter { $0.activationState == .foregroundActive }
+
         let window = scenes.flatMap({ $0.windows }).first(where: { $0.isKeyWindow })
             ?? scenes.flatMap({ $0.windows }).first
 
@@ -81,7 +103,10 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             if let presented = vc?.presentedViewController { return climb(presented) }
             return vc
         }
-        return climb(window?.rootViewController)
+
+        let top = climb(window?.rootViewController)
+        if top == nil { Log.error("❌ [Gate] Unable to resolve topMostViewController") }
+        return top
     }
     
     func isVersion(_ v: String, lowerThan min: String) -> Bool {
