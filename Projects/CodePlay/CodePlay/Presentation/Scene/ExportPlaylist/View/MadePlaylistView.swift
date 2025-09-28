@@ -8,12 +8,6 @@
 import SwiftData
 import SwiftUI
 
-// MARK: 진입점 여부 판단
-enum PlaylistEntrySource {
-    case main
-    case export
-}
-
 struct MadePlaylistView: View {
     @EnvironmentObject var posterWrapper: PosterViewModelWrapper
     @EnvironmentObject var wrapper: MusicViewModelWrapper

@@ -44,11 +44,9 @@ final class MainSceneDIContainer {
             repository: makeCheckLicenseRepository()
         )
     }
-
-    private func makeExportPlaylistUseCase(repository: ExportPlaylistRepository)
-        -> ExportPlaylistUseCase
-    {
-        return DefaultExportPlaylistUseCase(repository: repository)
+    
+    private func makeExportPlaylistUseCase() -> ExportPlaylistUseCase {
+        return DefaultExportPlaylistUseCase(repository: makeExportPlaylistRepository())
     }
 
     private func makeMusicPlayerUseCase() -> MusicPlayerUseCase {
@@ -101,16 +99,9 @@ final class MainSceneDIContainer {
             fetchFestivalInfoUseCase: makeFestivalUseCase()
         )
     }
-    private func makeExportViewModel(exportRepository: ExportPlaylistRepository)
-        -> any ExportPlaylistViewModel
-    {
-        let exportUseCase = makeExportPlaylistUseCase(
-            repository: exportRepository
-        )
-        return DefaultExportPlaylistViewModel(
-            useCase: exportUseCase,
-            modelContext: modelContext
-        )
+    
+    private func makeExportViewModel() -> any ExportPlaylistViewModel {
+        DefaultExportPlaylistViewModel(useCase: makeExportPlaylistUseCase(), musicPlayerUseCase: makeMusicPlayerUseCase(), modelContext: modelContext)
     }
 
     // MARK: ViewModelWrapper
@@ -121,17 +112,10 @@ final class MainSceneDIContainer {
     }
 
     func appleMusicConnectViewModelWrapper() -> MusicViewModelWrapper {
-        let exportRepository = makeExportPlaylistRepository()
-        let exportViewModel = makeExportViewModel(
-            exportRepository: exportRepository
-        )
-        let musicPlayerUseCase = makeMusicPlayerUseCase()
-
         return MusicViewModelWrapper(
             appleMusicConnectViewModel: appleMusicConnectViewModel(),
-            exportViewModelWrapper: exportViewModel,
-            festivalCheckViewModel: makeFestivalCheckViewModel(),
-            musicPlayerUseCase: musicPlayerUseCase
+            exportPlaylistViewModel: makeExportViewModel(),
+            festivalCheckViewModel: makeFestivalCheckViewModel()
         )
     }
 }
