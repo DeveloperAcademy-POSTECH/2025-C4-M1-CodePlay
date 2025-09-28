@@ -80,7 +80,11 @@ struct MadePlaylistView: View {
                 }
             }
             BottomButton(title: "Apple Music으로 전송", kind: .colorFill) {
-                wrapper.exportToAppleMusic()
+                // MadePlaylistView에서 보여지는 정렬된 순서 그대로 내보내기
+                let sortedEntries = groupedEntries.keys.sorted().flatMap { artist in
+                    groupedEntries[artist] ?? []
+                }
+                wrapper.exportToAppleMusicWithSortedOrder(sortedEntries: sortedEntries)
             }
             .padding(.bottom, 50)
             .padding(.horizontal, 20)
