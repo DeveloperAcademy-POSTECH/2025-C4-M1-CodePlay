@@ -180,6 +180,7 @@ struct SelectArtistView: View {
         switch phase {
         case .empty:
             ProgressView().frame(width: 110, height: 110)
+            
         case .success(let image):
             image.resizable()
                 .scaledToFill()
@@ -187,32 +188,29 @@ struct SelectArtistView: View {
                 .clipShape(Circle())
                 .overlay(
                     Circle()
-                        .stroke(
-                            selectedArtists.contains(artist)
-                                ? Color(asset: Asset.primary)
-                                : Color.neutral50,
-                            lineWidth: 4
-                        )
+                        .stroke(selectedArtists.contains(artist) ? Color(asset: Asset.primary) : Color.neutral50, lineWidth: 4)
                 )
-            
-            
         case .failure(_):
             Circle()
-                .fill(Color.gray.opacity(0.3)) // 회색 배경색 설정, 투명도 조절 가능
+                .fill(Color.gray.opacity(0.3))
                 .frame(width: 110, height: 110)
                 .overlay(
-                    Image("logo") // 로고 이미지
+                    Image("logo")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 27, height: 47)
+                        .foregroundColor(.gray)
                 )
                 .clipShape(Circle())
                 .overlay(
                     Circle()
                         .stroke(Color.neutral50, lineWidth: 4)
                 )
+        @unknown default:
+            EmptyView()
         }
     }
+  
 
     @ViewBuilder
     private var ArtistGridView: some View {
@@ -225,36 +223,41 @@ struct SelectArtistView: View {
                 spacing: 10
             ) {
                 ForEach(playlist.artists, id: \.self) { artist in
-                    let isFailed = failedArtists.contains(artist)
-                    let artworkURL = artistArtworks[artist] ?? nil
                     VStack(spacing: 8) {
-                        ZStack {
-                            if isFailed {
-                                Image("logo")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 27, height: 47)
-                                    .foregroundColor(.gray)
-                            } else if let url = artworkURL {
-                                AsyncImage(url: url) { phase in
-                                    imageView(for: phase, artist: artist, selectedArtists: selectedArtists)
+                        if failedArtists.contains(artist) {
+                            Circle()
+                                .fill(Color.gray.opacity(0.3))
+                                .frame(width: 110, height: 110)
+                                .overlay(
+                                    Image("logo")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 27, height: 47)
+                                        .foregroundColor(.gray)
+                                )
+                                .clipShape(Circle())
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.neutral50, lineWidth: 4)
+                                )
+                                .onTapGesture {
+                                    toggleSelection(for: artist)
                                 }
-                            } else {
-                                ProgressView().frame(width: 110, height: 110)
+                            
+                        } else {
+                            AsyncImage(url: artistArtworks[artist] ?? nil) { phase in
+                                imageView(for: phase, artist: artist, selectedArtists: selectedArtists)
+                            }
+                            .onTapGesture {
+                                toggleSelection(for: artist)
                             }
                         }
-                        .onTapGesture {
-                            toggleSelection(for: artist)
-                        }
 
-                        Text(artist.prefix(16)) // 텍스트 길이 늘리기
+                        Text(artist.prefix(16))
                             .font(.BmdRegular())
-                            .foregroundColor(
-                                failedArtists.contains(artist)
-                                    ? .neu700 : .neu900
-                            )
+                            .foregroundColor(selectedArtists.contains(artist) ? .neu900 : .neu700)
                             .multilineTextAlignment(.center)
-                            .lineLimit(2)
+                            .lineLimit(1)
                     }
                 }
             }
