@@ -135,8 +135,10 @@ struct SelectArtistView: View {
         }
         .navigationDestination(isPresented: $isNextActive) {
             if let savedPlaylist = musicWrapper.selectedPlaylist {
+                // 원본 아티스트 순서를 유지하면서 선택된 아티스트만 필터링
+                let orderedSelectedArtists = playlist.artists.filter { selectedArtists.contains($0) }
                 ExportPlaylistView(
-                    selectedArtists: Array(selectedArtists),
+                    selectedArtists: orderedSelectedArtists,
                     playlist: savedPlaylist
                 )
             }
