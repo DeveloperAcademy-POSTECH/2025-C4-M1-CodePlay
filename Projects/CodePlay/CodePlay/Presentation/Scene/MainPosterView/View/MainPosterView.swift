@@ -68,16 +68,19 @@ struct MainPosterView: View {
 
                 Spacer().frame(height: 25)
 
-                NavigationLink(
-                    isActive: $wrapper.shouldNavigateToFestivalCheck,
-                    destination: {
-                        FestivalView(rawText: wrapper.scannedText)
-                            .environmentObject(musicWrapper)
-                    }
-                ) {
-                    EmptyView()
+                .navigationDestination(isPresented: $wrapper.shouldNavigateToFestivalCheck) {
+                    FestivalView(rawText: wrapper.scannedText)
+                        .environmentObject(musicWrapper)
                 }
-                .hidden()
+                .navigationDestination(isPresented: $musicWrapper.navigateToExportPlaylist) {
+                    if let selectedPlaylist = musicWrapper.selectedPlaylist {
+                        ExportPlaylistView(
+                            selectedArtists: musicWrapper.selectedArtistsForExport,
+                            playlist: selectedPlaylist
+                        )
+                        .environmentObject(musicWrapper)
+                    }
+                }
             }
             .edgesIgnoringSafeArea(.all)
             .backgroundWithBlur()

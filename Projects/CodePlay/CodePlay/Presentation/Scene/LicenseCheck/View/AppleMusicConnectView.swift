@@ -123,6 +123,8 @@ final class MusicViewModelWrapper: ObservableObject {
     var shouldShowNoResultView: Bool = false
     @Published var showErrorView: Bool = false
     @Published var entrySource: PlaylistEntrySource = .main
+    @Published var navigateToExportPlaylist: Bool = false
+    @Published var selectedArtistsForExport: [String] = []
 
     @Environment(\.modelContext) private var modelContext
 
@@ -319,10 +321,8 @@ final class MusicViewModelWrapper: ObservableObject {
         isExporting = true
         Task {
             await exportPlaylistViewModel.exportLatestPlaylistToAppleMusic()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                self.isExporting = false
-                self.isExportCompleted = true
-            }
+            // ExportLoadingView에서 자체적으로 ExportSuccessView로 이동하므로
+            // 여기서 isExporting을 false로 설정하지 않음
         }
     }
 

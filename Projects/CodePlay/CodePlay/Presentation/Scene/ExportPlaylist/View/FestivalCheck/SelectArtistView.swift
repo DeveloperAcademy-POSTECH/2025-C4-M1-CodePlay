@@ -85,7 +85,8 @@ struct SelectArtistView: View {
             BottomButton(title: "선택 완료", kind: .colorFill) {
                 artworkTask?.cancel()
                 savePlaylistToDB()
-                isNextActive = true
+                musicWrapper.selectedArtistsForExport = Array(selectedArtists)
+                musicWrapper.navigateToExportPlaylist = true
             }
             .disabled(selectedArtists.isEmpty)
             .padding(.bottom, 50)

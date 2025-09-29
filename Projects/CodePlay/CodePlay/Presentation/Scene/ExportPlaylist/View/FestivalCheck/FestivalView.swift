@@ -92,6 +92,9 @@ struct FestivalView: View {
                         }
                     }
                     .onAppear {
+                        self.isNavigateToSearch = false
+                        self.isNavigateToSelectArtist = false
+                        
                         Task {
                             let success = await wrapper.festivalCheckViewModel
                                 .loadFestivalInfo(from: rawText?.text ?? "")
@@ -105,35 +108,24 @@ struct FestivalView: View {
                     }
                 }
             }
-            if let festivalData = wrapper.festivalData {
-                NavigationLink(
-                    destination: SelectArtistView(playlist: Playlist(
-                        title: festivalData.title,
-                        period: festivalData.period,
-                        cast: festivalData.cast,
-                        festivalId: festivalData.festivalId,
-                        place: festivalData.place
-                    )),
-                    isActive: $isNavigateToSelectArtist
-                ) {
-                    EmptyView()
-                }
-                .hidden()
-            }
-
-            if suggestTitles != nil {
-                NavigationLink(
-                    destination: FestivalSearchView(
-                        suggestTitles: suggestTitles!
-                    ),
-                    isActive: $isNavigateToSearch
-                ) {
-                    EmptyView()
-                }
-                .hidden()
-            }
         }
         .backgroundWithBlur()
+        .navigationDestination(isPresented: $isNavigateToSelectArtist) {
+            if let festivalData = wrapper.festivalData {
+                SelectArtistView(playlist: Playlist(
+                    title: festivalData.title,
+                    period: festivalData.period,
+                    cast: festivalData.cast,
+                    festivalId: festivalData.festivalId,
+                    place: festivalData.place
+                ))
+            }
+        }
+        .navigationDestination(isPresented: $isNavigateToSearch) {
+            if let suggestTitles = suggestTitles {
+                FestivalSearchView(suggestTitles: suggestTitles)
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(
@@ -155,7 +147,13 @@ struct FestivalView: View {
     private var bottombutton: some View {
         HStack(spacing: 16) {
             BottomButton(title: "아니요", kind: .line) {
+                Log.debug("isNavigateToSearch:\(isNavigateToSearch)")
+
                 self.isNavigateToSearch = true
+
+                Log.debug("아니오 버튼 누름")
+                Log.debug("isNavigateToSearch:\(isNavigateToSearch)")
+
             }
 
             BottomButton(title: "맞아요", kind: .colorFill) {

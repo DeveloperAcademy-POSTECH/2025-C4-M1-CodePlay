@@ -57,6 +57,8 @@ struct ExportSuccessView: View {
                     action: {
                         posterWrapper.shouldNavigateToMakePlaylist = false
                         posterWrapper.viewModel.clearText()
+                        musicWrapper.isExporting = false
+                        musicWrapper.navigateToExportPlaylist = false
 
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             NavigationUtil.popToRootView()

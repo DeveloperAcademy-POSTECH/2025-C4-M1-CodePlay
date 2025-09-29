@@ -132,13 +132,9 @@ struct MadePlaylistView: View {
             wrapper.playbackProgress = 0.0
         }
 
-        NavigationLink(
-            destination: ExportLoadingView(),
-            isActive: $wrapper.isExporting
-        ) {
-            EmptyView()
+        .navigationDestination(isPresented: $wrapper.isExporting) {
+            ExportLoadingView()
         }
-        .hidden()
 
         .onAppear {
             wrapper.isExportCompleted = false
