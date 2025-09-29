@@ -16,6 +16,7 @@ protocol ExportPlaylistViewModelInput {
         async -> [PlaylistEntry]  // ArtistMatch에서 노래를 검색하고, PlaylistEntry로 저장
     func searchTopSongsWithCaching(from rawText: RawText, artistMatches: [ArtistMatch], musicPlayerUseCase: MusicPlayerUseCase) async -> [PlaylistEntry]  // 캐싱과 함께 인기곡 검색
     func exportLatestPlaylistToAppleMusic() async  // 애플뮤직으로 플레이리스트 전송
+    func exportPlaylistToAppleMusicWithSortedOrder(entries: [PlaylistEntry]) async  // 정렬된 순서로 애플뮤직 전송
     func deletePlaylistEntry(trackId: String) async  // 플레이리스트에서 특정 항목 삭제
     func togglePreview(for trackId: String) async
     func stopPreview() async
@@ -112,7 +113,29 @@ final class DefaultExportPlaylistViewModel: ExportPlaylistViewModel {
                         playlist: latest,
                         entries: entries
                     )
-            
+
+                }
+            } catch {
+            }
+        }
+    }
+
+    func exportPlaylistToAppleMusicWithSortedOrder(entries: [PlaylistEntry]) async {
+        await MainActor.run {
+            do {
+                guard
+                    let latest = try? modelContext.fetch(
+                        FetchDescriptor<Playlist>()
+                    ).last
+                else {
+                    return
+                }
+
+                Task {
+                    try await useCase.exportToAppleMusic(
+                        playlist: latest,
+                        entries: entries
+                    )
                 }
             } catch {
             }
