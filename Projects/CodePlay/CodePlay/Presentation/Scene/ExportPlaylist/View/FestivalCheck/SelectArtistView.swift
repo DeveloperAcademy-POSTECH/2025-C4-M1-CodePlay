@@ -84,7 +84,7 @@ struct SelectArtistView: View {
             }
             BottomButton(title: "선택 완료", kind: .colorFill) {
                 artworkTask?.cancel()
-                savePlaylistToDB()
+                musicWrapper.selectedPlaylist = playlist
                 musicWrapper.selectedArtistsForExport = Array(selectedArtists)
                 musicWrapper.navigateToExportPlaylist = true
             }
@@ -296,18 +296,6 @@ struct SelectArtistView: View {
                     }
                 }
             }
-        }
-    }
-    
-    private func savePlaylistToDB() {
-        modelContext.insert(playlist)
-        
-        do {
-            try modelContext.save()
-            musicWrapper.selectedPlaylist = playlist
-            Log.debug("Playlist saved successfully: \(playlist.title)")
-        } catch {
-            Log.fault("Error saving playlist: \(error.localizedDescription)")
         }
     }
 }
