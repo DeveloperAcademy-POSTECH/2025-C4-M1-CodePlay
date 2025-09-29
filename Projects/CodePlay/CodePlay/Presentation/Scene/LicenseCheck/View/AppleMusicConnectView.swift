@@ -340,6 +340,18 @@ final class MusicViewModelWrapper: ObservableObject {
         // self.playlistEntries = originalEntries
     }
 
+    /// MadePlaylistView에서 정렬된 순서대로 Apple Music으로 내보내는 함수
+    func exportToAppleMusicWithSortedOrder(sortedEntries: [PlaylistEntry]) {
+        isExporting = true
+        Task {
+            await exportPlaylistViewModel.exportPlaylistToAppleMusicWithSortedOrder(entries: sortedEntries)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                self.isExporting = false
+                self.isExportCompleted = true
+            }
+        }
+    }
+
     /// 플레이리스트에서 특정 곡 삭제
     func deletePlaylistEntry(trackId: String) {
         Task {
