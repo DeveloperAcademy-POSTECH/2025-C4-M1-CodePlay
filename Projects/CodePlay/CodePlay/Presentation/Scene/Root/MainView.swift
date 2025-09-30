@@ -23,12 +23,11 @@ struct MainView: View {
         NavigationStack(path: $navigationPath) {
             ZStack{
                 Group {
-                    if wrapper.canPlayMusic {
-                        mainFactory.mainPosterView()
-                            .wrapAnyView()
+                    let status = wrapper.authorizationStatus?.status
+                    if status == .denied || wrapper.canPlayMusic {
+                        mainFactory.mainPosterView().wrapAnyView()
                     } else {
-                        licenseFactory.mainLicenseView()
-                            .wrapAnyView()
+                        licenseFactory.mainLicenseView().wrapAnyView()
                     }
                 }
                 .onAppear {
