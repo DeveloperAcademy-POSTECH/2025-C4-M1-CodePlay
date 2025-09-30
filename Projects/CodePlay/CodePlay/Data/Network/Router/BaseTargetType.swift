@@ -11,6 +11,7 @@ import Moya
 enum UtilPath: String {
     case notification = "SNSToken/register"
     case festivalinfo = "festinfo"
+    case appleMusicToken = "apple-music"
 }
 
 protocol BaseTargetType: TargetType {
