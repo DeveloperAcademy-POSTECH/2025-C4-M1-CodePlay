@@ -13,6 +13,7 @@ struct MadePlaylistView: View {
     @EnvironmentObject var wrapper: MusicViewModelWrapper
     @Environment(\.dismiss) var dismiss
     @Query var allEntries: [PlaylistEntry]
+    @State private var showDeletePlaylistAlert = false
 
     let selectedPlaylist: Playlist?
 
@@ -117,12 +118,21 @@ struct MadePlaylistView: View {
             }
 
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    posterWrapper.shouldNavigateToMakePlaylist = false
-                    NavigationUtil.popToRootView()
-                }) {
-                    Image(systemName: "xmark")
-                        .foregroundColor(.neu900)
+                if wrapper.entrySource == .main {
+                    Button(action: {
+                        showDeletePlaylistAlert = true
+                    }) {
+                        Image(systemName: "trash")
+                            .foregroundColor(.neu900)
+                    }
+                } else {
+                    Button(action: {
+                        posterWrapper.shouldNavigateToMakePlaylist = false
+                        NavigationUtil.popToRootView()
+                    }) {
+                        Image(systemName: "xmark")
+                            .foregroundColor(.neu900)
+                    }
                 }
             }
         }
@@ -138,6 +148,44 @@ struct MadePlaylistView: View {
 
         .onAppear {
             wrapper.isExportCompleted = false
+        }
+        .alert("플레이리스트를 삭제할까요?", isPresented: $showDeletePlaylistAlert) {
+            Button("아니오", role: .cancel) {
+            }
+            Button("삭제", role: .destructive) {
+                deleteCurrentPlaylist()
+            }
+        } message: {
+            Text("현재 생성된 플레이리스트가 삭제됩니다")
+        }
+    }
+    private func deleteCurrentPlaylist() {
+        guard let selectedPlaylist = selectedPlaylist else { return }
+        // 현재 재생 중인 음악이 있다면 정지
+        if wrapper.isPlaying {
+            Task {
+                await wrapper.exportPlaylistViewModel.stopPreview()
+            }
+        }
+        Task { @MainActor in
+            do {
+                let context = selectedPlaylist.modelContext
+                let allEntries: [PlaylistEntry] = try context?.fetch(FetchDescriptor<PlaylistEntry>()) ?? []
+                let entriesToDelete = allEntries.filter { $0.playlistId == selectedPlaylist.id }
+                
+                for entry in entriesToDelete {
+                    context?.delete(entry)
+                }
+                context?.delete(selectedPlaylist)
+
+                try context?.save()
+                
+                Log.debug("✅ 플레이리스트 '\(selectedPlaylist.title)' 삭제 완료")
+                NavigationUtil.popToRootView()
+                
+            } catch {
+                Log.fault("❌ 플레이리스트 삭제 중 오류: \(error.localizedDescription)")
+            }
         }
     }
 }

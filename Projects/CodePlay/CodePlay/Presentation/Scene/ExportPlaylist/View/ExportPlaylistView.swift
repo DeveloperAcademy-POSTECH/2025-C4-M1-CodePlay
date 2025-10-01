@@ -56,7 +56,11 @@ struct ExportPlaylistView: View {
             Spacer()
 
             NavigationLink(
-                destination: MadePlaylistView(playlist: playlist), // 생성 완료 후 이동
+                destination: MadePlaylistView(playlist: playlist) // 생성 완료 후 이동
+                    .environmentObject(wrapper)
+                    .onAppear {
+                        wrapper.entrySource = .export
+                    },
                 isActive: $wrapper.navigateToMadePlaylist
             ) {
                 EmptyView()

@@ -106,6 +106,7 @@ struct OverlappingCardsView: View {
                                             currentIndex = index
                                             proxy.scrollTo(index, anchor: .center)
                                         } else {
+                                            wrapper.entrySource = .main
                                             selectedPlaylist = playlist
                                             isNavigateToDetail = true
                                         }
