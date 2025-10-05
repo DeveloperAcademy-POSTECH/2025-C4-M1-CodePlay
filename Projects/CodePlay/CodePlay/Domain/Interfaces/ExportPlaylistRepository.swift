@@ -25,10 +25,16 @@ protocol ExportPlaylistRepository {
 final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
     private var temporaryMatches: [ArtistMatch] = [] // 임시 검색 결과 (메모리 캐시용)
 
-    private let modelContext: ModelContext // SwiftData 모델 컨텍스트
+    private let modelContext: ModelContext
+    private let am: AppleMusicAPIServiceProtocol
+    private let storefront: String
 
-    init(modelContext: ModelContext) {
+    init(modelContext: ModelContext,
+         am: AppleMusicAPIServiceProtocol,
+         storefront: String = "kr") {
         self.modelContext = modelContext
+        self.am = am
+        self.storefront = storefront
     }
     
     // OCR 텍스트에서 아티스트 후보 단어 조합을 생성
@@ -71,153 +77,103 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
     
     // 후보 이름을 기반으로 Apple Music에서 아티스트 검색
     func searchArtists(from rawText: RawText) async -> [ArtistMatch] {
-        let selectedArtists = rawText.text.components(separatedBy: ", ")
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty }
-        
-        var results: [ArtistMatch] = []
+            let names = rawText.text
+                .components(separatedBy: ",")
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
 
-        for artistName in selectedArtists {
-            do {
-                var request = MusicCatalogSearchRequest(term: artistName, types: [Artist.self])
-                request.limit = 1
-
-                let response = try await request.response()
-
-                if let artist = response.artists.first {
-                    let displayName: String
-                    if artistName.containsHangul && !artist.name.containsHangul {
-                        displayName = artistName // 검색어 유지
-                    } else {
-                        displayName = artist.name // 기본값
+            var matches: [ArtistMatch] = []
+            for name in names {
+                do {
+                    let dto = try await am.searchArtists(term: name, limit: 1, storefront: storefront)
+                    if let artist = dto.results?.artists?.data?.first {
+                        matches.append(
+                            ArtistMatch(
+                                rawText: rawText.text,
+                                artistName: artist.attributes?.name ?? name,
+                                appleMusicId: artist.id,
+                                profileArtworkUrl: artist.attributes?.artwork?.url?
+                                    .replacingOccurrences(of: "{w}", with: "300")
+                                    .replacingOccurrences(of: "{h}", with: "300") ?? "",
+                                createdAt: .now
+                            )
+                        )
                     }
-                    
-                    let match = ArtistMatch(
-                        rawText: rawText.text,
-                        artistName: displayName, // 보정된 이름
-                        appleMusicId: artist.id.rawValue,
-                        profileArtworkUrl: artist.artwork?.url(width: 300, height: 300)?.absoluteString ?? "",
-                        createdAt: .now
-                    )
-                    results.append(match)
+                } catch {
+                    // 네 공용 로거로 찍어라
                 }
-            } catch {
-                Log.debug("❌ [Search 실패] \(artistName): \(error)")
             }
+            return matches
         }
-
-        // 중복 아티스트 제거 (appleMusicId 기준)
-        let uniqueMatches = Dictionary(grouping: results, by: \.appleMusicId)
-            .compactMap { $0.value.first }
-
-        temporaryMatches = uniqueMatches
-        return uniqueMatches
-    }
 
     // 각 아티스트에 대해 상위 3곡을 Apple Music에서 검색 후 PlaylistEntry로 변환
     func searchTopSongs(for artists: [ArtistMatch]) async -> [PlaylistEntry] {
-        var allEntries: [PlaylistEntry] = []
-        
-        for artist in artists {
+        var entries: [PlaylistEntry] = []
+        for a in artists {
             do {
-                // 1. appleMusicId로 아티스트 fetch
-                let request = MusicCatalogResourceRequest<Artist>(matching: \.id, equalTo: MusicItemID(artist.appleMusicId))
-                let response = try await request.response()
-                
-                guard let fetchedArtist = response.items.first else {
-                    Log.debug("❌ [Artist not found] \(artist.artistName) (\(artist.appleMusicId))")
-                    continue
-                }
-                
-                // 2. topSongs 관계 로드
-                let detailedArtist = try await fetchedArtist.with(.topSongs)
-                guard let topSongs = detailedArtist.topSongs?.prefix(3) else {
-                    Log.debug("❌ [No top songs found] \(artist.artistName) (\(artist.appleMusicId))")
-                    continue
-                }
-                
-                Log.debug("🔍 [TopSongs] \(artist.artistName) - 검색된 곡 수: \(topSongs.count)")
-                
-                // 3. PlaylistEntry로 변환
-                for song in topSongs {
-                    let entry = PlaylistEntry(
-                        id: UUID(),
-                        playlistId: UUID(), // 추후 ViewModel에서 덮어씌움
-                        artistMatchId: artist.id,
-                        artistName: artist.artistName,
-                        appleMusicId: artist.appleMusicId,
-                        trackTitle: song.title,
-                        trackId: song.id.rawValue,
-                        trackPreviewUrl: song.previewAssets?.first?.url?.absoluteString ?? "",
-                        profileArtworkUrl: artist.profileArtworkUrl,
-                        albumArtworkUrl: song.artwork?.url(width: 300, height: 300)?.absoluteString ?? "",
-                        albumName: song.albumTitle ?? "Unknown Album",
-                        createdAt: .now
+                let dto = try await am.topSongs(artistId: a.appleMusicId, limit: 3, storefront: storefront)
+                for s in dto.data {
+                    let artURL = s.attributes?.artwork?.url?
+                        .replacingOccurrences(of: "{w}", with: "300")
+                        .replacingOccurrences(of: "{h}", with: "300") ?? ""
+                    let preview = s.attributes?.previews?.first?.url.absoluteString ?? ""
+                    entries.append(
+                        PlaylistEntry(
+                            id: UUID(), playlistId: UUID(),
+                            artistMatchId: a.id, artistName: a.artistName,
+                            appleMusicId: a.appleMusicId,
+                            trackTitle: s.attributes?.name ?? "Unknown",
+                            trackId: s.id,
+                            trackPreviewUrl: preview,
+                            profileArtworkUrl: a.profileArtworkUrl,
+                            albumArtworkUrl: artURL,
+                            albumName: s.attributes?.albumName ?? "Unknown Album",
+                            createdAt: .now
+                        )
                     )
-                    
-                    Log.debug("🎵 [Entry 생성됨] \(entry.artistName) - \(entry.trackTitle) (\(entry.trackId))")
-                    allEntries.append(entry)
                 }
             } catch {
-                Log.debug("❌ [TopSongs 검색 실패] \(artist.artistName) (\(artist.appleMusicId)): \(error)")
+                Log.debug("❌ [REST TopSongs 실패] \(a.artistName) (\(a.appleMusicId)): \(error)")
             }
         }
-        
-        return allEntries
+        return entries
     }
+
     
     // 캐싱과 함께 각 아티스트에 대해 상위 3곡을 Apple Music에서 검색 후 PlaylistEntry로 변환
-    func searchTopSongsWithCaching(for artists: [ArtistMatch], musicPlayerUseCase: MusicPlayerUseCase) async -> [PlaylistEntry] {
-        var allEntries: [PlaylistEntry] = []
+    func searchTopSongsWithCaching(for artists: [ArtistMatch],
+                                       musicPlayerUseCase: MusicPlayerUseCase) async -> [PlaylistEntry] {
+            var entries: [PlaylistEntry] = []
+            for a in artists {
+                do {
+                    let dto = try await am.topSongs(artistId: a.appleMusicId, limit: 3, storefront: storefront)
+                    for s in dto.data {
+                        let artURL = s.attributes?.artwork?.url?
+                            .replacingOccurrences(of: "{w}", with: "300")
+                            .replacingOccurrences(of: "{h}", with: "300") ?? ""
+                        let preview = s.attributes?.previews?.first?.url.absoluteString ?? ""
 
-        for artist in artists {
-            do {
-                var request = MusicCatalogSearchRequest(term: artist.artistName, types: [Song.self])
-                request.limit = 10
-                let response = try await request.response()
-                let topSongs = response.songs.prefix(3)
-
-                for song in topSongs {
-                    let trackId = song.id.rawValue
-                    let trackTitle = song.title
-
-                    let trackPreviewUrl: String = song.previewAssets?.first?.url?.absoluteString ?? ""
-                    let albumArtworkUrl: String = song.artwork?.url(width: 300, height: 300)?.absoluteString ?? ""
-                    let albumName = song.albumTitle ?? "Unknown Album"
-
-                    let entry = PlaylistEntry(
-                        id: UUID(),
-                        playlistId: UUID(), // save 시 덮어씌움
-                        artistMatchId: artist.id,
-                        artistName: artist.artistName,
-                        appleMusicId: artist.appleMusicId,
-                        trackTitle: trackTitle,
-                        trackId: trackId,
-                        trackPreviewUrl: trackPreviewUrl,
-                        profileArtworkUrl: artist.profileArtworkUrl,
-                        albumArtworkUrl: albumArtworkUrl,
-                        albumName: albumName,
-                        createdAt: .now
-                    )
-
-                    allEntries.append(entry)
-                    
-                    // 백그라운드에서 음악 캐싱 수행
-                    Task {
-                        musicPlayerUseCase.cacheSong(song, for: trackId)
-                        if song.previewAssets?.first?.url != nil {
-                            await musicPlayerUseCase.preloadSongToMemory(song, for: trackId)
-                        }
+                        entries.append(
+                            PlaylistEntry(
+                                id: UUID(), playlistId: UUID(),
+                                artistMatchId: a.id, artistName: a.artistName,
+                                appleMusicId: a.appleMusicId,
+                                trackTitle: s.attributes?.name ?? "Unknown",
+                                trackId: s.id,
+                                trackPreviewUrl: preview,
+                                profileArtworkUrl: a.profileArtworkUrl,
+                                albumArtworkUrl: artURL,
+                                albumName: s.attributes?.albumName ?? "Unknown Album",
+                                createdAt: .now
+                            )
+                        )
                     }
+                } catch {
+                    // 로깅
                 }
-            } catch {
-                
             }
+            return entries
         }
-
-        Log.debug("✅ [searchTopSongs] 총 생성된 Entry 수: \(allEntries.count)")
-        return allEntries
-    }
 
 
 
@@ -249,6 +205,13 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
     // Apple Music 계정에 플레이리스트 생성 및 곡 추가
     func exportPlaylistToAppleMusic(title: String, trackIds: [String]) async throws {
         let musicItemIDs = trackIds.map { MusicItemID($0) }
+        
+        let status = await MusicAuthorization.currentStatus
+        let granted = (status == .authorized) ? status : await MusicAuthorization.request()
+        guard granted == .authorized else {
+            throw NSError(domain: "ExportPlaylistError", code: 1000,
+                          userInfo: [NSLocalizedDescriptionKey: "Apple Music 권한이 필요합니다."])
+        }
 
         // Apple Music에서 곡 정보 조회
         let request = MusicCatalogResourceRequest<Song>(matching: \.id, memberOf: musicItemIDs)
@@ -275,7 +238,7 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
             items: songCollection
         )
     }
-
+    
     func deletePlaylistEntry(trackId: String) async {
         await MainActor.run {
             do {
@@ -295,9 +258,13 @@ final class DefaultExportPlaylistRepository: ExportPlaylistRepository {
 
 // 추후에 어디로 빼야할지 고민해보겠읍니다.
 extension String {
-    var containsHangul: Bool {
-        return self.unicodeScalars.contains { scalar in
-            scalar.value >= 0xAC00 && scalar.value <= 0xD7A3
-        }
+    func amArtworkURL(width: Int, height: Int) -> URL? {
+        self.replacingOccurrences(of: "{w}", with: "\(width)")
+            .replacingOccurrences(of: "{h}", with: "\(height)")
+            .pipe(URL.init(string:))
     }
 }
+private extension String {
+    func pipe<T>(_ f: (String) -> T?) -> T? { f(self) }
+}
+

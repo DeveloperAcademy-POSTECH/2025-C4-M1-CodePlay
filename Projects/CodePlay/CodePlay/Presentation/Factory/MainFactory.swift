@@ -21,15 +21,17 @@ final class DefaultMainFactory: MainFactory {
     private let posterViewModelWrapper: PosterViewModelWrapper
     private let musicViewModelWrapper: MusicViewModelWrapper
     private let diContainer: MainSceneDIContainer
+    let am: AppleMusicAPIServiceProtocol
 
-    init(posterViewModelWrapper: PosterViewModelWrapper, musicViewModelWrapper: MusicViewModelWrapper, diContainer: MainSceneDIContainer) {
+    init(posterViewModelWrapper: PosterViewModelWrapper, musicViewModelWrapper: MusicViewModelWrapper, diContainer: MainSceneDIContainer, am:AppleMusicAPIServiceProtocol) {
         self.posterViewModelWrapper = posterViewModelWrapper
         self.musicViewModelWrapper = musicViewModelWrapper
         self.diContainer = diContainer
+        self.am = am
     }
 
     public func mainPosterView() -> AnyView {
-        return AnyView(MainPosterView()
+        return AnyView(MainPosterView(am:am)
             .environmentObject(posterViewModelWrapper))
     }
     

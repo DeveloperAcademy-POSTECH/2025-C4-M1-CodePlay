@@ -10,17 +10,35 @@ import SwiftUI
 
 final class MainSceneDIContainer {
     private let modelContext: ModelContext
+    let am: AppleMusicAPIServiceProtocol
+    
+    // 1) 토큰 API 서비스
+    private lazy var musicKitTokenService: MusicKitTokenAPIServiceProtocol = {
+        let url = URL(string: Config.baseURL)!
+        return MusicKitTokenAPIService(baseURL: url)
+    }()
 
-    init(modelContext: ModelContext) {
+    // 2) 토큰 캐시 프로바이더(만료 전까지 재사용)
+    private lazy var devTokenProvider = DevTokenProvider(api: musicKitTokenService)
+
+    // 3) Apple Music REST 서비스(요청 직전 토큰 자동 보장)
+    private lazy var appleMusicService: AppleMusicAPIServiceProtocol = {
+        AppleMusicAPIService(tokenProvider: devTokenProvider)
+    }()
+
+    init(modelContext: ModelContext, am: AppleMusicAPIServiceProtocol) {
         self.modelContext = modelContext
+        self.am = am
     }
+
 
     // MARK: Factory
     func makeMainFactory() -> any MainFactory {
         return DefaultMainFactory(
             posterViewModelWrapper: makePosterViewModelWrapper(),
             musicViewModelWrapper: appleMusicConnectViewModelWrapper(),
-            diContainer: self
+            diContainer: self,
+            am:am
         )
     }
 
@@ -71,9 +89,13 @@ final class MainSceneDIContainer {
     }
 
     private func makeExportPlaylistRepository() -> ExportPlaylistRepository {
-        return DefaultExportPlaylistRepository(modelContext: modelContext)
+        DefaultExportPlaylistRepository(
+            modelContext: modelContext,
+            am: appleMusicService,
+            storefront: "kr"
+        )
     }
-
+    
     private func makeMusicPlayerRepository() -> MusicPlayerRepository {
         return DefaultMusicPlayerRepository()
     }
@@ -119,3 +141,4 @@ final class MainSceneDIContainer {
         )
     }
 }
+

@@ -19,9 +19,11 @@ struct FestivalView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) var dismiss
     let rawText: RawText?
+    let am: AppleMusicAPIServiceProtocol
 
-    init(rawText: RawText?) {
+    init(rawText: RawText?, am: AppleMusicAPIServiceProtocol) {
         self.rawText = rawText
+        self.am = am
     }
 
     var body: some View {
@@ -113,7 +115,7 @@ struct FestivalView: View {
                         cast: festivalData.cast,
                         festivalId: festivalData.festivalId,
                         place: festivalData.place
-                    )),
+                    ), am:am),
                     isActive: $isNavigateToSelectArtist
                 ) {
                     EmptyView()
@@ -124,7 +126,7 @@ struct FestivalView: View {
             if suggestTitles != nil {
                 NavigationLink(
                     destination: FestivalSearchView(
-                        suggestTitles: suggestTitles!
+                        suggestTitles: suggestTitles!, am: am
                     ),
                     isActive: $isNavigateToSearch
                 ) {

@@ -19,6 +19,7 @@ struct FestivalSearchView: View {
     @State private var savedPlaylist: Playlist?
     @FocusState private var isSearchFocused: Bool
     let suggestTitles: SuggestTitlesModel
+    let am: AppleMusicAPIServiceProtocol
 
     var body: some View {
         ZStack {
@@ -33,7 +34,9 @@ struct FestivalSearchView: View {
             }
             
             NavigationLink(
-                destination: selectedPlaylist != nil ? AnyView(SelectArtistView(playlist: selectedPlaylist!)) : AnyView(EmptyView()),
+                destination: selectedPlaylist != nil
+                    ? AnyView(SelectArtistView(playlist: selectedPlaylist!, am: am)) // ⬅️ 추가
+                    : AnyView(EmptyView()),
                 isActive: $isNavigate
             ) {
                 EmptyView()

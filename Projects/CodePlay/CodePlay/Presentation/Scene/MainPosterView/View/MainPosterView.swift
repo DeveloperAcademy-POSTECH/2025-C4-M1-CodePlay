@@ -20,6 +20,7 @@ struct MainPosterView: View {
     @State private var hasCleaned = false
     /// 마지막 플레이리스트 갯수를 저장하는 변수
     @State private var lastPlaylistCount = 0
+    let am: AppleMusicAPIServiceProtocol
 
     var body: some View {
         NavigationStack {
@@ -71,7 +72,7 @@ struct MainPosterView: View {
                 NavigationLink(
                     isActive: $wrapper.shouldNavigateToFestivalCheck,
                     destination: {
-                        FestivalView(rawText: wrapper.scannedText)
+                        FestivalView(rawText: wrapper.scannedText, am:am)
                             .environmentObject(musicWrapper)
                     }
                 ) {

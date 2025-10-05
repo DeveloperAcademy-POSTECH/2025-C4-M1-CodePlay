@@ -19,6 +19,7 @@ struct SelectArtistView: View {
     @State private var selectedArtists: Set<String> = []
     @State private var isNextActive = false
     @State private var artworkTask: Task<Void, Never>?
+    let am: AppleMusicAPIServiceProtocol
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -255,46 +256,30 @@ struct SelectArtistView: View {
 
     private func fetchArtistArtworks() async {
         guard !playlist.artists.isEmpty else { return }
+
         await withTaskGroup(of: (String, URL?).self) { group in
-                for artist in playlist.artists {
-                    group.addTask {
-                        do {
-                            var request = MusicCatalogSearchRequest(
-                                term: artist,
-                                types: [Artist.self]
-                            )
-                            request.limit = 1
-                            let response = try await request.response()
-                            
-                            // 찾은 첫번쨰 아티스트의 아트워크 URL반환
-                            if let firstArtist = response.artists.first {
-                                let artworkURL = firstArtist.artwork?.url(
-                                    width: 220,
-                                    height: 220
-                                )
-                                return (artist, artworkURL)
-                            } else {
-                                return (artist, nil)
-                            }
-                        } catch {
-                            Log.debug("Error fetching artwork for \(artist): \(error)")
-                            return (artist, nil)
-                        }
-                    }
-                }
-                
-            // TaskGroup의 모든 작업이 완료될 때 까지 결과를 기다림
-            for await (artist, artworkURL) in group {
-                guard !Task.isCancelled else { return }
-                DispatchQueue.main.async {
-                    self.artistArtworks[artist] = artworkURL
-                    if artworkURL == nil {
-                        self.failedArtists.insert(artist)
+            for name in playlist.artists {
+                group.addTask {
+                    do {
+                        let dto = try await am.searchArtists(term: name, limit: 1, storefront: "kr")
+                        let urlTemplate = dto.results?.artists?.data?.first?.attributes?.artwork?.url
+                        let url = urlTemplate?.amArtworkURL(width: 220, height: 220)
+                        return (name, url)
+                    } catch {
+                        Log.debug("❌ [REST Artwork 검색 실패] \(name): \(error)")
+                        return (name, nil)
                     }
                 }
             }
+
+            for await (artist, url) in group {
+                guard !Task.isCancelled else { return }
+                self.artistArtworks[artist] = url
+                if url == nil { self.failedArtists.insert(artist) }
+            }
         }
     }
+
     
     private func savePlaylistToDB() {
         modelContext.insert(playlist)
@@ -308,3 +293,4 @@ struct SelectArtistView: View {
         }
     }
 }
+
