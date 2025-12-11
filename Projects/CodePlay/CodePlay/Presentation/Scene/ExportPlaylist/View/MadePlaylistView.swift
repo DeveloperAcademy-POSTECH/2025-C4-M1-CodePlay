@@ -12,6 +12,7 @@ struct MadePlaylistView: View {
     @EnvironmentObject var posterWrapper: PosterViewModelWrapper
     @EnvironmentObject var wrapper: MusicViewModelWrapper
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) private var modelContext
     @Query var allEntries: [PlaylistEntry]
 
     let selectedPlaylist: Playlist?
@@ -27,24 +28,16 @@ struct MadePlaylistView: View {
     var body: some View {
         let playlistEntries: [PlaylistEntry] = {
             if let selectedPlaylist = selectedPlaylist {
-                // 선택된 플레이리스트의 엔트리들만 필터링
-                let filteredEntries = allEntries.filter {
-                    $0.playlistId == selectedPlaylist.id
+                if isPlaylistSavedInSwiftData(playlistId: selectedPlaylist.id) {
+                    let filteredEntries = allEntries.filter {
+                        $0.playlistId == selectedPlaylist.id
+                    }
+                    Log.debug("🎵 저장된 플레이리스트(\(selectedPlaylist.title))의 엔트리 수: \(filteredEntries.count)")
+                    return filteredEntries
+                } else {
+                    Log.debug("🎵 임시 플레이리스트(\(selectedPlaylist.title))의 엔트리 수: \(wrapper.playlistEntries.count)")
+                    return wrapper.playlistEntries
                 }
-                Log.debug(
-                    "🎵 선택된 플레이리스트(\(selectedPlaylist.title))의 엔트리 수: \(filteredEntries.count)"
-                )
-                Log.debug("🔍 전체 엔트리 수: \(allEntries.count)")
-                Log.debug("🆔 찾는 playlistId: \(selectedPlaylist.id)")
-
-                // 모든 엔트리의 playlistId 출력
-                for entry in allEntries {
-                    Log.debug(
-                        "📦 Entry: \(entry.artistName) - playlistId: \(entry.playlistId)"
-                    )
-                }
-
-                return filteredEntries
             } else {
                 // 기존 동작: wrapper에서 가져온 엔트리들 사용
                 Log.debug("🎵 Wrapper에서 가져온 엔트리 수: \(wrapper.playlistEntries.count)")
@@ -80,7 +73,10 @@ struct MadePlaylistView: View {
                 }
             }
             BottomButton(title: "Apple Music으로 전송", kind: .colorFill) {
-                // MadePlaylistView에서 보여지는 정렬된 순서 그대로 내보내기
+                // 1. 먼저 플레이리스트를 SwiftData에 저장
+                savePlaylistToDB()
+                
+                // 2. MadePlaylistView에서 보여지는 정렬된 순서 그대로 내보내기
                 let sortedEntries = groupedEntries.keys.sorted().flatMap { artist in
                     groupedEntries[artist] ?? []
                 }
@@ -138,6 +134,49 @@ struct MadePlaylistView: View {
 
         .onAppear {
             wrapper.isExportCompleted = false
+        }
+    }
+    private func savePlaylistToDB() {
+        guard let playlist = selectedPlaylist else {
+            Log.fault("❌ 저장할 플레이리스트가 없습니다")
+            return
+        }
+        do {
+            let playlistId = playlist.id
+            let existingPlaylists = try modelContext.fetch(
+                FetchDescriptor<Playlist>(
+                    predicate: #Predicate<Playlist> { $0.id == playlistId }
+                )
+            )
+            
+            if !existingPlaylists.isEmpty {
+                Log.debug("✅ 플레이리스트가 이미 저장되어 있음: \(playlist.title)")
+                return
+            }
+        } catch {
+            Log.fault("❌ 기존 플레이리스트 확인 중 오류: \(error.localizedDescription)")
+        }
+
+        modelContext.insert(playlist)
+        
+        do {
+            try modelContext.save()
+            Log.debug("✅ 플레이리스트 저장 완료: \(playlist.title)")
+        } catch {
+            Log.fault("❌ 플레이리스트 저장 실패: \(error.localizedDescription)")
+        }
+    }
+    private func isPlaylistSavedInSwiftData(playlistId: UUID) -> Bool {
+        do {
+            let existingPlaylists = try modelContext.fetch(
+                FetchDescriptor<Playlist>(
+                    predicate: #Predicate<Playlist> { $0.id == playlistId }
+                )
+            )
+            return !existingPlaylists.isEmpty
+        } catch {
+            Log.fault("❌ 플레이리스트 저장 여부 확인 중 오류: \(error.localizedDescription)")
+            return false
         }
     }
 }
