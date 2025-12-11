@@ -24,10 +24,10 @@ struct MainPosterView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .center, spacing: 0) {
-                Spacer().frame(height: 106)
-
+                Spacer().frame(height: 146)
+                
                 if playlists.isEmpty {
-                    VStack(alignment: .center, spacing: 76) {
+                    VStack(alignment: .center, spacing: 0) {
                         Image(asset: Asset.mainempty)
                             .resizable()
                             .frame(maxWidth: .infinity, maxHeight: 320)
@@ -39,24 +39,26 @@ struct MainPosterView: View {
                             .id(refreshId)
                     }
                 }
-
-                Spacer().frame(height: 36)
-
-                Text("페스티벌에 가기 전\n슝으로 예습해 보세요!")
+                
+                Spacer().frame(height: 76)
+                
+            
+                    
+                 Text("페스티벌에 가기 전\n슝으로 예습해 보세요!")
                     .multilineTextAlignment(.center)
                     .font(.HlgBold())
                     .foregroundColor(.neu900)
                     .padding(.horizontal, 36)
                     .lineSpacing(2)
-
+                
                 Spacer().frame(height: 12)
-
+                
                 Text("포스터 인식으로 플레이리스트를 만들 수 있어요")
                     .font(.BmdRegular())
                     .foregroundColor(.neu700)
                     .padding(.horizontal, 36)
                     .lineSpacing(2)
-
+    
                 Spacer()
 
                 BottomButton(title: "페스티벌 라인업 인식", kind: .colorFill, action: {

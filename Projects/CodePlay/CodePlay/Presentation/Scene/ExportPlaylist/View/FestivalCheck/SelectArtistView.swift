@@ -181,6 +181,43 @@ struct SelectArtistView: View {
         .background(.neu50.opacity(0.3))
         .cornerRadius(12)
     }
+    
+    @ViewBuilder
+    func imageView(for phase: AsyncImagePhase, artist: String, selectedArtists: Set<String>) -> some View {
+        switch phase {
+        case .empty:
+            ProgressView().frame(width: 110, height: 110)
+            
+        case .success(let image):
+            image.resizable()
+                .scaledToFill()
+                .frame(width: 110, height: 110)
+                .clipShape(Circle())
+                .overlay(
+                    Circle()
+                        .stroke(selectedArtists.contains(artist) ? Color(asset: Asset.primary) : Color.neutral50, lineWidth: 4)
+                )
+        case .failure(_):
+            Circle()
+                .fill(Color.gray.opacity(0.3))
+                .frame(width: 110, height: 110)
+                .overlay(
+                    Image("logo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 27, height: 47)
+                        .foregroundColor(.gray)
+                )
+                .clipShape(Circle())
+                .overlay(
+                    Circle()
+                        .stroke(Color.neutral50, lineWidth: 4)
+                )
+        @unknown default:
+            EmptyView()
+        }
+    }
+  
 
     @ViewBuilder
     private var ArtistGridView: some View {
@@ -194,51 +231,40 @@ struct SelectArtistView: View {
             ) {
                 ForEach(playlist.artists, id: \.self) { artist in
                     VStack(spacing: 8) {
-                        ZStack {
-                            AsyncImage(url: artistArtworks[artist] ?? nil) {
-                                phase in
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                        .frame(width: 110, height: 110)
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 110, height: 110)
-                                        .clipShape(Circle())
-                                        .overlay(
-                                            Circle()
-                                                .stroke(
-                                                    selectedArtists.contains(
-                                                        artist
-                                                    )
-                                                        ? Color(asset: Asset.primary)
-                                                        : Color.neutral50,
-                                                    lineWidth: 4
-                                                )
-                                        )
-                                @unknown default:
-                                    Image(systemName: "person.circle.fill")
+                        if failedArtists.contains(artist) {
+                            Circle()
+                                .fill(Color.gray.opacity(0.3))
+                                .frame(width: 110, height: 110)
+                                .overlay(
+                                    Image("logo")
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: 110, height: 110)
+                                        .frame(width: 27, height: 47)
                                         .foregroundColor(.gray)
+                                )
+                                .clipShape(Circle())
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.neutral50, lineWidth: 4)
+                                )
+                                .onTapGesture {
+                                    toggleSelection(for: artist)
                                 }
+                            
+                        } else {
+                            AsyncImage(url: artistArtworks[artist] ?? nil) { phase in
+                                imageView(for: phase, artist: artist, selectedArtists: selectedArtists)
+                            }
+                            .onTapGesture {
+                                toggleSelection(for: artist)
                             }
                         }
-                        .onTapGesture {
-                            toggleSelection(for: artist)
-                        }
 
-                        Text(artist.prefix(10))
+                        Text(artist.prefix(16))
                             .font(.BmdRegular())
-                            .foregroundColor(
-                                failedArtists.contains(artist)
-                                    ? .neu700 : .neu900
-                            )
+                            .foregroundColor(selectedArtists.contains(artist) ? .neu900 : .neu700)
                             .multilineTextAlignment(.center)
-                            .lineLimit(2)
+                            .lineLimit(1)
                     }
                 }
             }
